@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import clsx from 'clsx';
-import PropTypes from 'prop-types';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Badge, Hidden, IconButton } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -41,7 +40,7 @@ const Topbar: React.FC<Props>  = props => {
         <RouterLink to="/">
           <img
             alt="Trading Manager"
-            src="/images/logos/logo--white.svg"
+            src="./../../../../../public/app_icon.png"
           />
         </RouterLink>
         <div className={classes.flexGrow} />

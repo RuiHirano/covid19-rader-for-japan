@@ -30,8 +30,8 @@ const Topbar: React.FC<Props>  = props => {
       <Toolbar>
         <RouterLink to="/">
           <img
-            alt="Logo"
-            src="/images/logos/logo--white.svg"
+            alt="Trading Manager"
+            src="./../../../../../public/app_icon.png"
           />
         </RouterLink>
       </Toolbar>

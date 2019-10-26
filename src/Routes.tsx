@@ -14,6 +14,7 @@ import {
   Settings as SettingsView,
   SignUp as SignUpView,
   SignIn as SignInView,
+  Home as HomeView,
   NotFound as NotFoundView
 } from './views';
 
@@ -23,7 +24,13 @@ const Routes: React.FC = () => {
       <Redirect
         exact
         from="/"
-        to="/dashboard"
+        to="/home"
+      />
+      <RouteWithLayout
+        component={HomeView}
+        exact
+        layout={MinimalLayout}
+        path="/home"
       />
       <RouteWithLayout
         component={DashboardView}
