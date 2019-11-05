@@ -1,10 +1,10 @@
 export const config = {
-    apiKey: "AIzaSyAoQ8Z-4IfV4VAievuPT-gWvgQeNH-NryI",
-    authDomain: "trading-manager-c31c9.firebaseapp.com",
-    databaseURL: "https://trading-manager-c31c9.firebaseio.com",
-    projectId: "trading-manager-c31c9",
-    storageBucket: "trading-manager-c31c9.appspot.com",
-    messagingSenderId: "605300298838",
-    appId: "1:605300298838:web:4d923d94a6cd833ef617f7",
-    measurementId: "G-XHQKGBHW4J"
-}
+    apiKey: "AIzaSyDwwsqdcwHr6SUkDXYCMMcA3t7GpK22siw",
+    authDomain: "tradingmanager-a9989.firebaseapp.com",
+    databaseURL: "https://tradingmanager-a9989.firebaseio.com",
+    projectId: "tradingmanager-a9989",
+    storageBucket: "tradingmanager-a9989.appspot.com",
+    messagingSenderId: "530919669011",
+    appId: "1:530919669011:web:48c7a4c77d5c87ddd22ee6",
+    measurementId: "G-7EHD897TGV"
+};

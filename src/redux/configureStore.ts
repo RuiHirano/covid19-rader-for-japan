@@ -9,6 +9,10 @@ import {
     createTransform,
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
+import {appActions, AppActions} from './module/App/appModule'
+import { App, Items, User } from '../types'
+import { ItemActions } from './module/Item/itemModule'
+import { UserActions } from './module/User/userModule'
 
 export default function configureStore() {
     /*const dateTransform = createTransform(null, outboundState => {
@@ -47,4 +51,15 @@ export default function configureStore() {
     const persistor = persistStore(store)
     //persistor.purge()
     return { store, persistor }
+}
+
+export interface ActionTypes{
+    AppActions: AppActions,
+    ItemActions: ItemActions,
+    UserActions: UserActions
+}
+export interface AppState{ 
+    App: App, 
+    Items: Items,
+    User: User
 }

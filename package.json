@@ -17,10 +17,13 @@
     "@types/redux-actions": "^2.6.1",
     "@types/redux-logger": "^3.0.7",
     "@types/uuid": "^3.4.5",
+    "@types/yup": "^0.26.24",
     "chart.js": "^2.8.0",
     "clsx": "^1.0.4",
     "firebase": "^7.2.2",
+    "formik": "^2.0.3",
     "history": "^4.10.1",
+    "i18n-js": "^3.3.0",
     "moment": "^2.24.0",
     "node-sass": "^4.13.0",
     "react": "^16.11.0",
@@ -42,12 +45,14 @@
     "typescript-fsa-redux-saga": "^2.0.0",
     "underscore": "^1.9.1",
     "uuid": "^3.3.3",
-    "validate.js": "^0.13.1"
+    "validate.js": "^0.13.1",
+    "yup": "^0.27.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "jest": "jest",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -64,5 +69,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "jest-dom": "^4.0.0",
+    "react-testing-library": "^8.0.1"
   }
 }

@@ -1,21 +1,21 @@
 import { put, takeEvery, call, take } from 'redux-saga/effects'
 import {
-    updateLoadingStore,
-    updateUserStore,
-    updateErrorStore,
-    updateEmailFirestore,
-    updatePasswordFirestore,
-    deleteAllDataFirestore,
-    updateAppStateStore,
-    updateItemsStore,
-    updateUserFirestore,
-    signInFirebase,
-    signUpFirebase,
-    signOutFirebase,
-    getUserFirebase,
-    getItemsFirebase,
-    createInitialItemsFirebase,
-    createInitialUserFirebase
+	updateLoadingStore,
+	updateUserStore,
+	updateErrorStore,
+	updateEmailFirestore,
+	updatePasswordFirestore,
+	deleteAllDataFirestore,
+	updateAppStateStore,
+	updateItemsStore,
+	updateUserFirestore,
+	signInFirebase,
+	signUpFirebase,
+	signOutFirebase,
+	getUserFirebase,
+	getItemsFirebase,
+	createInitialItemsFirebase,
+	createInitialUserFirebase
 } from '../utilSaga'
 import { select } from 'redux-saga/effects'
 import { getUser, getAppState } from '../selector'
@@ -25,190 +25,191 @@ import moment from 'moment'
 import { checkErrorCode } from '../../../app/firebase/errors'
 
 import actionCreatorFactory from 'typescript-fsa';
-import {Loading, LoadingState, Notification, Setting, Profile, Error, User, Items, State} from '../../../types/domainTypes'
-import {defaultItems, defaultUser} from './data'
+import { Loading, LoadingState, Notification, Setting, Profile, Error, User, Items, State } from '../../../types/domainTypes'
+import { defaultItems, defaultUser } from './data'
 const actionCreator = actionCreatorFactory();
 
 
 export interface SignInState {
-    email: Setting["Email"],
-    password: string,
+	email: Setting["Email"],
+	password: string,
 }
 
 export interface SignUpState {
-    email: Setting["Email"],
-    password: string,
-    name: Profile["Name"],
+	email: Setting["Email"],
+	password: string,
+	name: Profile["Name"],
 }
 
-export enum SignActions{
-    SIGN_IN_ACTION = "SIGN_IN_ACTION",
-    SIGN_UP_ACTION = "SIGN_UP_ACTION",
-    SIGN_OUT_ACTION = "SIGN_OUT_ACTION",
+export enum SignActions {
+	SIGN_IN_ACTION = "SIGN_IN_ACTION",
+	SIGN_UP_ACTION = "SIGN_UP_ACTION",
+	SIGN_OUT_ACTION = "SIGN_OUT_ACTION",
 }
 
 export const signActions = {
-    signInAction: actionCreator<SignInState>('SIGN_IN_ACTION'),
-    signUpAction: actionCreator<SignUpState>('SIGN_UP_ACTION'),
-    signOutAction: actionCreator('SIGN_OUT_ACTION'),
+	signInAction: actionCreator<SignInState>('SIGN_IN_ACTION'),
+	signUpAction: actionCreator<SignUpState>('SIGN_UP_ACTION'),
+	signOutAction: actionCreator('SIGN_OUT_ACTION'),
 };
 
 
 function* handleSignIn(action: ReturnType<typeof signActions.signInAction>) {
-    try {
-        const { email, password } = action.payload
+	try {
+		const { email, password } = action.payload
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.SIGN_IN
-        }
-        yield updateLoadingStore(loading)
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.SIGN_IN
+		}
+		yield updateLoadingStore(loading)
 
-        // sign in to firebase
-        const data = yield signInFirebase(email, password)
+		// sign in to firebase
+		const data = yield signInFirebase(email, password)
 
-        // get user profile
-        const userID: User["ID"] = data.user.uid
-        const user: User = yield getUserFirebase(userID)
+		// get user profile
+		const userID: User["ID"] = data.user.uid
+		const user: User = yield getUserFirebase(userID)
 
-        // get user items
-        const items: Items = yield getItemsFirebase(userID)
+		// get user items
+		const items: Items = yield getItemsFirebase(userID)
 
-        yield updateUserStore(user)
+		yield updateUserStore(user)
 
-        // update userItem to store
-        yield updateItemsStore(items)
+		// update userItem to store
+		yield updateItemsStore(items)
 
-        // update userStatus to store
-        let appState: State = yield select(getAppState)
-        appState.IsSignIn = true
-        yield updateAppStateStore(appState)
+		// update userStatus to store
+		let appState: State = yield select(getAppState)
+		appState.IsSignIn = true
+		yield updateAppStateStore(appState)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.SIGN_IN
-        }
-        yield updateLoadingStore(loading)
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.SIGN_IN
+		}
+		yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('Sign in error... \n', code)
-    }
+		const errorMessage = checkErrorCode(code)
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('Sign in error... \n', code)
+	}
 }
 
 function* handleSignUp(action: ReturnType<typeof signActions.signUpAction>) {
-    try {
-        const { email, password, name } = action.payload
+	try {
+		const { email, password, name } = action.payload
+		console.log("handleSignUp", action.payload)
 
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.SIGN_UP
-        }
-        yield updateLoadingStore(loading)
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.SIGN_UP
+		}
+		yield updateLoadingStore(loading)
 
-        // sign up to firebase
-        const auth = yield signUpFirebase(email, password)
+		// sign up to firebase
+		const auth = yield signUpFirebase(email, password)
 
-        const user: User = defaultUser
-        user.ID = auth.user.uid
-        user.Setting.Email = email
-        user.Profile.Name = name
+		const user: User = defaultUser
+		user.ID = auth.user.uid
+		user.Setting.Email = email
+		user.Profile.Name = name
 
-        // create new item data
-        const items: Items = {
-            Items : defaultItems
-        }
+		// create new item data
+		const items: Items = {
+			Items: defaultItems
+		}
 
-        // regist userData to firebase
-        yield createInitialUserFirebase(user)
-        
-        yield createInitialItemsFirebase(items, user)
+		// regist userData to firebase
+		yield createInitialUserFirebase(user)
 
-        // update userdata to store
-        yield updateUserStore(user)
+		yield createInitialItemsFirebase(items, user)
 
-        // update userItem to store
-        yield updateItemsStore(items)
+		// update userdata to store
+		yield updateUserStore(user)
 
-        // update userStatus to store
-        let appState: State = yield select(getAppState)
-        appState.IsSignIn = true
-        yield updateAppStateStore(appState)
+		// update userItem to store
+		yield updateItemsStore(items)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.SIGN_UP
-        }
-        yield updateLoadingStore(loading)
+		// update userStatus to store
+		let appState: State = yield select(getAppState)
+		appState.IsSignIn = true
+		yield updateAppStateStore(appState)
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('Sign up error... \n', code, message)
-    }
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.SIGN_UP
+		}
+		yield updateLoadingStore(loading)
+
+		const errorMessage = checkErrorCode(code)
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('Sign up error... \n', code, message)
+	}
 }
 
 function* handleSignOut(action: ReturnType<typeof signActions.signOutAction>) {
-    try {
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.SIGN_OUT
-        }
-        yield updateLoadingStore(loading)
-        // signOut firebase
-        yield signOutFirebase()
+	try {
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.SIGN_OUT
+		}
+		yield updateLoadingStore(loading)
+		// signOut firebase
+		yield signOutFirebase()
 
-        // update items to store
-        const items: Items = {
-            Items: []
-        }
-        yield updateItemsStore(items)
+		// update items to store
+		const items: Items = {
+			Items: []
+		}
+		yield updateItemsStore(items)
 
-        // update userStatus to store
-        let appState: State = yield select(getAppState)
-        appState.IsSignIn = false
-        yield updateAppStateStore(appState)
+		// update userStatus to store
+		let appState: State = yield select(getAppState)
+		appState.IsSignIn = false
+		yield updateAppStateStore(appState)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.SIGN_OUT
-        }
-        yield updateLoadingStore(loading)
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.SIGN_OUT
+		}
+		yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('Sign out error... \n', code)
-    }
+		const errorMessage = checkErrorCode(code)
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('Sign out error... \n', code)
+	}
 }
 
 /*function* handleIsSignInRequest(action: ReturnType<typeof signActions.isSignInRequest>) {
@@ -290,11 +291,11 @@ function* handleCheckIsMatchPasswordRequest(action: ReturnType<typeof signAction
 }*/
 
 function* signSaga() {
-    yield takeEvery(SignActions.SIGN_IN_ACTION, handleSignIn)
-    yield takeEvery(SignActions.SIGN_UP_ACTION, handleSignUp)
-    yield takeEvery(SignActions.SIGN_OUT_ACTION, handleSignOut)
-    //yield takeEvery(signActions.isSignInRequest.toString(), handleIsSignInRequest)
-    //yield takeEvery(signActions.checkIsMatchPasswordRequest.toString(), handleCheckIsMatchPasswordRequest)
+	yield takeEvery(SignActions.SIGN_IN_ACTION, handleSignIn)
+	yield takeEvery(SignActions.SIGN_UP_ACTION, handleSignUp)
+	yield takeEvery(SignActions.SIGN_OUT_ACTION, handleSignOut)
+	//yield takeEvery(signActions.isSignInRequest.toString(), handleIsSignInRequest)
+	//yield takeEvery(signActions.checkIsMatchPasswordRequest.toString(), handleCheckIsMatchPasswordRequest)
 }
 
 export default signSaga

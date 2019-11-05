@@ -110,7 +110,6 @@ const Sidebar: React.FC<Props> = props => {
           className={classes.nav}
           pages={pages}
         />
-        <UpgradePlan />
       </div>
     </Drawer>
   );

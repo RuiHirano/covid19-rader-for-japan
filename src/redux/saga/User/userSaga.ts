@@ -14,8 +14,10 @@ import {
     updateUserFirestore,
 } from '../utilSaga'
 import actionCreatorFactory from 'typescript-fsa';
+import { User, Item, Notification, Profile, Setting, Content, BankAccount, Loading, LoadingState, Error, App, State } from '../../../types'
+
+
 const actionCreator = actionCreatorFactory();
-import {User, Item, Notification, Profile, Setting, Content, BankAccount, Loading, LoadingState, Error, App, State} from '../../../types'
 
 /*export interface UpdateUserNameState {
     userName: UserData["userName"]

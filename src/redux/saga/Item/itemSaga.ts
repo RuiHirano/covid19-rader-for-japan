@@ -19,10 +19,11 @@ import {
 } from '../utilSaga'
 import { checkErrorCode } from '../../../app/firebase/errors'
 import actionCreatorFactory from 'typescript-fsa';
-const actionCreator = actionCreatorFactory();
 import {Item, Loading, LoadingState, Error, User} from '../../../types/domainTypes'
 
 import moment from 'moment'
+
+const actionCreator = actionCreatorFactory();
 
 export interface CreateItemState {
     item: Item,

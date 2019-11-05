@@ -2,7 +2,7 @@ import React from 'react';
 import { makeStyles, Theme } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 
-import { AccountProfile, AccountDetails } from './components';
+import { AccountProfile, AccountDetails, AccountDelete } from './components';
 
 const useStyles = makeStyles((theme:Theme) => ({
   root: {
@@ -36,6 +36,16 @@ const Account: React.FC = () => {
           xs={12}
         >
           <AccountDetails />
+        </Grid>
+
+        <Grid
+          item
+          lg={8}
+          md={6}
+          xl={8}
+          xs={12}
+        >
+          <AccountDelete />
         </Grid>
       </Grid>
     </div>

@@ -1,204 +1,137 @@
-import React, { useState } from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import { makeStyles, Theme } from '@material-ui/core/styles';
+import React, { useState } from "react";
+import clsx from "clsx";
+import PropTypes from "prop-types";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardActions,
-  Divider,
-  Grid,
-  Button,
-  TextField
-} from '@material-ui/core';
+    Card,
+    CardHeader,
+    CardContent,
+    CardActions,
+    Divider,
+    Grid,
+    Button,
+    TextField
+} from "@material-ui/core";
+import { Formik, yupToFormErrors } from "formik";
+import * as Yup from "yup";
 
-const useStyles = makeStyles((theme:Theme) => ({
-  root: {}
+const useStyles = makeStyles((theme: Theme) => ({
+    root: {}
 }));
 
-const AccountDetails: React.FC = props => {
-  //const { className, ...rest } = props;
+export const AccountDetails: React.FC = props => {
+    //const { className, ...rest } = props;
 
-  const classes = useStyles();
-
-  const [values, setValues] = useState({
-    firstName: 'Shen',
-    lastName: 'Zhi',
-    email: 'shen.zhi@devias.io',
-    phone: '',
-    state: 'Alabama',
-    country: 'USA'
-  });
-
-  const handleChange = (event: any) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value
-    });
-  };
-
-  const states = [
-    {
-      value: 'alabama',
-      label: 'Alabama'
-    },
-    {
-      value: 'new-york',
-      label: 'New York'
-    },
-    {
-      value: 'san-francisco',
-      label: 'San Francisco'
-    }
-  ];
-
-  return (
-    <Card
-      //{...rest}
-      //className={clsx(classes.root, className)}
-    >
-      <form
-        autoComplete="off"
-        noValidate
-      >
-        <CardHeader
-          subheader="The information can be edited"
-          title="Profile"
-        />
-        <Divider />
-        <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={6}
-              xs={12}
+    return (
+        <Card
+        //{...rest}
+        //className={clsx(classes.root, className)}
+        >
+            <Formik
+                initialValues={{ status: "", email: "", name: "" }}
+                onSubmit={values => console.log("debug6 ", values)}
+                validationSchema={Yup.object().shape({
+                    email: Yup.string()
+                        .email("i18n.t('su_wrong_email')")
+                        .required("i18n.t('su_required_email')"),
+                    name: Yup.string().required("i18n.t('su_required_name')")
+                })}
             >
-              <TextField
-                fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                margin="dense"
-                name="firstName"
-                onChange={handleChange}
-                required
-                value={values.firstName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Last name"
-                margin="dense"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Email Address"
-                margin="dense"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Phone Number"
-                margin="dense"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Select State"
-                margin="dense"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                // eslint-disable-next-line react/jsx-sort-props
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
-              >
-                {states.map(option => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
-            </Grid>
-            <Grid
-              item
-              md={6}
-              xs={12}
-            >
-              <TextField
-                fullWidth
-                label="Country"
-                margin="dense"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-          </Grid>
-        </CardContent>
-        <Divider />
-        <CardActions>
-          <Button
-            color="primary"
-            variant="contained"
-          >
-            Save details
-          </Button>
-        </CardActions>
-      </form>
-    </Card>
-  );
+                {({
+                    handleChange,
+                    handleSubmit,
+                    values,
+                    errors,
+                    touched,
+                    handleBlur,
+                    isValid,
+                    isSubmitting,
+                    setFieldValue
+                }) => (
+                    <div>
+                        <CardHeader
+                            subheader="The information can be edited"
+                            title="Profile"
+                        />
+                        <Divider />
+                        <CardContent>
+                            <Grid container spacing={3}>
+                                <Grid item md={12} xs={12}>
+                                    <TextField
+                                        error={
+                                            errors.name && touched.name
+                                                ? true
+                                                : false
+                                        }
+                                        fullWidth
+                                        helperText={
+                                            errors.name && touched.name
+                                                ? errors.name
+                                                : null
+                                        }
+                                        label="Name"
+                                        name="Name"
+                                        onChange={handleChange("name")}
+                                        type="text"
+                                        value={values.name}
+                                        variant="outlined"
+                                        onBlur={handleBlur("name")}
+                                    />
+                                </Grid>
+                                <Grid item md={12} xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        helperText={
+                                            "please specify the Status Message"
+                                        }
+                                        label="Status"
+                                        name="Status"
+                                        onChange={handleChange("status")}
+                                        type="text"
+                                        value={values.status}
+                                        variant="outlined"
+                                        onBlur={handleBlur("status")}
+                                    />
+                                </Grid>
+                                <Grid item md={12} xs={12}>
+                                    <TextField
+                                        error={
+                                            errors.email && touched.email
+                                                ? true
+                                                : false
+                                        }
+                                        fullWidth
+                                        helperText={
+                                            errors.email && touched.email
+                                                ? errors.email
+                                                : null
+                                        }
+                                        label="Email address"
+                                        name="email"
+                                        onChange={handleChange("email")}
+                                        type="text"
+                                        value={values.email}
+                                        variant="outlined"
+                                        onBlur={handleBlur("email")}
+                                    />
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                        <Divider />
+                        <CardActions>
+                            <Button
+                                color="primary"
+                                variant="contained"
+                                onClick={() => handleSubmit()}
+                            >
+                                Save details
+                            </Button>
+                        </CardActions>
+                    </div>
+                )}
+            </Formik>
+        </Card>
+    );
 };
 
-AccountDetails.propTypes = {
-  className: PropTypes.string
-};
-
-export default AccountDetails;
+//export default AccountDetails;
