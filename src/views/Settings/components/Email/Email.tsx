@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import clsx from "clsx";
+import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
     Card,
@@ -10,32 +9,51 @@ import {
     Button,
     TextField
 } from "@material-ui/core";
-import { Formik, yupToFormErrors } from "formik";
+import { Formik, yupToFormErrors, FormikValues } from "formik";
 import * as Yup from "yup";
+import { withRouter, match } from "react-router";
+import * as H from "history";
+import { LoadingState } from "../../../../types";
+import { useLoading } from "../../../../common/hooks/useLoading";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../../../redux/saga/User/userSaga";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {},
-    textField: {
-        marginTop: theme.spacing(2)
-    }
-}));
+// Container
+interface ContainerProps {
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
+const EmailContainer: React.FC<ContainerProps> = props => {
+    const { history } = props;
+    const dispatch = useDispatch();
+    const handleUpdateEmail = (values: FormikValues) => {
+        dispatch(userActions.updateEmailAction({ email: values.email }));
+    };
 
-export const Email: React.FC = props => {
-    //const { className, ...rest } = props;
+    const { isLoading, isFinishLoading } = useLoading(
+        LoadingState.UPDATE_EMAIL
+    );
+    useEffect(() => {
+        if (isFinishLoading) {
+            history.push("/dashboard");
+        }
+    }, [isLoading]);
+
+    return <Email handleUpdateEmail={handleUpdateEmail} />;
+};
+
+export default withRouter(EmailContainer);
+
+// Presentational
+interface Props {
+    handleUpdateEmail: (values: FormikValues) => void;
+}
+
+export const Email: React.FC<Props> = props => {
+    const { handleUpdateEmail } = props;
 
     const classes = useStyles();
-
-    const [values, setValues] = useState({
-        password: "",
-        confirm: ""
-    });
-
-    const handleChange = (event: any) => {
-        setValues({
-            ...values,
-            [event.target.name]: event.target.value
-        });
-    };
 
     return (
         <Card
@@ -47,7 +65,7 @@ export const Email: React.FC = props => {
                     email: "",
                     newEmail: ""
                 }}
-                onSubmit={values => console.log("debug6 ", values)}
+                onSubmit={values => handleUpdateEmail(values)}
                 validationSchema={Yup.object().shape({
                     email: Yup.string()
                         .email("i18n.t('su_wrong_email')")
@@ -130,4 +148,9 @@ export const Email: React.FC = props => {
     );
 };
 
-//export default Email;
+const useStyles = makeStyles((theme: Theme) => ({
+    root: {},
+    textField: {
+        marginTop: theme.spacing(2)
+    }
+}));

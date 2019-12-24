@@ -1,20 +1,21 @@
 import { put, takeEvery, call, take } from 'redux-saga/effects'
 import { select } from 'redux-saga/effects'
 import { getUser, getApp, getAppState } from '../selector'
-import { checkErrorCode } from '../../../app/firebase/errors'
+//import { checkErrorCode } from '../../../app/firebase/errors'
 import {
-    updateLoadingStore,
-    updateUserStore,
-    updateErrorStore,
-    updateEmailFirestore,
-    updatePasswordFirestore,
-    deleteAllDataFirestore,
-    updateAppStateStore,
-    updateItemsStore,
-    updateUserFirestore,
+	updateLoadingStore,
+	updateUserStore,
+	updateErrorStore,
+	updateEmailFirestore,
+	updatePasswordFirestore,
+	deleteAllDataFirestore,
+	updateAppStateStore,
+	updateItemsStore,
+	updateUserFirestore,
 } from '../utilSaga'
 import actionCreatorFactory from 'typescript-fsa';
-import { User, Item, Notification, Profile, Setting, Content, BankAccount, Loading, LoadingState, Error, App, State } from '../../../types'
+import { User, Item, Notification, Profile, Setting, Content, BankAccount, Loading, LoadingState, Error, App, State, Language } from '../../../types'
+import { UserClass } from '../../../types/user';
 
 
 const actionCreator = actionCreatorFactory();
@@ -77,47 +78,60 @@ export interface DeleteTagsState {
 }*/
 
 export interface UpdateProfileState {
-    profile: Profile,
+	profile: Profile,
 }
 
 export interface UpdateSettingState {
-    setting: Setting,
+	setting: Setting,
 }
 
 export interface UpdateContentState {
-    content: Content,
+	content: Content,
 }
 
 export interface UpdateEmailState {
-    email: Setting["Email"],
+	email: Setting["Email"],
 }
 
 export interface UpdatePasswordState {
-    password: string,
+	password: string,
+}
+
+export interface UpdateLanguageState {
+	language: string,
+}
+
+export interface UpdateNotificationState {
+	emailNotify: boolean,
+	pushNotify: boolean
 }
 
 export interface UpdateBankAccountState {
-    bankAccount: BankAccount,
+	bankAccount: BankAccount,
 }
 
-export enum UserActions{
-    UPDATE_PROFILE_ACTION = "UPDATE_PROFILE_ACTION",
-    UPDATE_SETTING_ACTION = "UPDATE_SETTING_ACTION",
-    UPDATE_CONTENT_ACTION = "UPDATE_CONTENT_ACTION",
-    UPDATE_EMAIL_ACTION = "UPDATE_EMAIL_ACTION",
-    UPDATE_PASSWORD_ACTION = "UPDATE_PASSWORD_ACTION",
-    UPDATE_BANK_ACCOUNT_ACTION = "UPDATE_BANK_ACCOUNT_ACTION",
-    DELETE_ACCOUNT_ACTION = "DELETE_ACCOUNT_ACTION",
+export enum UserActions {
+	UPDATE_PROFILE_ACTION = "UPDATE_PROFILE_ACTION",
+	UPDATE_SETTING_ACTION = "UPDATE_SETTING_ACTION",
+	UPDATE_CONTENT_ACTION = "UPDATE_CONTENT_ACTION",
+	UPDATE_EMAIL_ACTION = "UPDATE_EMAIL_ACTION",
+	UPDATE_PASSWORD_ACTION = "UPDATE_PASSWORD_ACTION",
+	UPDATE_BANK_ACCOUNT_ACTION = "UPDATE_BANK_ACCOUNT_ACTION",
+	UPDATE_NOTIFICATION_ACTION = "UPDATE_NOTIFICATION_ACTION",
+	UPDATE_LANGUAGE_ACTION = "UPDATE_LANGUAGE_ACTION",
+	DELETE_ACCOUNT_ACTION = "DELETE_ACCOUNT_ACTION",
 }
 
 export const userActions = {
-    updateProfileAction: actionCreator<UpdateProfileState>(UserActions.UPDATE_PROFILE_ACTION),
-    updateSettingAction: actionCreator<UpdateSettingState>(UserActions.UPDATE_SETTING_ACTION),
-    updateContentAction: actionCreator<UpdateContentState>(UserActions.UPDATE_CONTENT_ACTION),
-    updateEmailAction: actionCreator<UpdateEmailState>(UserActions.UPDATE_EMAIL_ACTION),
-    updatePasswordAction: actionCreator<UpdatePasswordState>(UserActions.UPDATE_PASSWORD_ACTION),
-    updateBankAccountAction: actionCreator<UpdateBankAccountState>(UserActions.UPDATE_BANK_ACCOUNT_ACTION),
-    deleteAccountAction: actionCreator(UserActions.DELETE_ACCOUNT_ACTION),
+	updateProfileAction: actionCreator<UpdateProfileState>(UserActions.UPDATE_PROFILE_ACTION),
+	updateSettingAction: actionCreator<UpdateSettingState>(UserActions.UPDATE_SETTING_ACTION),
+	updateContentAction: actionCreator<UpdateContentState>(UserActions.UPDATE_CONTENT_ACTION),
+	updateEmailAction: actionCreator<UpdateEmailState>(UserActions.UPDATE_EMAIL_ACTION),
+	updatePasswordAction: actionCreator<UpdatePasswordState>(UserActions.UPDATE_PASSWORD_ACTION),
+	updateNotificationAction: actionCreator<UpdateNotificationState>(UserActions.UPDATE_NOTIFICATION_ACTION),
+	updateLanguageAction: actionCreator<UpdateLanguageState>(UserActions.UPDATE_LANGUAGE_ACTION),
+	updateBankAccountAction: actionCreator<UpdateBankAccountState>(UserActions.UPDATE_BANK_ACCOUNT_ACTION),
+	deleteAccountAction: actionCreator(UserActions.DELETE_ACCOUNT_ACTION),
     /*downloadUserImageRequest: actionCreator<DownloadUserImageState>('DOWNLOAD_USER_IMAGE_REQUEST'),
     postInquiryRequest: actionCreator<PostInquiryState>('POST_INQUIRY_REQUEST'),
     updateInitialInvestmentRequest: actionCreator<UpdateInitialInvestmentState>('UPDATE_INITIAL_INVESTMENT_REQUEST'),
@@ -158,7 +172,7 @@ export const userActions = {
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: "" })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_USER_NAME"
         let loading = <Loading>{
             IsLoading: true,
@@ -166,7 +180,7 @@ export const userActions = {
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -203,7 +217,7 @@ export const userActions = {
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_USER_STATUS"
         let loading = <Loading>{
             IsLoading: true,
@@ -211,7 +225,7 @@ export const userActions = {
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -248,7 +262,7 @@ export const userActions = {
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_NOTIFICATION"
         let loading = <Loading>{
             IsLoading: true,
@@ -256,7 +270,7 @@ export const userActions = {
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -293,7 +307,7 @@ export const userActions = {
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_LANGUAGE"
         let loading = <Loading>{
             IsLoading: true,
@@ -301,7 +315,7 @@ export const userActions = {
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -338,7 +352,7 @@ export const userActions = {
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_INITIAL_INVESTMENT"
         let loading = <Loading>{
             IsLoading: true,
@@ -346,7 +360,7 @@ export const userActions = {
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -383,7 +397,7 @@ function* handleUpdateBankruptcyReductionRateRequest(action: ReturnType<typeof u
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_BANKRUPTCY_REDUCTION_RATE"
         let loading = <Loading>{
             IsLoading: true,
@@ -391,7 +405,7 @@ function* handleUpdateBankruptcyReductionRateRequest(action: ReturnType<typeof u
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -428,7 +442,7 @@ function* handleUpdateAllowableLossRateRequest(action: ReturnType<typeof userAct
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_ALLOWABLE_LOSS_RATE"
         let loading = <Loading>{
             IsLoading: true,
@@ -436,7 +450,7 @@ function* handleUpdateAllowableLossRateRequest(action: ReturnType<typeof userAct
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -473,7 +487,7 @@ function* handleUpdateAllowableLossRateRequest(action: ReturnType<typeof userAct
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_TRADING_CURRENCY"
         let loading = <Loading>{
             IsLoading: true,
@@ -481,7 +495,7 @@ function* handleUpdateAllowableLossRateRequest(action: ReturnType<typeof userAct
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -519,7 +533,7 @@ function* handleUpdateAllowableLossRateRequest(action: ReturnType<typeof userAct
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_TRADING_ISSUES"
         let loading = <Loading>{
             IsLoading: true,
@@ -527,7 +541,7 @@ function* handleUpdateAllowableLossRateRequest(action: ReturnType<typeof userAct
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -538,299 +552,392 @@ function* handleUpdateAllowableLossRateRequest(action: ReturnType<typeof userAct
 }*/
 
 function* handleUpdateEmail(action: ReturnType<typeof userActions.updateEmailAction>) {
-    try {
-        const { email } = action.payload
+	try {
+		const { email } = action.payload
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_EMAIL
-        }
-        yield updateLoadingStore(loading)
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_EMAIL
+		}
+		yield updateLoadingStore(loading)
 
-        // update email at auth
-        yield updateEmailFirestore(email)
+		// update email at auth
+		yield updateEmailFirestore(email)
 
-        // modified user data
-        var user: User  = yield select(getUser)
-        user.Setting.Email = email
+		// modified user data
+		var user: UserClass = yield select(getUser)
+		user.Setting.Email = email
 
-        // regist userdata to firebase
-        yield updateUserFirestore( user.ID, user)
+		// regist userdata to firebase
+		yield updateUserFirestore(user.ID, user)
 
-        yield updateUserStore(user)
+		yield updateUserStore(user)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
 
-    } catch ({ code, message }) {
-        // error
-        
-        // loading false
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_EMAIL
-        }
-        yield updateLoadingStore(loading)
+	} catch ({ code, message }) {
+		// error
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('Update email error... \n', code)
-    }
+		// loading false
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_EMAIL
+		}
+		yield updateLoadingStore(loading)
+
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('Update email error... \n', code)
+	}
 }
 
 function* handleUpdatePassword(action: ReturnType<typeof userActions.updatePasswordAction>) {
-    try {
-        const { password } = action.payload
+	try {
+		const { password } = action.payload
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_PASSWORD
-        }
-        yield updateLoadingStore(loading)
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_PASSWORD
+		}
+		yield updateLoadingStore(loading)
 
-        // update email at auth
-        yield updatePasswordFirestore(password)
+		// update email at auth
+		yield updatePasswordFirestore(password)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_PASSWORD
-        }
-        yield updateLoadingStore(loading)
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('Update password error... \n', code)
-    }
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_PASSWORD
+		}
+		yield updateLoadingStore(loading)
+
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('Update password error... \n', code)
+	}
 }
 
 function* handleDeleteAccount(action: ReturnType<typeof userActions.deleteAccountAction>) {
-    try {
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.DELETE_ACCOUNT
-        }
-        yield updateLoadingStore(loading)
+	try {
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.DELETE_ACCOUNT
+		}
+		yield updateLoadingStore(loading)
 
-        // delete account
-        const user: User = yield select(getUser)
-        yield deleteAllDataFirestore(user.ID)
+		// delete account
+		const user: UserClass = yield select(getUser)
+		yield deleteAllDataFirestore(user.ID)
 
-        // delete store
-        yield updateUserStore(user)
+		// delete store
+		const newUser = new UserClass()
+		yield updateUserStore(newUser)
 
-        // signout
-        let appState: State = yield select(getAppState)
-        appState.IsSignIn = false
-        yield updateAppStateStore(appState)
+		// signout
+		let appState: State = yield select(getAppState)
+		appState.IsSignIn = false
+		yield updateAppStateStore(appState)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-       } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.DELETE_ACCOUNT
-        }
-        yield updateLoadingStore(loading)
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.DELETE_ACCOUNT
+		}
+		yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('Delete account error... \n', code)
-    }
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('Delete account error... \n', code)
+	}
 }
 
 function* handleUpdateProfile(action: ReturnType<typeof userActions.updateProfileAction>) {
-    try {
-        const { profile} = action.payload
+	try {
+		const { profile } = action.payload
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_PROFILE
-        }
-        yield updateLoadingStore(loading)
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_PROFILE
+		}
+		yield updateLoadingStore(loading)
 
-        // userName to userData
-        var user: User = yield select(getUser)
-        user.Profile = profile
+		// userName to userData
+		var user: UserClass = yield select(getUser)
+		user.Profile = profile
 
-        // regist userdata to firebase
-        // regist userdata to firebase
-        yield updateUserFirestore( user.ID, user)
+		// regist userdata to firebase
+		// regist userdata to firebase
+		yield updateUserFirestore(user.ID, user)
 
-        yield updateUserStore(user)
+		yield updateUserStore(user)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_PROFILE
-        }
-        yield updateLoadingStore(loading)
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_PROFILE
+		}
+		yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('update username error... \n', code)
-    }
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('update username error... \n', code, message)
+	}
 }
 
 function* handleUpdateSetting(action: ReturnType<typeof userActions.updateSettingAction>) {
-    try {
-        const { setting } = action.payload
+	try {
+		const { setting } = action.payload
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_SETTING
-        }
-        yield updateLoadingStore(loading)
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_SETTING
+		}
+		yield updateLoadingStore(loading)
 
-        // userName to userData
-        var user: User = yield select(getUser)
-        user.Setting = setting
+		// userName to userData
+		var user: UserClass = yield select(getUser)
+		user.Setting = setting
 
-        // regist userdata to firebase
-        // regist userdata to firebase
-        yield updateUserFirestore( user.ID, user)
+		// regist userdata to firebase
+		// regist userdata to firebase
+		yield updateUserFirestore(user.ID, user)
 
-        yield updateUserStore(user)
+		yield updateUserStore(user)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
 
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_SETTING
-        }
-        yield updateLoadingStore(loading)
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_SETTING
+		}
+		yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('update username error... \n', code)
-    }
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('update username error... \n', code)
+	}
 }
 
 function* handleUpdateContent(action: ReturnType<typeof userActions.updateContentAction>) {
-    try {
-        const { content } = action.payload
+	try {
+		const { content } = action.payload
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_CONTENT
-        }
-        yield updateLoadingStore(loading)
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_CONTENT
+		}
+		yield updateLoadingStore(loading)
 
-        // userName to userData
-        let user: User = yield select(getUser)
-        user.Setting.Content = content
+		// userName to userData
+		let user: UserClass = yield select(getUser)
+		user.Setting.Content = content
 
-        // regist userdata to firebase
-        // regist userdata to firebase
-        yield updateUserFirestore( user.ID, user)
+		// regist userdata to firebase
+		// regist userdata to firebase
+		yield updateUserFirestore(user.ID, user)
 
-        yield updateUserStore(user)
+		yield updateUserStore(user)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
 
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_CONTENT
-        }
-        yield updateLoadingStore(loading)
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_CONTENT
+		}
+		yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('update username error... \n', code)
-    }
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('update username error... \n', code)
+	}
 }
 
+function* handleUpdateNotification(action: ReturnType<typeof userActions.updateNotificationAction>) {
+	try {
+		const { emailNotify, pushNotify } = action.payload
+
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_NOTIFICATION
+		}
+		yield updateLoadingStore(loading)
+
+		// userName to userData
+		let user: UserClass = yield select(getUser)
+		user.Setting.Notification = <Notification>{
+			Email: emailNotify,
+			Push: pushNotify
+		}
+
+		// regist userdata to firebase
+		yield updateUserFirestore(user.ID, user)
+
+		yield updateUserStore(user)
+
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
+
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_NOTIFICATION
+		}
+		yield updateLoadingStore(loading)
+
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('update username error... \n', code)
+	}
+}
+
+function* handleUpdateLanguage(action: ReturnType<typeof userActions.updateLanguageAction>) {
+	try {
+		const { language } = action.payload
+
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_LANGUAGE
+		}
+		yield updateLoadingStore(loading)
+
+		// userName to userData
+		let user: UserClass = yield select(getUser)
+		if (language === Language[0]) {
+			user.Setting.Language = 0
+		} else if (language === Language[1]) {
+			user.Setting.Language = 1
+		}
+
+		// regist userdata to firebase
+		yield updateUserFirestore(user.ID, user)
+
+		yield updateUserStore(user)
+
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
+
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_LANGUAGE
+		}
+		yield updateLoadingStore(loading)
+
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('update language error... \n', code)
+	}
+}
+
+
 function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBankAccountAction>) {
-    try {
-        const { bankAccount } = action.payload
+	try {
+		const { bankAccount } = action.payload
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_BANK_ACCOUNT
-        }
-        yield updateLoadingStore(loading)
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_BANK_ACCOUNT
+		}
+		yield updateLoadingStore(loading)
 
-        // userName to userData
-        var user: User = yield select(getUser)
-        user.Setting.BankAccount = bankAccount
+		// userName to userData
+		var user: UserClass = yield select(getUser)
+		user.Setting.BankAccount = bankAccount
 
-        // regist userdata to firebase
-        // regist userdata to firebase
-        yield updateUserFirestore( user.ID, user)
+		// regist userdata to firebase
+		// regist userdata to firebase
+		yield updateUserFirestore(user.ID, user)
 
-        yield updateUserStore(user)
+		yield updateUserStore(user)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_BANK_ACCOUNT
-        }
-        yield updateLoadingStore(loading)
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('update username error... \n', code)
-    }
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_BANK_ACCOUNT
+		}
+		yield updateLoadingStore(loading)
+
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('update username error... \n', code)
+	}
 }
 
 /*function* handlePostInquiryRequest(action: ReturnType<typeof userActions.postInquiryRequest>) {
@@ -845,7 +952,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "POST_INQUIRY"
         let loading = <Loading>{
             IsLoading: true,
@@ -853,7 +960,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -895,7 +1002,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_USER_ICON"
         let loading = <Loading>{
             IsLoading: true,
@@ -903,7 +1010,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -941,7 +1048,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "UPDATE_TAGS"
         let loading = <Loading>{
             IsLoading: true,
@@ -949,7 +1056,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -989,7 +1096,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
         yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: ""  })
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "DELETE_TAGS"
         let loading = <Loading>{
             IsLoading: true,
@@ -997,7 +1104,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
         }
         yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         let error = <Error>{
             IsError: true,
             Status: errorMessage,
@@ -1008,13 +1115,15 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
 }*/
 
 function* signSaga() {
-    yield takeEvery(UserActions.UPDATE_PROFILE_ACTION, handleUpdateProfile)
-    yield takeEvery(UserActions.UPDATE_SETTING_ACTION, handleUpdateSetting)
-    yield takeEvery(UserActions.UPDATE_CONTENT_ACTION, handleUpdateContent)
-    yield takeEvery(UserActions.UPDATE_EMAIL_ACTION, handleUpdateEmail)
-    yield takeEvery(UserActions.UPDATE_PASSWORD_ACTION, handleUpdatePassword)
-    yield takeEvery(UserActions.DELETE_ACCOUNT_ACTION, handleDeleteAccount)
-    yield takeEvery(UserActions.UPDATE_BANK_ACCOUNT_ACTION, handleUpdateBankAccount)
+	yield takeEvery(UserActions.UPDATE_PROFILE_ACTION, handleUpdateProfile)
+	yield takeEvery(UserActions.UPDATE_SETTING_ACTION, handleUpdateSetting)
+	yield takeEvery(UserActions.UPDATE_CONTENT_ACTION, handleUpdateContent)
+	yield takeEvery(UserActions.UPDATE_EMAIL_ACTION, handleUpdateEmail)
+	yield takeEvery(UserActions.UPDATE_PASSWORD_ACTION, handleUpdatePassword)
+	yield takeEvery(UserActions.UPDATE_LANGUAGE_ACTION, handleUpdateLanguage)
+	yield takeEvery(UserActions.DELETE_ACCOUNT_ACTION, handleDeleteAccount)
+	yield takeEvery(UserActions.UPDATE_BANK_ACCOUNT_ACTION, handleUpdateBankAccount)
+	yield takeEvery(UserActions.UPDATE_NOTIFICATION_ACTION, handleUpdateNotification)
     /*yield takeEvery(userActions.updateLanguageRequest.toString(), handleUpdateLanguageRequest)
     yield takeEvery(
         userActions.updateInitialInvestmentRequest.toString(),

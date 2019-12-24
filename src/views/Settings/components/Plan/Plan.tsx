@@ -16,16 +16,36 @@ import {
 } from "@material-ui/core";
 import { Formik, yupToFormErrors } from "formik";
 import * as Yup from "yup";
+import { withRouter, match } from "react-router";
+import * as H from "history";
 
-export const useStyles = makeStyles(() => ({
-    root: {},
-    item: {
-        display: "flex",
-        flexDirection: "column"
-    }
-}));
+// Container
+interface ContainerProps {
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
+const PlanContainer: React.FC<ContainerProps> = props => {
+    const { history } = props;
+    /*const dispatch = useDispatch();
 
-export const Plan: React.FC = props => {
+    const { isLoading, isFinishLoading } = useLoading(
+        LoadingState.DELETE_ACCOUNT
+    );
+    useEffect(() => {
+        if (isFinishLoading) {
+            history.push("/home");
+        }
+    }, [isLoading]);*/
+
+    return <Plan />;
+};
+
+export default withRouter(PlanContainer);
+
+
+// presentational
+const Plan: React.FC = props => {
     //const { className, ...rest } = props;
 
     const classes = useStyles();
@@ -145,4 +165,11 @@ export const Plan: React.FC = props => {
     );
 };
 
+export const useStyles = makeStyles(() => ({
+    root: {},
+    item: {
+        display: "flex",
+        flexDirection: "column"
+    }
+}));
 //export default Language;

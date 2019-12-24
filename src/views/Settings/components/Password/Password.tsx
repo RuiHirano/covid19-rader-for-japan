@@ -1,6 +1,4 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import clsx from "clsx";
+import React, { useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
     Card,
@@ -11,32 +9,53 @@ import {
     Button,
     TextField
 } from "@material-ui/core";
-import { Formik, yupToFormErrors } from "formik";
+import { Formik, FormikValues } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import { userActions } from "../../../../redux/saga/User/userSaga";
+import { useLoading } from "../../../../common/hooks/useLoading";
+import { LoadingState } from "../../../../types";
+import { withRouter, match } from "react-router";
+import * as H from "history";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {},
-    textField: {
-        marginTop: theme.spacing(2)
-    }
-}));
+// Container
+interface ContainerProps {
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
+const PasswordContainer: React.FC<ContainerProps> = props => {
+    const { history } = props;
+    const dispatch = useDispatch();
+    const handleUpdatePassword = (values: FormikValues) => {
+        dispatch(
+            userActions.updatePasswordAction({ password: values.password })
+        );
+    };
 
-export const Password: React.FC = props => {
-    //const { className, ...rest } = props;
+    const { isLoading, isFinishLoading } = useLoading(
+        LoadingState.UPDATE_PASSWORD
+    );
+    useEffect(() => {
+        if (isFinishLoading) {
+            history.push("/dashboard");
+        }
+    }, [isLoading]);
+
+    return <Password handleUpdatePassword={handleUpdatePassword} />;
+};
+
+export default withRouter(PasswordContainer);
+
+// Presentational
+interface Props {
+    handleUpdatePassword: (values: FormikValues) => void;
+}
+
+export const Password: React.FC<Props> = props => {
+    const { handleUpdatePassword } = props;
 
     const classes = useStyles();
-
-    const [values, setValues] = useState({
-        password: "",
-        confirm: ""
-    });
-
-    const handleChange = (event: any) => {
-        setValues({
-            ...values,
-            [event.target.name]: event.target.value
-        });
-    };
 
     return (
         <Card
@@ -48,7 +67,7 @@ export const Password: React.FC = props => {
                     password: "",
                     passwordConfirm: ""
                 }}
-                onSubmit={values => console.log("debug6 ", values)}
+                onSubmit={values => handleUpdatePassword(values)}
                 validationSchema={Yup.object().shape({
                     password: Yup.string()
                         .min(8, "i18n.t('su_min_password')")
@@ -145,8 +164,11 @@ export const Password: React.FC = props => {
     );
 };
 
-Password.propTypes = {
-    className: PropTypes.string
-};
+const useStyles = makeStyles((theme: Theme) => ({
+    root: {},
+    textField: {
+        marginTop: theme.spacing(2)
+    }
+}));
 
 //export default Password;

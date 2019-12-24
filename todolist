@@ -1,0 +1,35 @@
+
+2019-11-25
+EntryForm
+Todo: カレンダーのEditから取引登録画面へのアイテム反映  ○
+Todo: アイテムの更新　Firebaseへ
+Todo: アイテムの新規作成　Firebaseへ
+
+Account
+Todo:　NameのFirebaseへの反映　○
+Todo: StatusのFirebaseへの反映　　○
+Todo: ProfileからEmailの項目を削除  ○
+Todo: DeleteAccountでアカウント削除  ○
+Todo: DeleteAccountでFirestoreが削除されない
+Todo: 更新するとPersistが原因でNameが反映されない
+Todo: DeleteAccountで確認、メールアドレスを入力させる
+
+Settings
+Todo: Notificationsの反映
+Todo: Passwordの更新
+Todo: Contentの反映,更新
+Todo:　Emailの更新
+Todo: Languageの反映、更新
+Todo: PlanとBankAccountを見えなくする
+
+History
+Todo: Deleteの実装
+Todo: Detailで画面遷移 ○
+Todo: AddItemで画面遷移　○
+
+Report
+Todo: StatsClassの実装
+Todo: 基本統計の反映
+Todo: グラフ情報の反映
+
+Todo: App->StateになぜかItemがはいっておりループしている

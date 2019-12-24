@@ -2,41 +2,41 @@ import { put, takeEvery, call, all } from 'redux-saga/effects'
 import { generateUid } from '../../../common/genuid'
 import { select } from 'redux-saga/effects'
 import { getItems, getUser } from '../selector'
+import uuid from 'uuid/v1';
 import {
-    updateLoadingStore,
-    updateUserStore,
-    updateErrorStore,
-    updateEmailFirestore,
-    updatePasswordFirestore,
-    deleteAllDataFirestore,
-    updateAppStateStore,
-    updateItemsStore,
-    updateUserFirestore,
-    uploadImageStorage,
-    updateItemFirestore,
-    deleteImageStorage,
-    deleteItemFirestore,
+	updateLoadingStore,
+	updateUserStore,
+	updateErrorStore,
+	updateEmailFirestore,
+	updatePasswordFirestore,
+	deleteAllDataFirestore,
+	updateAppStateStore,
+	updateItemsStore,
+	updateUserFirestore,
+	uploadImageStorage,
+	updateItemFirestore,
+	deleteImageStorage,
+	deleteItemFirestore,
 } from '../utilSaga'
-import { checkErrorCode } from '../../../app/firebase/errors'
+//import { checkErrorCode } from '../../../app/firebase/errors'
 import actionCreatorFactory from 'typescript-fsa';
-import {Item, Loading, LoadingState, Error, User} from '../../../types/domainTypes'
+import { Item, Loading, LoadingState, Error, User } from '../../../types/types'
+import { ItemClass } from '../../../types/item';
 
 import moment from 'moment'
 
 const actionCreator = actionCreatorFactory();
 
 export interface CreateItemState {
-    item: Item,
-    urls: string[],
+	item: ItemClass,
 }
 
 export interface UpdateItemState {
-    item: Item,
-    urls: string[],
+	item: ItemClass,
 }
 
 export interface DeleteItemState {
-    item: Item,
+	item: Item,
 }
 
 /*export interface ImportItemsFromTradingManagerState{
@@ -47,185 +47,197 @@ export interface SearchTagsState {
     searchTags: string[],
 }*/
 
-export enum ItemActions{
-    CREATE_ITEM_ACTION = "CREATE_ITEM_ACTION",
-    UPDATE_ITEM_ACTION = "UPDATE_ITEM_ACTION",
-    DELETE_ITEM_ACTION = "DELETE_ITEM_ACTION",
+export enum ItemActions {
+	CREATE_ITEM_ACTION = "CREATE_ITEM_ACTION",
+	UPDATE_ITEM_ACTION = "UPDATE_ITEM_ACTION",
+	DELETE_ITEM_ACTION = "DELETE_ITEM_ACTION",
 }
 
 export const itemActions = {
-    createItemAction: actionCreator<CreateItemState>('CREATE_ITEM_ACTION'),
-    updateItemAction: actionCreator<UpdateItemState>('UPDATE_ITEM_ACTION'),
-    deleteItemAction: actionCreator<DeleteItemState>('DELETE_ITEM_ACTION'),
-    //downloadItemImageRequest: actionCreator('DOWNLOAD_ITEM_IMAGE_REQUEST'),
-    //updateSearchTagsRequest: actionCreator<SearchTagsState>('UPDATE_SEARCH_TAGS_REQUEST'),
+	createItemAction: actionCreator<CreateItemState>('CREATE_ITEM_ACTION'),
+	updateItemAction: actionCreator<UpdateItemState>('UPDATE_ITEM_ACTION'),
+	deleteItemAction: actionCreator<DeleteItemState>('DELETE_ITEM_ACTION'),
+	//downloadItemImageRequest: actionCreator('DOWNLOAD_ITEM_IMAGE_REQUEST'),
+	//updateSearchTagsRequest: actionCreator<SearchTagsState>('UPDATE_SEARCH_TAGS_REQUEST'),
 };
 
 
 function* handleCreateItem(action: ReturnType<typeof itemActions.createItemAction>) {
-    try {
-        const { item, urls } = action.payload
+	try {
+		const { item } = action.payload
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.CREATE_ITEM
-        }
-        yield updateLoadingStore(loading)
+		// loading開始
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.CREATE_ITEM
+		}
+		yield updateLoadingStore(loading)
+		console.log("debug1", item)
 
-        // userId itemId
-        const user: User = yield select(getUser)
-        const userId = user.ID
-        const itemId = parseInt(moment(item.StartDate).valueOf().toString() + generateUid())
+		// userId itemId
+		const user: User = yield select(getUser)
+		//const userId = user.ID
+		const itemId = moment().toISOString() + uuid()
+		item.ID = itemId
 
-        // create to storage
-        const images: Item["Images"] = yield uploadImageStorage( item.Images, userId, itemId)
+		// 画像をStorageへ保存
+		//const images: Item["Images"] = yield uploadImageStorage(item.Images, userId, itemId)
 
-        // modified item
-        item.Images = images
-        item.ID = itemId
+		// imageを更新
+		//item.Images = images
 
-        // create to firestore
-        yield updateItemFirestore(item, userId)
+		console.log("debug2")
 
-        // regist to store
-        const items = yield select(getItems)
-        items.push(item)
-        yield updateItemsStore(items)
+		// Itemをfirebaseへ保存
+		yield updateItemFirestore(item, user)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.CREATE_ITEM
-        }
-        yield updateLoadingStore(loading)
+		console.log("debug3")
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('Create Item error... \n', code)
-    }
+		// itemをStoreへ保存
+		const items = yield select(getItems)
+		items.push(item)
+		yield updateItemsStore(items)
+
+		console.log("debug4")
+
+		// loading終了
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
+
+	} catch ({ code, message }) {
+		// error発生
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+
+		// Loading終了
+		let loading = <Loading>{
+			IsLoading: false,
+			LoadingState: LoadingState.CREATE_ITEM
+		}
+		yield updateLoadingStore(loading)
+
+		console.log('Create Item error... \n', code)
+	}
 }
 
 function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemAction>) {
-    try {
-        const { item, urls } = action.payload
+	try {
+		const { item } = action.payload
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_ITEM
-        }
-        yield updateLoadingStore(loading)
-        // modified item
-        const user: User = yield select(getUser)
-        const userId = user.ID
-        const itemId = item.ID
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_ITEM
+		}
+		yield updateLoadingStore(loading)
+		// modified item
+		const user: User = yield select(getUser)
+		//const userId = user.ID
+		const itemId = item.ID
 
-        // update to firestore
-        const { imagePaths, imageSizes } = yield uploadImageStorage( item.Images, userId, itemId)
+		// 画像をfirebaseへupload
+		//const { imagePaths, imageSizes } = yield uploadImageStorage(item.Images, userId, itemId)
 
-        // modified item
-        // modified item
-        let images: Item["Images"] = []
-        imagePaths.forEach((url: string, index: number) => {
-            images.push({
-                url: url,
-                size: imageSizes[index]
-            })
-        });
-        item.Images = images
+		// imageを更新
+		/*let images: Item["Images"] = []
+		imagePaths.forEach((url: string, index: number) => {
+			images.push({
+				url: url,
+				size: imageSizes[index]
+			})
+		});
+		item.Images = images*/
 
-        // update item to firebase
-        yield updateItemFirestore(item, userId)
+		// itemをFirestoreへupload
+		yield updateItemFirestore(item, user)
 
-        // update items to state
-        const items = yield select(getItems)
-        items.map((value: Item, index: number) => {
-            if (value.ID === itemId) {
-                items.splice(index, 1, item)
-            }
-        })
+		// storeへitemを更新
+		const items = yield select(getItems)
+		items.map((value: Item, index: number) => {
+			if (value.ID === itemId) {
+				items.splice(index, 1, item)
+			}
+		})
+		yield updateItemsStore(items)
 
-        yield updateItemsStore(items)
+		// loading終了
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.UPDATE_ITEM
-        }
-        yield updateLoadingStore(loading)
+	} catch ({ code, message }) {
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('Update Item error... \n', code)
-    }
+		// error
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+
+		// loading終了
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_ITEM
+		}
+		yield updateLoadingStore(loading)
+
+		console.log('Update Item error... \n', code)
+	}
 }
 
 function* handleDeleteItem(action: ReturnType<typeof itemActions.deleteItemAction>) {
-    try {
-        const { item } = action.payload
+	try {
+		const { item } = action.payload
 
-        // loading true
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.DELETE_ITEM
-        }
-        yield updateLoadingStore(loading)
-        // delete item from firebase
-        const user: User = yield select(getUser)
-        const userId = user.ID
-        const itemId = item.ID
-        const fileDir = '/users/' + userId + '/items/' + itemId + '/'
-        yield deleteItemFirestore(fileDir)
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.DELETE_ITEM
+		}
+		yield updateLoadingStore(loading)
+		// delete item from firebase
+		const user: User = yield select(getUser)
+		const userId = user.ID
+		const itemId = item.ID
+		const fileDir = '/users/' + userId + '/items/' + itemId + '/'
+		yield deleteItemFirestore(fileDir)
 
-        // delete image from firestorage
-        const images = item.Images
-        yield deleteImageStorage(images, fileDir)
+		// delete image from firestorage
+		const images = item.Images
+		yield deleteImageStorage(images, fileDir)
 
-        //update items to store
-        const items = yield select(getItems)
-        items.map((value: Item, index: number) => {
-            if (value.ID === itemId) {
-                items.splice(index, 1)
-            }
-        })
-        yield updateItemsStore(items)
+		//update items to store
+		const items = yield select(getItems)
+		items.map((value: Item, index: number) => {
+			if (value.ID === itemId) {
+				items.splice(index, 1)
+			}
+		})
+		yield updateItemsStore(items)
 
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    } catch ({ code, message }) {
-        // error
-        let loading = <Loading>{
-            IsLoading: true,
-            LoadingState: LoadingState.DELETE_ITEM
-        }
-        yield updateLoadingStore(loading)
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
+	} catch ({ code, message }) {
+		// error
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.DELETE_ITEM
+		}
+		yield updateLoadingStore(loading)
 
-        const errorMessage = checkErrorCode(code)
-        let error = <Error>{
-            IsError: true,
-            Status: errorMessage,
-        }
-        yield updateErrorStore(error)
-        console.log('Delete Item error... \n', code)
-    }
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+		console.log('Delete Item error... \n', code)
+	}
 }
 
 /*function* handleUpdatePassData(action) {
@@ -358,10 +370,10 @@ const userData = yield select(getUserData)
 }*/
 
 function* itemSaga() {
-    yield takeEvery(ItemActions.CREATE_ITEM_ACTION, handleCreateItem)
-    yield takeEvery(ItemActions.UPDATE_ITEM_ACTION, handleUpdateItem)
-    yield takeEvery(ItemActions.DELETE_ITEM_ACTION, handleDeleteItem)
-    //yield takeEvery(itemActions.updateSearchTagsRequest.toString(), handleUpdateSearchTags)
+	yield takeEvery(ItemActions.CREATE_ITEM_ACTION, handleCreateItem)
+	yield takeEvery(ItemActions.UPDATE_ITEM_ACTION, handleUpdateItem)
+	yield takeEvery(ItemActions.DELETE_ITEM_ACTION, handleDeleteItem)
+	//yield takeEvery(itemActions.updateSearchTagsRequest.toString(), handleUpdateSearchTags)
     /*yield takeEvery(
         itemActions.downloadItemImageRequest.toString(),
         handleDownloadItemImageRequest

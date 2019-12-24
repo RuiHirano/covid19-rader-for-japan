@@ -1,4 +1,4 @@
-export { default as Notifications } from './Notifications';
+export { default as Notifications } from './Notification';
 export { default as Password } from './Password';
 export { default as Language } from './Language';
 export { default as Content } from './Content';

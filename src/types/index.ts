@@ -1,1 +1,1 @@
-export * from './domainTypes';
+export * from './types';

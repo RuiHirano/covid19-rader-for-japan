@@ -14,19 +14,21 @@ import {
 	signOutFirebase,
 	getUserFirebase,
 	getItemsFirebase,
-	createInitialItemsFirebase,
-	createInitialUserFirebase
+	createDefaultItemsFirebase,
+	createDefaultUserFirebase
 } from '../utilSaga'
 import { select } from 'redux-saga/effects'
 import { getUser, getAppState } from '../selector'
 import { generateUid } from '../../../common/genuid'
 //import i18n from './../../app/i18n/index'
 import moment from 'moment'
-import { checkErrorCode } from '../../../app/firebase/errors'
+//import { checkErrorCode } from '../../../app/firebase/errors'
 
 import actionCreatorFactory from 'typescript-fsa';
-import { Loading, LoadingState, Notification, Setting, Profile, Error, User, Items, State } from '../../../types/domainTypes'
+import { Loading, LoadingState, Notification, Setting, Item, Profile, Error, User, State } from '../../../types/types'
 import { defaultItems, defaultUser } from './data'
+import { UserClass } from '../../../types/user'
+import { ItemClass } from '../../../types/item'
 const actionCreator = actionCreatorFactory();
 
 
@@ -58,50 +60,55 @@ function* handleSignIn(action: ReturnType<typeof signActions.signInAction>) {
 	try {
 		const { email, password } = action.payload
 
-		// loading true
+		// LoadingをTrueにする
 		let loading = <Loading>{
 			IsLoading: true,
 			LoadingState: LoadingState.SIGN_IN
 		}
 		yield updateLoadingStore(loading)
 
-		// sign in to firebase
+		// FirebaseにSignIn
 		const data = yield signInFirebase(email, password)
+		console.log("data: ", data)
 
-		// get user profile
-		const userID: User["ID"] = data.user.uid
-		const user: User = yield getUserFirebase(userID)
+		// ユーザ情報を取得
+		const user: UserClass = yield getUserFirebase(email)
+		console.log("user: ", user)
 
-		// get user items
-		const items: Items = yield getItemsFirebase(userID)
+		// Items情報を取得
+		const items: ItemClass[] = yield getItemsFirebase(email)
 
+		// ユーザ情報をStoreへ更新
 		yield updateUserStore(user)
 
-		// update userItem to store
+		// Items情報をStoreへ更新
 		yield updateItemsStore(items)
 
-		// update userStatus to store
+		// AppStoreへ更新
 		let appState: State = yield select(getAppState)
 		appState.IsSignIn = true
 		yield updateAppStateStore(appState)
 
-		// loading false
+		// loadingを終了
 		loading.IsLoading = false
 		yield updateLoadingStore(loading)
 	} catch ({ code, message }) {
-		// error
-		let loading = <Loading>{
-			IsLoading: true,
-			LoadingState: LoadingState.SIGN_IN
-		}
-		yield updateLoadingStore(loading)
 
-		const errorMessage = checkErrorCode(code)
+		// エラーメッセージをStoreへ更新
+		const errorMessage = "checkErrorCode(code)"
 		let error = <Error>{
 			IsError: true,
 			Status: errorMessage,
 		}
 		yield updateErrorStore(error)
+
+		// loadingを終了
+		let loading = <Loading>{
+			IsLoading: false,
+			LoadingState: LoadingState.SIGN_IN
+		}
+		yield updateLoadingStore(loading)
+
 		console.log('Sign in error... \n', code)
 	}
 }
@@ -109,105 +116,113 @@ function* handleSignIn(action: ReturnType<typeof signActions.signInAction>) {
 function* handleSignUp(action: ReturnType<typeof signActions.signUpAction>) {
 	try {
 		const { email, password, name } = action.payload
-		console.log("handleSignUp", action.payload)
 
-
-		// loading true
+		// LoadingをTrueにする
 		let loading = <Loading>{
 			IsLoading: true,
 			LoadingState: LoadingState.SIGN_UP
 		}
 		yield updateLoadingStore(loading)
 
-		// sign up to firebase
+		// FirebaseにSignUp
 		const auth = yield signUpFirebase(email, password)
 
-		const user: User = defaultUser
+		// User情報の初期値を取得
+		const user: UserClass = defaultUser()
 		user.ID = auth.user.uid
 		user.Setting.Email = email
 		user.Profile.Name = name
 
-		// create new item data
-		const items: Items = {
-			Items: defaultItems
-		}
+		// Itemの初期値を取得
+		const items: ItemClass[] = defaultItems()
 
-		// regist userData to firebase
-		yield createInitialUserFirebase(user)
+		// FirebaseにUserを生成
+		yield createDefaultUserFirebase(user)
 
-		yield createInitialItemsFirebase(items, user)
+		// FirebaseにItemsを追加
+		yield createDefaultItemsFirebase(items, user)
 
-		// update userdata to store
+		// StoreへUser情報を更新
 		yield updateUserStore(user)
 
-		// update userItem to store
+		// StoreへItems情報を更新
 		yield updateItemsStore(items)
 
-		// update userStatus to store
+		// AppStateをStoreへ更新
 		let appState: State = yield select(getAppState)
 		appState.IsSignIn = true
 		yield updateAppStateStore(appState)
 
-		// loading false
+		// Loadingをfalseにする
 		loading.IsLoading = false
 		yield updateLoadingStore(loading)
-	} catch ({ code, message }) {
-		// error
-		let loading = <Loading>{
-			IsLoading: true,
-			LoadingState: LoadingState.SIGN_UP
-		}
-		yield updateLoadingStore(loading)
 
-		const errorMessage = checkErrorCode(code)
+	} catch ({ code, message }) {
+
+		const errorMessage = "checkErrorCode(code)"
 		let error = <Error>{
 			IsError: true,
 			Status: errorMessage,
 		}
 		yield updateErrorStore(error)
+
+		// loadingを終了
+		let loading = <Loading>{
+			IsLoading: false,
+			LoadingState: LoadingState.SIGN_UP
+		}
+		yield updateLoadingStore(loading)
+
 		console.log('Sign up error... \n', code, message)
 	}
 }
 
 function* handleSignOut(action: ReturnType<typeof signActions.signOutAction>) {
 	try {
-		// loading true
+		// Loading介し
 		let loading = <Loading>{
 			IsLoading: true,
 			LoadingState: LoadingState.SIGN_OUT
 		}
 		yield updateLoadingStore(loading)
-		// signOut firebase
+
+		// FirebaseからSignout
 		yield signOutFirebase()
 
-		// update items to store
-		const items: Items = {
-			Items: []
-		}
+		// StoreのItemsを初期化
+		const items: ItemClass[] = []
 		yield updateItemsStore(items)
 
-		// update userStatus to store
+		// Storeのユーザ情報を初期化
+		const user: UserClass = new UserClass()
+		yield updateUserStore(user)
+
+		// StoreのAppSateをSighoutに
 		let appState: State = yield select(getAppState)
 		appState.IsSignIn = false
 		yield updateAppStateStore(appState)
 
-		// loading false
+		// Loading終了
 		loading.IsLoading = false
 		yield updateLoadingStore(loading)
 	} catch ({ code, message }) {
-		// error
-		let loading = <Loading>{
-			IsLoading: true,
-			LoadingState: LoadingState.SIGN_OUT
-		}
-		yield updateLoadingStore(loading)
 
-		const errorMessage = checkErrorCode(code)
+		// ErrorをStoreへ
+		const errorMessage = "checkErrorCode(code)"
 		let error = <Error>{
 			IsError: true,
 			Status: errorMessage,
 		}
 		yield updateErrorStore(error)
+
+		// ローディング終了
+		let loading = <Loading>{
+			IsLoading: false,
+			LoadingState: LoadingState.SIGN_OUT
+		}
+		yield updateLoadingStore(loading)
+
+
 		console.log('Sign out error... \n', code)
 	}
 }
@@ -233,7 +248,7 @@ function* handleSignOut(action: ReturnType<typeof signActions.signOutAction>) {
         yield updateLoadingStore(loading)
     } catch ({ code, message }) {
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "IS_SIGN_IN"
         yield updateLoadingState({
             loadingStatus: loadingStatus,
@@ -278,7 +293,7 @@ function* handleCheckIsMatchPasswordRequest(action: ReturnType<typeof signAction
         yield updateIsMatchPasswordToStore({ isMatchPassword: isMatchPassword })
 
         // error
-        const errorMessage = checkErrorCode(code)
+        const errorMessage = "checkErrorCode(code)"
         const loadingStatus = "CHECK_PASSWORD"
         yield updateLoadingState({
             loadingStatus: loadingStatus,

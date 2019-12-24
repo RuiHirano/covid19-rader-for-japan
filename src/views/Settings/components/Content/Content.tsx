@@ -1,8 +1,10 @@
-import React, { useState } from "react";
-import clsx from "clsx";
-import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Content as ContentTypes } from "../../../../types/domainTypes";
+import {
+    Content as ContentTypes,
+    LoadingState,
+    User
+} from "../../../../types/types";
 import {
     Card,
     CardHeader,
@@ -13,49 +15,63 @@ import {
     Button,
     TextField
 } from "@material-ui/core";
-import { Formik, yupToFormErrors } from "formik";
+import { Formik, yupToFormErrors, FormikValues } from "formik";
 import * as Yup from "yup";
+import { withRouter, match } from "react-router";
+import * as H from "history";
+import { userActions } from "../../../../redux/saga/User/userSaga";
+import { useDispatch, useSelector } from "react-redux";
+import { useLoading } from "../../../../common/hooks/useLoading";
+import { AppState } from "../../../../redux/module/rootModule";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {},
-    textField: {
-        marginTop: theme.spacing(2)
-    }
-}));
+// Container
+interface ContainerProps {
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
+const ContentContainer: React.FC<ContainerProps> = props => {
+    const { history } = props;
+    const dispatch = useDispatch();
+    const content = useSelector(
+        (state: AppState) => state.User.Setting.Content
+    );
+    const handleUpdateContent = (values: FormikValues) => {
+        dispatch(userActions.updateContentAction({ content: content }));
+    };
+
+    const { isLoading, isFinishLoading } = useLoading(
+        LoadingState.UPDATE_PASSWORD
+    );
+    useEffect(() => {
+        if (isFinishLoading) {
+            history.push("/dashboard");
+        }
+    }, [isLoading]);
+
+    return (
+        <Content handleUpdateContent={handleUpdateContent} content={content} />
+    );
+};
+
+export default withRouter(ContentContainer);
+
+// Presentational
 
 interface Props {
-    initialInvestment: ContentTypes["InitialInvestment"];
-    allowableLossRate: ContentTypes["AllowableLossRate"];
-    bankruptcyReductionRate: ContentTypes["BankruptcyReductionRate"];
-    currencies: ContentTypes["Currencies"];
-    stocks: ContentTypes["Stocks"];
+    handleUpdateContent: (values: FormikValues) => void;
+    content: ContentTypes;
 }
 
 export const Content: React.FC<Props> = props => {
-    //const { className, ...rest } = props;
     const {
-        initialInvestment,
-        allowableLossRate,
-        bankruptcyReductionRate,
-        currencies,
-        stocks
-    } = props;
+        InitialInvestment: initialInvestment,
+        AllowableLossRate: allowableLossRate,
+        BankruptcyReductionRate: bankruptcyReductionRate,
+        Currencies: currencies,
+        Stocks: stocks
+    } = props.content;
     const classes = useStyles();
-
-    const [values, setValues] = useState({
-        name: "Rui Hirano",
-        email: "rui@hirano.com",
-        phone: "",
-        state: "Tokyo",
-        country: "Japan"
-    });
-
-    const handleChange = (event: any) => {
-        setValues({
-            ...values,
-            [event.target.name]: event.target.value
-        });
-    };
 
     const states = [
         {
@@ -217,4 +233,9 @@ export const Content: React.FC<Props> = props => {
     );
 };
 
-//export default Content;
+const useStyles = makeStyles((theme: Theme) => ({
+    root: {},
+    textField: {
+        marginTop: theme.spacing(2)
+    }
+}));

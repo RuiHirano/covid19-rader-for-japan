@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { makeStyles, Theme } from "@material-ui/core/styles";
@@ -14,8 +14,14 @@ import {
     Typography,
     Button
 } from "@material-ui/core";
-import { Formik, yupToFormErrors } from "formik";
+import { Formik, yupToFormErrors, FormikValues } from "formik";
 import * as Yup from "yup";
+import { useDispatch } from "react-redux";
+import { withRouter, match } from "react-router";
+import * as H from "history";
+import { useLoading } from "../../../../common/hooks/useLoading";
+import { LoadingState } from "../../../../types";
+import { userActions } from "../../../../redux/saga/User/userSaga";
 
 export const useStyles = makeStyles(() => ({
     root: {},
@@ -25,8 +31,42 @@ export const useStyles = makeStyles(() => ({
     }
 }));
 
-export const Language: React.FC = props => {
-    //const { className, ...rest } = props;
+// Container
+interface ContainerProps {
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
+const LanguageContainer: React.FC<ContainerProps> = props => {
+    const { history } = props;
+    const dispatch = useDispatch();
+    const handleUpdateLanguage = (values: FormikValues) => {
+        dispatch(
+            userActions.updateLanguageAction({ language: values.language })
+        );
+    };
+
+    const { isLoading, isFinishLoading } = useLoading(
+        LoadingState.UPDATE_LANGUAGE
+    );
+    useEffect(() => {
+        if (isFinishLoading) {
+            history.push("/dashboard");
+        }
+    }, [isLoading]);
+
+    return <Language handleUpdateLanguage={handleUpdateLanguage} />;
+};
+
+export default withRouter(LanguageContainer);
+
+// Presentational
+interface Props {
+    handleUpdateLanguage: (values: FormikValues) => void;
+}
+
+export const Language: React.FC<Props> = props => {
+    const { handleUpdateLanguage } = props;
 
     const classes = useStyles();
 
@@ -39,7 +79,7 @@ export const Language: React.FC = props => {
                 initialValues={{
                     language: "ja"
                 }}
-                onSubmit={values => console.log("debug6 ", values)}
+                onSubmit={values => handleUpdateLanguage(values)}
                 validationSchema={Yup.object().shape({})}
             >
                 {({

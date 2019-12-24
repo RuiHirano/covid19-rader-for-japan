@@ -1,16 +1,65 @@
-import React, { useState, useEffect } from "react";
-import { Link as RouterLink, withRouter } from "react-router-dom";
-import PropTypes from "prop-types";
-import validate from "validate.js";
+import React, { useEffect, useRef } from "react";
+import { withRouter, match } from "react-router-dom";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { SignInState } from "../../redux/saga/Sign/signSaga";
+import { SignInState, signActions } from "../../redux/saga/Sign/signSaga";
 import { Grid } from "@material-ui/core";
+import ImageField from "./components/ImageField/ImageField";
+import BackButton from "./components/BackButton/BackButton";
+import SignInForm from "./components/SignInForm/SignInForm";
 
-import { Facebook as FacebookIcon, Google as GoogleIcon } from "../../icons";
+import { useDispatch, useSelector } from "react-redux";
+import { AppState } from "../../redux/configureStore";
+import { Loading, LoadingState } from "../../types";
+import * as H from "history";
+import { useLoading } from "../../common/hooks/useLoading";
 
-import ImageField from "./components/ImageField";
-import BackButton from "./components/BackButton";
-import SignInForm from "./components/SignInForm";
+// Container
+interface ContainerProps {
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
+
+const SignInContainer: React.FC<ContainerProps> = props => {
+    const { history } = props;
+
+    const { isLoading, isFinishLoading } = useLoading(LoadingState.SIGN_IN);
+
+    useEffect(() => {
+        if (isFinishLoading) {
+            history.push("/dashboard");
+        }
+    }, [isLoading]);
+
+    return <SignIn />;
+};
+
+export default withRouter(SignInContainer);
+
+// Presentational
+interface Props {}
+
+const SignIn: React.FC<Props> = props => {
+    const classes = useStyles();
+
+    return (
+        <div className={classes.root}>
+            <Grid className={classes.grid} container>
+                <Grid className={classes.quoteContainer} item lg={5}>
+                    <ImageField />
+                </Grid>
+                <Grid className={classes.content} item lg={7} xs={12}>
+                    <div className={classes.contentHeader}>
+                        <BackButton />
+                    </div>
+                    <div className={classes.contentBody}>
+                        <SignInForm />
+                    </div>
+                </Grid>
+            </Grid>
+        </div>
+    );
+};
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -25,33 +74,6 @@ const useStyles = makeStyles((theme: Theme) => ({
             display: "none"
         }
     },
-    quote: {
-        backgroundColor: theme.palette.common.white,
-        height: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundImage: "url(/images/auth.jpg)",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center"
-    },
-    quoteInner: {
-        textAlign: "center",
-        flexBasis: "600px"
-    },
-    quoteText: {
-        color: theme.palette.common.white,
-        fontWeight: 300
-    },
-    name: {
-        marginTop: theme.spacing(3),
-        color: theme.palette.common.white
-    },
-    bio: {
-        color: theme.palette.common.white
-    },
-    contentContainer: {},
     content: {
         height: "100%",
         display: "flex",
@@ -65,9 +87,6 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(2)
     },
-    logoImage: {
-        marginLeft: theme.spacing(4)
-    },
     contentBody: {
         flexGrow: 1,
         display: "flex",
@@ -75,64 +94,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         [theme.breakpoints.down("md")]: {
             justifyContent: "center"
         }
-    },
-    form: {
-        paddingLeft: 100,
-        paddingRight: 100,
-        paddingBottom: 125,
-        flexBasis: 700,
-        [theme.breakpoints.down("sm")]: {
-            paddingLeft: theme.spacing(2),
-            paddingRight: theme.spacing(2)
-        }
-    },
-    title: {
-        marginTop: theme.spacing(3)
-    },
-    socialButtons: {
-        marginTop: theme.spacing(3)
-    },
-    socialIcon: {
-        marginRight: theme.spacing(1)
-    },
-    sugestion: {
-        marginTop: theme.spacing(2)
-    },
-    textField: {
-        marginTop: theme.spacing(2)
-    },
-    signInButton: {
-        margin: theme.spacing(2, 0)
     }
 }));
 
-interface Props {
-    handleSignIn: (signInState: SignInState) => void;
-    handleBack: () => void;
-}
-
-const SignIn: React.FC<Props> = props => {
-    const { handleBack, handleSignIn } = props;
-
-    const classes = useStyles();
-
-    return (
-        <div className={classes.root}>
-            <Grid className={classes.grid} container>
-                <Grid className={classes.quoteContainer} item lg={5}>
-                    <ImageField />
-                </Grid>
-                <Grid className={classes.content} item lg={7} xs={12}>
-                    <div className={classes.contentHeader}>
-                        <BackButton handleBack={handleBack} />
-                    </div>
-                    <div className={classes.contentBody}>
-                        <SignInForm handleSignUp={handleSignIn} />
-                    </div>
-                </Grid>
-            </Grid>
-        </div>
-    );
-};
-
-export default SignIn;
+//export default SignIn;

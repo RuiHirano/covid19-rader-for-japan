@@ -4,7 +4,9 @@ import { ItemActions } from '../module/Item/itemModule'
 import { UserActions } from '../module/User/userModule'
 import firebase from './../../app/firebase'
 import ReduxSagaFirebase from 'redux-saga-firebase'
-import { Item, Loading, State, Items, User, Error, Setting, Image } from '../../types/domainTypes'
+import { Item, Loading, State, User, Error, Setting, Image } from '../../types/types'
+import { UserClass } from '../../types/user'
+import { ItemClass } from '../../types/item'
 
 const rsf = new ReduxSagaFirebase(firebase)
 const { firestore, auth, storage } = rsf
@@ -32,7 +34,7 @@ export function* updateAppStateStore(appState: State) {
 }
 
 // Item Module
-export function* updateItemsStore(items: Items) {
+export function* updateItemsStore(items: ItemClass[]) {
 	yield put({
 		type: ItemActions.UPDATE_ITEMS_STORE,
 		payload: items,
@@ -40,7 +42,7 @@ export function* updateItemsStore(items: Items) {
 }
 
 // User Module
-export function* updateUserStore(user: User) {
+export function* updateUserStore(user: UserClass) {
 	yield put({
 		type: UserActions.UPDATE_USER_STORE,
 		payload: user,
@@ -48,11 +50,11 @@ export function* updateUserStore(user: User) {
 }
 
 // Firestore
-export function* updateUserFirestore(userId: User["ID"], user: User) {
+export function* updateUserFirestore(userId: User["ID"], user: UserClass) {
 	yield call(
 		firestore.updateDocument,
 		'users/' + userId + '/user/' + userId,
-		user
+		user.getUser()
 	)
 }
 
@@ -65,8 +67,8 @@ export function* updatePasswordFirestore(password: string) {
 }
 
 export function* deleteAllDataFirestore(userId: User["ID"]) {
-	yield call(auth.deleteProfile)
 	yield call(firestore.deleteDocument, 'users/' + userId)
+	yield call(auth.deleteProfile)
 }
 
 function fetchImageBlob(url: string): Promise<any> {
@@ -79,7 +81,7 @@ function fetchImageBlob(url: string): Promise<any> {
 		})
 }
 
-export function* uploadImageStorage(images: Item["Images"], userID: number, itemID: number) {
+export function* uploadImageStorage(images: Item["Images"], userID: User["ID"], itemID: string) {
 	var fileDir = '/users/' + userID + '/items/' + itemID + '/'
 	var blobs: any[] = yield all(
 		images.map(image => {
@@ -127,9 +129,10 @@ export function* uploadImageStorage(images: Item["Images"], userID: number, item
 	return newImages
 }
 
-export function* updateItemFirestore(item: Item, userID: User["ID"]) {
-	const fileDir: string = '/users/' + userID + '/items/' + item.ID
-	yield call(firestore.setDocument, fileDir, item, { merge: true })
+export function* updateItemFirestore(item: ItemClass, user: User) {
+	const email = user.Setting.Email
+	const fileDir: string = '/users/' + email + '/items/' + item.ID
+	yield call(firestore.setDocument, fileDir, item.getItem(), { merge: true })
 }
 
 export function* deleteItemFirestore(fileDir: string) {
@@ -167,40 +170,56 @@ export function* signOutFirebase() {
 }
 
 
-export function* createInitialUserFirebase(user: User) {
+export function* createDefaultUserFirebase(user: UserClass) {
+	const email = user.Setting.Email
 	const doc = yield call(
 		firestore.setDocument,
-		'users/' + user.ID + '/user/' + user.ID,
-		user, {}
+		'users/' + email + '/user/' + email,
+		user.getUser(), {}
 	)
 	return doc
 }
 
-export function* createInitialItemsFirebase(items: Items, user: User) {
+export function* createDefaultItemsFirebase(items: ItemClass[], user: UserClass) {
+	const email = user.Setting.Email
 	yield all(
-		items.Items.map(item => {
+		items.map(item => {
 			return call(
 				firestore.setDocument,
-				'users/' + user.ID + '/items/' + item.ID,
-				item, {}
+				'users/' + email + '/items/' + item.ID,
+				item.getItem(), {}
 			)
 		})
 	)
 }
 
-export function* getUserFirebase(userID: User["ID"]) {
-	const user: User = yield call(
-		firestore.getDocument,
-		'users/' + userID + '/user/' + userID
+export function* getUserFirebase(email: Setting["Email"]) {
+	let user = new UserClass()
+	const userCollection: any = yield call(
+		firestore.getCollection,
+		'users/' + email + '/user/'
 	)
+	userCollection.forEach((doc: any) => {
+		user.setID(doc.data().ID)
+		user.setProfile(doc.data().Profile)
+		user.setSetting(doc.data().Setting)
+	});
+	console.log("user2", user)
 	return user
 }
 
-export function* getItemsFirebase(userId: User["ID"]) {
-	const items: Items = yield call(
+export function* getItemsFirebase(email: Setting["Email"]) {
+	let items: ItemClass[] = []
+	const itemsCollection = yield call(
 		firestore.getCollection,
-		'users/' + userId + '/items/'
+		'users/' + email + '/items/'
 	)
+	itemsCollection.forEach((doc: any) => {
+		let item = new ItemClass()
+		item = doc.data()
+		items.push(item)
+	});
+	console.log("items2", items)
 
 	return items
 }

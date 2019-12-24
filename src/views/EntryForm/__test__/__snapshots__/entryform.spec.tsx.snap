@@ -1,0 +1,141 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`スクリーンショットテスト Snapshot of <BackButton /> 1`] = `
+<WithStyles(ForwardRef(IconButton))
+  onClick={[MockFunction]}
+>
+  <ArrowBackIcon />
+</WithStyles(ForwardRef(IconButton))>
+`;
+
+exports[`スクリーンショットテスト Snapshot of <BackButton /> 2`] = `
+<ContextConsumer>
+  <Component />
+</ContextConsumer>
+`;
+
+exports[`スクリーンショットテスト Snapshot of <Form /> 1`] = `
+<Formik
+  enableReinitialize={true}
+  initialValues={
+    Object {
+      "AfterComment": "good",
+      "BeforeComment": "good",
+      "CreatedAt": "2019-11-09T15:00:00.000Z",
+      "EndDate": "2019-11-09T15:00:00.000Z",
+      "EntryRate": "1.0",
+      "ID": "fb89d580-bb70-41e3-a3b8-3b743fb76ac6",
+      "Images": Array [],
+      "LossCutRate": "1.0",
+      "Lot": "2.0",
+      "MarketType": 0,
+      "Pair": "USD/JPY",
+      "Profit": "1.0",
+      "SettleRate": "1.0",
+      "StartDate": "2019-11-09T15:00:00.000Z",
+      "Tags": Array [],
+      "TradeType": 0,
+      "UpdatedAt": "2019-11-09T15:00:00.000Z",
+    }
+  }
+  onSubmit={[Function]}
+  validationSchema={
+    ObjectSchema {
+      "_blacklist": RefSet {
+        "list": Set {},
+        "refs": Map {},
+      },
+      "_conditions": Array [],
+      "_defaultDefault": [Function],
+      "_deps": Array [],
+      "_excludedEdges": Array [],
+      "_exclusive": Object {},
+      "_mutate": undefined,
+      "_nodes": Array [
+        "password",
+        "email",
+      ],
+      "_options": Object {
+        "abortEarly": true,
+        "recursive": true,
+      },
+      "_type": "object",
+      "_typeError": [Function],
+      "_whitelist": RefSet {
+        "list": Set {},
+        "refs": Map {},
+      },
+      "fields": Object {
+        "email": StringSchema {
+          "_blacklist": RefSet {
+            "list": Set {},
+            "refs": Map {},
+          },
+          "_conditions": Array [],
+          "_deps": Array [],
+          "_exclusive": Object {
+            "required": true,
+            "undefined": false,
+          },
+          "_mutate": undefined,
+          "_options": Object {
+            "abortEarly": true,
+            "recursive": true,
+          },
+          "_type": "string",
+          "_typeError": [Function],
+          "_whitelist": RefSet {
+            "list": Set {},
+            "refs": Map {},
+          },
+          "tests": Array [
+            [Function],
+            [Function],
+          ],
+          "transforms": Array [
+            [Function],
+          ],
+        },
+        "password": StringSchema {
+          "_blacklist": RefSet {
+            "list": Set {},
+            "refs": Map {},
+          },
+          "_conditions": Array [],
+          "_deps": Array [],
+          "_exclusive": Object {
+            "min": true,
+            "required": true,
+            "undefined": false,
+          },
+          "_mutate": undefined,
+          "_options": Object {
+            "abortEarly": true,
+            "recursive": true,
+          },
+          "_type": "string",
+          "_typeError": [Function],
+          "_whitelist": RefSet {
+            "list": Set {},
+            "refs": Map {},
+          },
+          "tests": Array [
+            [Function],
+            [Function],
+            [Function],
+          ],
+          "transforms": Array [
+            [Function],
+          ],
+        },
+      },
+      "tests": Array [],
+      "transforms": Array [
+        [Function],
+      ],
+    }
+  }
+>
+  <Component />
+</Formik>
+`;

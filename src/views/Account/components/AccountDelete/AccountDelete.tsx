@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import { makeStyles, Theme } from "@material-ui/core/styles";
@@ -12,41 +12,49 @@ import {
     Button,
     TextField
 } from "@material-ui/core";
+import { withRouter, match } from "react-router";
+import * as H from "history";
+import { useDispatch } from "react-redux";
+import { LoadingState } from "../../../../types";
+import { useLoading } from "../../../../common/hooks/useLoading";
+import { userActions } from "../../../../redux/saga/User/userSaga";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {}
-}));
+// Container
+interface ContainerProps {
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
+const AccountDeleteContainer: React.FC<ContainerProps> = props => {
+    const { history } = props;
+    const dispatch = useDispatch();
+    const handleDeleteAccount = () => {
+        dispatch(userActions.deleteAccountAction());
+    };
 
-export const AccountDelete: React.FC = props => {
-    //const { className, ...rest } = props;
-
-    const classes = useStyles();
-
-    const [values, setValues] = useState({
-        firstName: "Shen",
-        lastName: "Zhi",
-        email: "shen.zhi@devias.io",
-        phone: "",
-        state: "Alabama",
-        country: "USA"
-    });
-
-    const handleSubmit = () => {};
-
-    const states = [
-        {
-            value: "alabama",
-            label: "Alabama"
-        },
-        {
-            value: "new-york",
-            label: "New York"
-        },
-        {
-            value: "san-francisco",
-            label: "San Francisco"
+    const { isLoading, isFinishLoading } = useLoading(
+        LoadingState.DELETE_ACCOUNT
+    );
+    useEffect(() => {
+        console.log("delete account", isFinishLoading);
+        if (isFinishLoading) {
+            history.push("/home");
         }
-    ];
+    }, [isLoading]);
+
+    return <AccountDelete handleDeleteAccount={handleDeleteAccount} />;
+};
+
+export default withRouter(AccountDeleteContainer);
+
+//Presentational
+
+interface Props {
+    handleDeleteAccount: () => void;
+}
+
+export const AccountDelete: React.FC<Props> = props => {
+    const { handleDeleteAccount } = props;
 
     return (
         <Card
@@ -63,7 +71,7 @@ export const AccountDelete: React.FC = props => {
                     <Button
                         color="secondary"
                         variant="contained"
-                        onClick={() => handleSubmit()}
+                        onClick={() => handleDeleteAccount()}
                     >
                         Delete Account
                     </Button>
@@ -73,4 +81,6 @@ export const AccountDelete: React.FC = props => {
     );
 };
 
-//export default AccountDetails;
+const useStyles = makeStyles((theme: Theme) => ({
+    root: {}
+}));
