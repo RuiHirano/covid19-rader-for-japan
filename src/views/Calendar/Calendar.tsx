@@ -57,7 +57,9 @@ const CalendarView: React.FC<Props> = props => {
         let content: any = [];
         items.forEach((item: ItemClass, index: number) => {
             if (moment(item.StartDate).isSame(moment(date), "days")) {
-                content.push(<Typography variant={"h6"}>{"asdf"}</Typography>);
+                content.push(
+                    <Typography variant={"h6"}>{item.Pair}</Typography>
+                );
             }
         });
 

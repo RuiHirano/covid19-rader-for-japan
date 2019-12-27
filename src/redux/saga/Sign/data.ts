@@ -8,6 +8,7 @@ import { UserClass } from '../../../types/user';
 export const defaultItems = () => {
 	let items: ItemClass[] = []
 	let item1 = new ItemClass()
+	item1.Pair = "USD/JPY"
 	item1.Profit = 4500
 	item1.EntryRate = 112.342
 	item1.LossCutRate = 112.332
@@ -15,6 +16,7 @@ export const defaultItems = () => {
 	item1.Lot = 0.35
 
 	let item2 = new ItemClass()
+	item2.Pair = "EUR/USD"
 	item2.Profit = 3500
 	item2.EntryRate = 112.342
 	item2.LossCutRate = 112.332
@@ -22,6 +24,7 @@ export const defaultItems = () => {
 	item2.Lot = 0.45
 
 	let item3 = new ItemClass()
+	item3.Pair = "GBP/USD"
 	item3.Profit = -2500
 	item3.EntryRate = 112.342
 	item3.LossCutRate = 112.352

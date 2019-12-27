@@ -30,7 +30,7 @@ const EntryFormContainer: React.FC<ContainerProps> = props => {
         console.log("debug value", values);
         const itemClass: ItemClass = new ItemClass();
         const item: Item = {
-            ID: moment().toISOString() + uuid(),
+            ID: values.ID,
             MarketType: values.MarketType,
             StartDate: values.StartDate,
             EndDate: values.EndDate,

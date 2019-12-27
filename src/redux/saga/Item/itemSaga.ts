@@ -24,6 +24,7 @@ import { Item, Loading, LoadingState, Error, User } from '../../../types/types'
 import { ItemClass } from '../../../types/item';
 
 import moment from 'moment'
+import { UserClass } from '../../../types/user';
 
 const actionCreator = actionCreatorFactory();
 
@@ -72,10 +73,9 @@ function* handleCreateItem(action: ReturnType<typeof itemActions.createItemActio
 			LoadingState: LoadingState.CREATE_ITEM
 		}
 		yield updateLoadingStore(loading)
-		console.log("debug1", item)
 
 		// userId itemId
-		const user: User = yield select(getUser)
+		const user: UserClass = yield select(getUser)
 		//const userId = user.ID
 		const itemId = moment().toISOString() + uuid()
 		item.ID = itemId
@@ -86,19 +86,14 @@ function* handleCreateItem(action: ReturnType<typeof itemActions.createItemActio
 		// imageを更新
 		//item.Images = images
 
-		console.log("debug2")
 
 		// Itemをfirebaseへ保存
 		yield updateItemFirestore(item, user)
-
-		console.log("debug3")
 
 		// itemをStoreへ保存
 		const items = yield select(getItems)
 		items.push(item)
 		yield updateItemsStore(items)
-
-		console.log("debug4")
 
 		// loading終了
 		loading.IsLoading = false
@@ -135,9 +130,8 @@ function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemActio
 		}
 		yield updateLoadingStore(loading)
 		// modified item
-		const user: User = yield select(getUser)
+		const user: UserClass = yield select(getUser)
 		//const userId = user.ID
-		const itemId = item.ID
 
 		// 画像をfirebaseへupload
 		//const { imagePaths, imageSizes } = yield uploadImageStorage(item.Images, userId, itemId)
@@ -151,17 +145,21 @@ function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemActio
 			})
 		});
 		item.Images = images*/
+		console.log("debug item", item)
 
 		// itemをFirestoreへupload
 		yield updateItemFirestore(item, user)
 
 		// storeへitemを更新
-		const items = yield select(getItems)
+		let items = yield select(getItems)
 		items.map((value: Item, index: number) => {
-			if (value.ID === itemId) {
+			if (value.ID === item.ID) {
 				items.splice(index, 1, item)
 			}
 		})
+		console.log("debug items", items)
+
+		//yield updateItemFirestore(items, user)
 		yield updateItemsStore(items)
 
 		// loading終了
@@ -184,6 +182,7 @@ function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemActio
 			LoadingState: LoadingState.UPDATE_ITEM
 		}
 		yield updateLoadingStore(loading)
+		console.log('Update Item error... \n', message)
 
 		console.log('Update Item error... \n', code)
 	}
@@ -200,7 +199,7 @@ function* handleDeleteItem(action: ReturnType<typeof itemActions.deleteItemActio
 		}
 		yield updateLoadingStore(loading)
 		// delete item from firebase
-		const user: User = yield select(getUser)
+		const user: UserClass = yield select(getUser)
 		const userId = user.ID
 		const itemId = item.ID
 		const fileDir = '/users/' + userId + '/items/' + itemId + '/'

@@ -50,11 +50,12 @@ export function* updateUserStore(user: UserClass) {
 }
 
 // Firestore
-export function* updateUserFirestore(userId: User["ID"], user: UserClass) {
+export function* updateUserFirestore(user: User) {
+	const email = user.Setting.Email
 	yield call(
 		firestore.updateDocument,
-		'users/' + userId + '/user/' + userId,
-		user.getUser()
+		'users/' + email + '/user/' + email,
+		user
 	)
 }
 
@@ -132,7 +133,7 @@ export function* uploadImageStorage(images: Item["Images"], userID: User["ID"], 
 export function* updateItemFirestore(item: ItemClass, user: User) {
 	const email = user.Setting.Email
 	const fileDir: string = '/users/' + email + '/items/' + item.ID
-	yield call(firestore.setDocument, fileDir, item.getItem(), { merge: true })
+	yield call(firestore.setDocument, fileDir, item, { merge: true })
 }
 
 export function* deleteItemFirestore(fileDir: string) {

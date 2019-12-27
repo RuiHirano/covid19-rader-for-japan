@@ -58,6 +58,7 @@ const Form: React.FC<Props> = props => {
     const classes = useStyles();
 
     const initialValues = {
+		ID: item.ID,
         MarketType: item.MarketType,
         StartDate: item.StartDate,
         EndDate: item.EndDate,

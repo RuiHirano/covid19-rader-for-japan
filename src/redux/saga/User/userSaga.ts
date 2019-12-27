@@ -570,7 +570,7 @@ function* handleUpdateEmail(action: ReturnType<typeof userActions.updateEmailAct
 		user.Setting.Email = email
 
 		// regist userdata to firebase
-		yield updateUserFirestore(user.ID, user)
+		yield updateUserFirestore(user)
 
 		yield updateUserStore(user)
 
@@ -677,45 +677,49 @@ function* handleDeleteAccount(action: ReturnType<typeof userActions.deleteAccoun
 	}
 }
 
+// Profileの更新
 function* handleUpdateProfile(action: ReturnType<typeof userActions.updateProfileAction>) {
 	try {
 		const { profile } = action.payload
 
-		// loading true
+		// loading開始
 		let loading = <Loading>{
 			IsLoading: true,
 			LoadingState: LoadingState.UPDATE_PROFILE
 		}
 		yield updateLoadingStore(loading)
 
-		// userName to userData
+		// user情報取得
 		var user: UserClass = yield select(getUser)
 		user.Profile = profile
 
-		// regist userdata to firebase
-		// regist userdata to firebase
-		yield updateUserFirestore(user.ID, user)
+		// firestoreに更新
+		yield updateUserFirestore(user.getUser())
 
+		// storeに更新
 		yield updateUserStore(user)
 
-		// loading false
+		// loading　終了
 		loading.IsLoading = false
 		yield updateLoadingStore(loading)
+
 	} catch ({ code, message }) {
 		// error
-		let loading = <Loading>{
-			IsLoading: true,
-			LoadingState: LoadingState.UPDATE_PROFILE
-		}
-		yield updateLoadingStore(loading)
-
 		const errorMessage = "checkErrorCode(code)"
 		let error = <Error>{
 			IsError: true,
 			Status: errorMessage,
 		}
 		yield updateErrorStore(error)
-		console.log('update username error... \n', code, message)
+
+		// ローディング終了
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_PROFILE
+		}
+		yield updateLoadingStore(loading)
+
+		console.log('update profile error... \n', code, message)
 	}
 }
 
@@ -736,7 +740,7 @@ function* handleUpdateSetting(action: ReturnType<typeof userActions.updateSettin
 
 		// regist userdata to firebase
 		// regist userdata to firebase
-		yield updateUserFirestore(user.ID, user)
+		yield updateUserFirestore(user)
 
 		yield updateUserStore(user)
 
@@ -779,7 +783,7 @@ function* handleUpdateContent(action: ReturnType<typeof userActions.updateConten
 
 		// regist userdata to firebase
 		// regist userdata to firebase
-		yield updateUserFirestore(user.ID, user)
+		yield updateUserFirestore(user)
 
 		yield updateUserStore(user)
 
@@ -824,7 +828,7 @@ function* handleUpdateNotification(action: ReturnType<typeof userActions.updateN
 		}
 
 		// regist userdata to firebase
-		yield updateUserFirestore(user.ID, user)
+		yield updateUserFirestore(user)
 
 		yield updateUserStore(user)
 
@@ -870,7 +874,7 @@ function* handleUpdateLanguage(action: ReturnType<typeof userActions.updateLangu
 		}
 
 		// regist userdata to firebase
-		yield updateUserFirestore(user.ID, user)
+		yield updateUserFirestore(user)
 
 		yield updateUserStore(user)
 
@@ -914,7 +918,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
 
 		// regist userdata to firebase
 		// regist userdata to firebase
-		yield updateUserFirestore(user.ID, user)
+		yield updateUserFirestore(user)
 
 		yield updateUserStore(user)
 
