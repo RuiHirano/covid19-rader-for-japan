@@ -14,7 +14,9 @@ import {
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 
-import { data, options } from "./chart";
+import { options } from "./chart";
+import { ChartData } from "chart.js";
+import { TransitionPoint } from "../../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -27,16 +29,40 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const TotalAssets: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    totalAssetsData: TransitionPoint[];
+}
+
+const createData = (totalAssetsData: TransitionPoint[]) => {
+    const labels: string[] = [];
+    const values: number[] = [];
+    totalAssetsData.forEach((value, index) => {
+        labels.push((index + 1).toString());
+        values.push(value.Value);
+    });
+    const data: ChartData = {
+        labels: labels,
+        datasets: [
+            {
+                label: "this",
+                backgroundColor: "#3f51b5",
+                data: values
+            }
+        ]
+    };
+    return data;
+};
+
+const TotalAssets: React.FC<Props> = props => {
+    const { totalAssetsData } = props;
+    //console.log("data: ", data);
+
+    const data = createData(totalAssetsData);
 
     const classes = useStyles();
 
     return (
-        <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
-        >
+        <Card>
             <CardHeader
                 action={
                     <Button size="small" variant="text">

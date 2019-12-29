@@ -1,8 +1,5 @@
 import React, { useState } from "react";
-import clsx from "clsx";
-import moment from "moment";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import PropTypes from "prop-types";
 import { makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import {
     Card,
@@ -15,15 +12,10 @@ import {
     TableBody,
     TableCell,
     TableHead,
-    TableRow,
-    Tooltip,
-    TableSortLabel,
-    Checkbox
+    TableRow
 } from "@material-ui/core";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
-
-import mockData from "./data2";
-import { StatusBullet } from "../../../../components";
+import { Items, Item } from "../../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -45,29 +37,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-interface item {
-    id: string;
-    pair: string;
-    class: string;
-    lot: string;
-    profit: string;
-    startDate: number;
-    endDate: number;
-    beforeComment: string;
-    afterComment: string;
-    images: string[];
-}
-
 interface Props {
-    items: item[];
+    items: Items;
 }
 
-const LatestOrders: React.FC = props => {
-    //const { className, ...rest } = props;
+const LatestOrders: React.FC<Props> = props => {
+    const { items } = props;
 
     const classes = useStyles();
 
-    const [items] = useState(mockData);
+    //const [items] = useState(mockData);
     //const { items } = props;
 
     return (
@@ -101,24 +80,24 @@ const LatestOrders: React.FC = props => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {items.map(item => (
+                                {items.items.map((item: Item) => (
                                     <TableRow
                                         //className={classes.tableRow}
                                         hover
-                                        key={item.id}
+                                        key={item.ID}
                                     >
-                                        <TableCell>{item.pair}</TableCell>
-                                        <TableCell>{item.class}</TableCell>
-                                        <TableCell>{item.lot}</TableCell>
-                                        <TableCell>{item.profit}</TableCell>
-                                        <TableCell>{item.startDate}</TableCell>
-                                        <TableCell>{item.endDate}</TableCell>
+                                        <TableCell>{item.Pair}</TableCell>
+                                        <TableCell>{item.TradeType}</TableCell>
+                                        <TableCell>{item.Lot}</TableCell>
+                                        <TableCell>{item.Profit}</TableCell>
+                                        <TableCell>{item.StartDate}</TableCell>
+                                        <TableCell>{item.EndDate}</TableCell>
                                         <TableCell>
-                                            {item.beforeComment}
+                                            {item.BeforeComment}
                                         </TableCell>
 
                                         <TableCell>
-                                            {item.afterComment}
+                                            {item.AfterComment}
                                         </TableCell>
                                     </TableRow>
                                 ))}

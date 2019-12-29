@@ -12,6 +12,7 @@ import ProfitRatio from "./ProfitRatio";
 import ExpectedValue from "./ExpectedValue";
 import BankruptRate from "./BankruptRate";
 import { ReportStats } from "../../ReportStats";
+import { StatsResult } from "../../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -50,11 +51,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    stats: ReportStats;
+    statsValues: StatsResult;
 }
 
 const Statistics: React.FC<Props> = props => {
-    const { stats } = props;
+    const { statsValues } = props;
+    console.log("statistics: ", statsValues);
     //const { className, ...rest } = props;
 
     const classes = useStyles();
@@ -62,22 +64,26 @@ const Statistics: React.FC<Props> = props => {
     return (
         <Grid container spacing={4}>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-                <TotalAssets />
+                <TotalAssets totalAssets={statsValues.Statistics.TotalAssets} />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-                <TotalProfit />
+                <TotalProfit totalProfit={statsValues.Statistics.TotalProfit} />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-                <WinRate />
+                <WinRate winRate={statsValues.Statistics.WinRate} />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-                <ProfitRatio />
+                <ProfitRatio profitRatio={statsValues.Statistics.ProfitRatio} />
             </Grid>
             <Grid item lg={8} md={12} xl={9} xs={12}>
-                <ExpectedValue />
+                <ExpectedValue
+                    expectedValue={statsValues.Statistics.ProfitAve}
+                />
             </Grid>
             <Grid item lg={4} md={6} xl={3} xs={12}>
-                <BankruptRate />
+                <BankruptRate
+                    bankruptRate={statsValues.Statistics.ProfitBefore}
+                />
             </Grid>
         </Grid>
     );

@@ -17,7 +17,7 @@ import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router";
 import { userActions } from "../../../../redux/saga/User/userSaga";
-import { LoadingState, Profile } from "../../../../types";
+import { LoadingState, Profile, User } from "../../../../types";
 import { useLoading } from "../../../../common/hooks/useLoading";
 import { AppState } from "../../../../redux/module/rootModule";
 
@@ -26,22 +26,22 @@ interface ContainerProps {}
 const AccountDetailContainer: React.FC<ContainerProps> = props => {
     const {} = props;
     const dispatch = useDispatch();
-    let profile = useSelector((state: AppState) => state.User.Profile);
+    //let profile = useSelector((state: AppState) => state.User.Profile);
     const handleUpdateProfile = (values: FormikValues) => {
-        profile.Name = values.name;
-        profile.Message = values.status;
-
-        dispatch(userActions.updateProfileAction({ profile: profile }));
+        const profile = values.profile;
+        user.Setting.Plan = profile;
+        dispatch(userActions.updateUserAction({ user: user }));
     };
 
-    const { isLoading, isFinishLoading } = useLoading(
-        LoadingState.UPDATE_PROFILE
-    );
+    const { isLoading, isFinishLoading } = useLoading(LoadingState.UPDATE_USER);
     useEffect(() => {
         if (isFinishLoading) {
             //history.push("/dashboard");
         }
     }, [isLoading]);
+
+    const user: User = useSelector((state: AppState) => state.User);
+    let profile: Profile = user.Profile;
 
     return (
         <AccountDetail
@@ -60,15 +60,14 @@ interface Props {
 
 export const AccountDetail: React.FC<Props> = props => {
     const { handleUpdateProfile, profile } = props;
-    console.log("profile: ", profile.Name);
 
     return (
         <Card>
             <Formik
-                initialValues={{ status: profile.Message, name: profile.Name }}
+                initialValues={{ profile: profile }}
                 onSubmit={values => handleUpdateProfile(values)}
                 validationSchema={Yup.object().shape({
-                    name: Yup.string().required("i18n.t('su_required_name')")
+                    //name: Yup.string().required("i18n.t('su_required_name')")
                 })}
             >
                 {({
@@ -92,39 +91,55 @@ export const AccountDetail: React.FC<Props> = props => {
                             <Grid container spacing={3}>
                                 <Grid item md={12} xs={12}>
                                     <TextField
-                                        error={
+                                        /*error={
                                             errors.name && touched.name
                                                 ? true
                                                 : false
-                                        }
+                                        }*/
                                         fullWidth
-                                        helperText={
-                                            errors.name && touched.name
-                                                ? errors.name
+                                        /*helperText={
+                                            errors.profile.Name && touched.profile.Name
+                                                ? errors.profile.Name
                                                 : null
-                                        }
+                                        }*/
                                         label="Name"
                                         name="Name"
-                                        onChange={handleChange("name")}
+                                        onChange={event => {
+                                            values.profile.Name =
+                                                event.target.value;
+                                            setFieldValue(
+                                                "profile",
+                                                values.profile
+                                            );
+                                        }}
                                         type="text"
-                                        value={values.name}
+                                        value={values.profile.Name}
                                         variant="outlined"
-                                        onBlur={handleBlur("name")}
+                                        onBlur={handleBlur(values.profile.Name)}
                                     />
                                 </Grid>
                                 <Grid item md={12} xs={12}>
                                     <TextField
                                         fullWidth
-                                        helperText={
+                                        /*helperText={
                                             "please specify the Status Message"
-                                        }
+                                        }*/
                                         label="Status"
                                         name="Status"
-                                        onChange={handleChange("status")}
+                                        onChange={event => {
+                                            values.profile.Message =
+                                                event.target.value;
+                                            setFieldValue(
+                                                "profile",
+                                                values.profile
+                                            );
+                                        }}
                                         type="text"
-                                        value={values.status}
+                                        value={values.profile.Message}
                                         variant="outlined"
-                                        onBlur={handleBlur("status")}
+                                        onBlur={handleBlur(
+                                            values.profile.Message
+                                        )}
                                     />
                                 </Grid>
                             </Grid>

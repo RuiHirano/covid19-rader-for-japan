@@ -1,10 +1,8 @@
-import { MarketType, TradeType, Image, Item, PeriodType } from "../../types/types"
+import { MarketType, TradeType, Image, Item, PeriodType, Items } from "../../types"
 import uuid from "uuid"
 import { Moment } from "moment"
-import { ItemsController } from "../../types/itemsController"
-import { ItemClass } from "../../types/item"
 
-export class ReportStats extends ItemsController {
+export class ReportStats {
 	InitialInvethisment: number
 	AllowableLossRate: number
 	BankruptcyReductionRate: number
@@ -23,8 +21,7 @@ export class ReportStats extends ItemsController {
 	ProfitAve: number
 	LossAve: number
 
-	constructor(items: ItemClass[], periodType: PeriodType, period: Moment, initialInvethisment: number, allowableLossRate: number, bankruptcyReductionRate: number) {
-		super(items, periodType, period)
+	constructor(items: Items, periodType: PeriodType, period: Moment, initialInvethisment: number, allowableLossRate: number, bankruptcyReductionRate: number) {
 		this.InitialInvethisment = initialInvethisment
 		this.AllowableLossRate = allowableLossRate
 		this.BankruptcyReductionRate = bankruptcyReductionRate
@@ -47,63 +44,7 @@ export class ReportStats extends ItemsController {
 	}
 
 	calcStatistics() {
-		this.PeriodItems.forEach((item) => {
-			if (item.TradeType === TradeType.DEPOSIT || item.TradeType === TradeType.WITHDRAWAL) {
-				this.NumDepWith += 1
-				this.AmountDepWith += item.Profit
-			} else if (item.TradeType === TradeType.BUY || item.TradeType === TradeType.SELL) {
-				if (item.Profit < 0) {
-					this.TotalLoss += item.Profit
-					this.NumLose += 1
-				} else if (item.Profit >= 0) {
-					this.TotalProfit += item.Profit
-					this.NumWin += 1
-				}
-			}
-		})
 
-		this.BeforePeriodItems.forEach((item) => {
-			if (item.TradeType === TradeType.BUY || item.TradeType === TradeType.SELL) {
-				this.ProfitBefore += item.Profit
-			}
-		})
-
-		// num trade
-		this.NumTrade = this.NumWin + this.NumLose
-
-		// total assets
-		this.TotalAssets =
-			this.TotalProfit +
-			this.TotalLoss +
-			this.InitialInvethisment +
-			this.ProfitBefore
-
-		// total
-		this.TotalProfitAndLoss = this.TotalProfit + this.TotalLoss
-
-		// win rate
-		if (this.NumWin + this.NumLose !== 0) {
-			this.WinRate =
-				+((this.NumWin * 100) / (this.NumWin + this.NumLose))
-					.toFixed(1)
-		}
-
-		// profit ave, lose ave
-		if (this.NumWin !== 0) {
-			this.ProfitAve = this.TotalProfit / this.NumWin
-		}
-		if (this.NumLose !== 0) {
-			this.LossAve = this.TotalLoss / this.NumLose
-		}
-
-		// profit ratio
-		if (this.LossAve === 0) {
-			this.ProfitRatio = Infinity
-		} else {
-			this.ProfitRatio = -((this.ProfitAve * 100) / this.LossAve).toFixed(
-				1
-			)
-		}
 	}
 
 }

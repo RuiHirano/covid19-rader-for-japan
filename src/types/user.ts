@@ -1,151 +1,102 @@
-import { Profile, Setting, User, Sex, Language, Plan, Device, BankAccount, Content, Notification } from "./types"
 import uuid from "uuid"
 
-export class ProfileClass {
-	Name: string
-	Age: number
-	Sex: Sex
-	Message: string
+export interface Notification {
+	Email: boolean,
+	Push: boolean,
+}
+
+export interface Profile {
+	Name: string,
+	Age: number,
+	Sex: Sex,
+	Message: string,
 	Thumbnail: string
-	constructor() {
-		this.Name = ""
-		this.Age = 0
-		this.Message = ""
-		this.Sex = Sex.MALE
-		this.Thumbnail = ""
-	}
-
-	getProfile() {
-		return <Profile>{
-			Name: this.Name,
-			Age: this.Age,
-			Sex: this.Sex,
-			Message: this.Message,
-			Thumbnail: this.Thumbnail,
-		}
-	}
 }
 
-export class BankAccountClass {
-	AccountNumber: string
-	constructor() {
-		this.AccountNumber = ""
-	}
-
-	getBankAccount() {
-		return <BankAccount>{
-			AccountNumber: this.AccountNumber,
-		}
-	}
+export interface BankAccount {
+	AccountNumber: string,
 }
 
-export class NotificationClass {
-	Email: boolean
-	Push: boolean
-	constructor() {
-		this.Email = true
-		this.Push = true
-	}
-
-	getNotification() {
-		return <Notification>{
-			Email: this.Email,
-			Push: this.Push,
-		}
-	}
+export interface Setting {
+	Email: string,
+	BankAccount: BankAccount,
+	Language: Language,
+	Notification: Notification,
+	Content: Content,
+	Plan: Plan,
+	Device: Device,
 }
 
-export class ContentClass {
-	InitialInvestment: number
-	AllowableLossRate: number
-	BankruptcyReductionRate: number
-	Currencies: {
-		Pair: string,
-		Color: string,
-	}[]
-	Stocks: {
-		Pair: string,
-		Color: string,
-	}[]
-	SearchTags: string[]
-
-	constructor() {
-		this.InitialInvestment = 0
-		this.AllowableLossRate = 0
-		this.BankruptcyReductionRate = 0
-		this.Currencies = []
-		this.Stocks = []
-		this.SearchTags = []
-	}
-
-	getContent() {
-		return <Content>{
-			InitialInvestment: this.InitialInvestment,
-			AllowableLossRate: this.AllowableLossRate,
-			BankruptcyReductionRate: this.BankruptcyReductionRate,
-			Currencies: this.Currencies,
-			Stocks: this.Stocks,
-			SearchTags: this.SearchTags,
-		}
-	}
+export interface PairValues {
+	Pair: string,
+	Color: string,
 }
 
-export class SettingClass {
-	Email: string
-	BankAccount: BankAccount
-	Language: Language
-	Notification: Notification
-	Content: Content
-	Plan: Plan
-	Device: Device
-
-	constructor() {
-		this.Email = ""
-		this.BankAccount = new BankAccountClass().getBankAccount()
-		this.Language = Language.ja
-		this.Notification = new NotificationClass().getNotification()
-		this.Content = new ContentClass().getContent()
-		this.Plan = Plan.FREE
-		this.Device = Device.PC
-	}
-
-	getSetting() {
-		return <Setting>{
-			Email: this.Email,
-			BankAccount: this.BankAccount,
-			Language: this.Language,
-			Notification: this.Notification,
-			Content: this.Content,
-			Plan: this.Plan,
-			Device: this.Device,
-		}
-	}
+export interface Content {
+	InitialInvestment: number,
+	AllowableLossRate: number,
+	BankruptcyReductionRate: number,
+	Currencies: PairValues[],
+	Stocks: PairValues[],
+	SearchTags: string[],
 }
 
-export class UserClass {
+export enum Sex {
+	MALE,
+	FEMALE,
+}
+
+export enum Device {
+	PC,
+	SMART_PHONE,
+}
+
+export enum Plan {
+	FREE,
+	STANDARD,
+	PREMIUM,
+}
+
+export enum Language {
+	ja,
+	en,
+}
+
+export class User {
 	ID: string
 	Profile: Profile
 	Setting: Setting
 
 	constructor() {
 		this.ID = uuid()
-		this.Profile = new ProfileClass().getProfile()
-		this.Setting = new SettingClass().getSetting()
-	}
-
-	getUser(): User {
-		const user: User = {
-			ID: this.ID,
-			Profile: this.Profile,
-			Setting: this.Setting,
+		this.Profile = <Profile>{
+			Name: "",
+			Age: 0,
+			Message: "",
+			Sex: Sex.MALE,
+			Thumbnail: "",
 		}
-		return user
-	}
-
-	setUser(user: User) {
-		this.ID = user.ID
-		this.Profile = user.Profile
-		this.Setting = user.Setting
+		this.Setting = <Setting>{
+			Email: "",
+			BankAccount: <BankAccount>{
+				AccountNumber: "",
+			},
+			Language: Language.ja,
+			Notification: <Notification>{
+				Email: true,
+				Push: true,
+			},
+			Content: <Content>{
+				InitialInvestment: 0,
+				AllowableLossRate: 0,
+				BankruptcyReductionRate: 0,
+				Currencies: [],
+				Stocks: [],
+				SearchTags: [],
+			},
+			Plan: Plan.FREE,
+			Device: Device.PC,
+		}
 	}
 
 	setID(id: User["ID"]) {

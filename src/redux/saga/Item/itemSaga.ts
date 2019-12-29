@@ -18,22 +18,20 @@ import {
 	deleteImageStorage,
 	deleteItemFirestore,
 } from '../utilSaga'
-//import { checkErrorCode } from '../../../app/firebase/errors'
 import actionCreatorFactory from 'typescript-fsa';
-import { Item, Loading, LoadingState, Error, User } from '../../../types/types'
-import { ItemClass } from '../../../types/item';
+import { Item, Loading, LoadingState, Error, User, Items } from '../../../types'
 
 import moment from 'moment'
-import { UserClass } from '../../../types/user';
+import { Iterator } from '../../../types/iterator';
 
 const actionCreator = actionCreatorFactory();
 
 export interface CreateItemState {
-	item: ItemClass,
+	item: Item,
 }
 
 export interface UpdateItemState {
-	item: ItemClass,
+	item: Item,
 }
 
 export interface DeleteItemState {
@@ -67,6 +65,12 @@ function* handleCreateItem(action: ReturnType<typeof itemActions.createItemActio
 	try {
 		const { item } = action.payload
 
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// loading開始
 		let loading = <Loading>{
 			IsLoading: true,
@@ -75,7 +79,7 @@ function* handleCreateItem(action: ReturnType<typeof itemActions.createItemActio
 		yield updateLoadingStore(loading)
 
 		// userId itemId
-		const user: UserClass = yield select(getUser)
+		const user: User = yield select(getUser)
 		//const userId = user.ID
 		const itemId = moment().toISOString() + uuid()
 		item.ID = itemId
@@ -91,8 +95,8 @@ function* handleCreateItem(action: ReturnType<typeof itemActions.createItemActio
 		yield updateItemFirestore(item, user)
 
 		// itemをStoreへ保存
-		const items = yield select(getItems)
-		items.push(item)
+		const items: Items = yield select(getItems)
+		items.appendItem(item)
 		yield updateItemsStore(items)
 
 		// loading終了
@@ -115,13 +119,19 @@ function* handleCreateItem(action: ReturnType<typeof itemActions.createItemActio
 		}
 		yield updateLoadingStore(loading)
 
-		console.log('Create Item error... \n', code)
+		console.log('Create Item error... \n', code, message)
 	}
 }
 
 function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemAction>) {
 	try {
 		const { item } = action.payload
+
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
 
 		// loading true
 		let loading = <Loading>{
@@ -130,7 +140,7 @@ function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemActio
 		}
 		yield updateLoadingStore(loading)
 		// modified item
-		const user: UserClass = yield select(getUser)
+		const user: User = yield select(getUser)
 		//const userId = user.ID
 
 		// 画像をfirebaseへupload
@@ -151,10 +161,10 @@ function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemActio
 		yield updateItemFirestore(item, user)
 
 		// storeへitemを更新
-		let items = yield select(getItems)
-		items.map((value: Item, index: number) => {
+		let items: Items = yield select(getItems)
+		items.items.map((value: Item, index: number) => {
 			if (value.ID === item.ID) {
-				items.splice(index, 1, item)
+				items.updateItem(index, item)
 			}
 		})
 		console.log("debug items", items)
@@ -182,15 +192,20 @@ function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemActio
 			LoadingState: LoadingState.UPDATE_ITEM
 		}
 		yield updateLoadingStore(loading)
-		console.log('Update Item error... \n', message)
 
-		console.log('Update Item error... \n', code)
+		console.log('Update Item error... \n', code, message)
 	}
 }
 
 function* handleDeleteItem(action: ReturnType<typeof itemActions.deleteItemAction>) {
 	try {
 		const { item } = action.payload
+
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
 
 		// loading true
 		let loading = <Loading>{
@@ -199,21 +214,19 @@ function* handleDeleteItem(action: ReturnType<typeof itemActions.deleteItemActio
 		}
 		yield updateLoadingStore(loading)
 		// delete item from firebase
-		const user: UserClass = yield select(getUser)
-		const userId = user.ID
+		const user: User = yield select(getUser)
 		const itemId = item.ID
-		const fileDir = '/users/' + userId + '/items/' + itemId + '/'
-		yield deleteItemFirestore(fileDir)
+		yield deleteItemFirestore(item, user)
 
 		// delete image from firestorage
-		const images = item.Images
-		yield deleteImageStorage(images, fileDir)
+		//const images = item.Images
+		//yield deleteImageStorage(images, fileDir)
 
 		//update items to store
-		const items = yield select(getItems)
-		items.map((value: Item, index: number) => {
+		const items: Items = yield select(getItems)
+		items.items.map((value: Item, index: number) => {
 			if (value.ID === itemId) {
-				items.splice(index, 1)
+				items.deleteItem(index)
 			}
 		})
 		yield updateItemsStore(items)
@@ -221,6 +234,7 @@ function* handleDeleteItem(action: ReturnType<typeof itemActions.deleteItemActio
 		// loading false
 		loading.IsLoading = false
 		yield updateLoadingStore(loading)
+
 	} catch ({ code, message }) {
 		// error
 		let loading = <Loading>{
@@ -235,7 +249,7 @@ function* handleDeleteItem(action: ReturnType<typeof itemActions.deleteItemActio
 			Status: errorMessage,
 		}
 		yield updateErrorStore(error)
-		console.log('Delete Item error... \n', code)
+		console.log('Delete Item error... \n', code, message)
 	}
 }
 

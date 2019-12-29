@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import {
-    Content as ContentTypes,
-    LoadingState,
-    User
-} from "../../../../types/types";
+import { Content as ContentTypes, LoadingState, User } from "../../../../types";
 import {
     Card,
     CardHeader,
@@ -33,11 +29,10 @@ interface ContainerProps {
 const ContentContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
-    const content = useSelector(
-        (state: AppState) => state.User.Setting.Content
-    );
     const handleUpdateContent = (values: FormikValues) => {
-        dispatch(userActions.updateContentAction({ content: content }));
+        const content = values.content;
+        user.Setting.Content = content;
+        dispatch(userActions.updateUserAction({ user: user }));
     };
 
     const { isLoading, isFinishLoading } = useLoading(
@@ -45,9 +40,12 @@ const ContentContainer: React.FC<ContainerProps> = props => {
     );
     useEffect(() => {
         if (isFinishLoading) {
-            history.push("/dashboard");
+            //history.push("/dashboard");
         }
     }, [isLoading]);
+
+    const user: User = useSelector((state: AppState) => state.User);
+    const content: ContentTypes = user.Setting.Content;
 
     return (
         <Content handleUpdateContent={handleUpdateContent} content={content} />
@@ -64,13 +62,7 @@ interface Props {
 }
 
 export const Content: React.FC<Props> = props => {
-    const {
-        InitialInvestment: initialInvestment,
-        AllowableLossRate: allowableLossRate,
-        BankruptcyReductionRate: bankruptcyReductionRate,
-        Currencies: currencies,
-        Stocks: stocks
-    } = props.content;
+    const { handleUpdateContent, content } = props;
     const classes = useStyles();
 
     const states = [
@@ -88,6 +80,14 @@ export const Content: React.FC<Props> = props => {
         }
     ];
 
+    const validationSchema = {
+        initialInvestment: Yup.number().required("i18n.t('su_required_name')"),
+        allowableLossRate: Yup.number().required("i18n.t('su_required_name')"),
+        bankruptReductionRate: Yup.number().required(
+            "i18n.t('su_required_name')"
+        )
+    };
+
     return (
         <Card
         //{...rest}
@@ -99,18 +99,8 @@ export const Content: React.FC<Props> = props => {
                     allowableLossRate: 0,
                     bankruptReductionRate: 0
                 }}
-                onSubmit={values => console.log("debug6 ", values)}
-                validationSchema={Yup.object().shape({
-                    initialInvestment: Yup.number().required(
-                        "i18n.t('su_required_name')"
-                    ),
-                    allowableLossRate: Yup.number().required(
-                        "i18n.t('su_required_name')"
-                    ),
-                    bankruptReductionRate: Yup.number().required(
-                        "i18n.t('su_required_name')"
-                    )
-                })}
+                onSubmit={values => handleUpdateContent(values)}
+                validationSchema={Yup.object().shape(validationSchema)}
             >
                 {({
                     handleChange,

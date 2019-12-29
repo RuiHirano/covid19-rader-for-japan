@@ -4,9 +4,7 @@ import { ItemActions } from '../module/Item/itemModule'
 import { UserActions } from '../module/User/userModule'
 import firebase from './../../app/firebase'
 import ReduxSagaFirebase from 'redux-saga-firebase'
-import { Item, Loading, State, User, Error, Setting, Image } from '../../types/types'
-import { UserClass } from '../../types/user'
-import { ItemClass } from '../../types/item'
+import { Item, Loading, State, User, Error, Setting, Image, Items } from '../../types'
 
 const rsf = new ReduxSagaFirebase(firebase)
 const { firestore, auth, storage } = rsf
@@ -34,7 +32,7 @@ export function* updateAppStateStore(appState: State) {
 }
 
 // Item Module
-export function* updateItemsStore(items: ItemClass[]) {
+export function* updateItemsStore(items: Items) {
 	yield put({
 		type: ItemActions.UPDATE_ITEMS_STORE,
 		payload: items,
@@ -42,7 +40,7 @@ export function* updateItemsStore(items: ItemClass[]) {
 }
 
 // User Module
-export function* updateUserStore(user: UserClass) {
+export function* updateUserStore(user: User) {
 	yield put({
 		type: UserActions.UPDATE_USER_STORE,
 		payload: user,
@@ -51,11 +49,11 @@ export function* updateUserStore(user: UserClass) {
 
 // Firestore
 export function* updateUserFirestore(user: User) {
-	const email = user.Setting.Email
+	const userId = user.ID
 	yield call(
 		firestore.updateDocument,
-		'users/' + email + '/user/' + email,
-		user
+		'users/' + userId + '/user/' + userId,
+		Object.assign({}, user)
 	)
 }
 
@@ -130,13 +128,15 @@ export function* uploadImageStorage(images: Item["Images"], userID: User["ID"], 
 	return newImages
 }
 
-export function* updateItemFirestore(item: ItemClass, user: User) {
-	const email = user.Setting.Email
-	const fileDir: string = '/users/' + email + '/items/' + item.ID
-	yield call(firestore.setDocument, fileDir, item, { merge: true })
+export function* updateItemFirestore(item: Item, user: User) {
+	const userId = user.ID
+	const fileDir: string = '/users/' + userId + '/items/' + item.ID
+	yield call(firestore.setDocument, fileDir, Object.assign({}, item), { merge: true })
 }
 
-export function* deleteItemFirestore(fileDir: string) {
+export function* deleteItemFirestore(item: Item, user: User) {
+	const userId = user.ID
+	const fileDir: string = '/users/' + userId + '/items/' + item.ID
 	yield call(firestore.deleteDocument, fileDir)
 }
 
@@ -171,34 +171,34 @@ export function* signOutFirebase() {
 }
 
 
-export function* createDefaultUserFirebase(user: UserClass) {
-	const email = user.Setting.Email
+export function* createDefaultUserFirebase(user: User) {
+	const userId = user.ID
 	const doc = yield call(
 		firestore.setDocument,
-		'users/' + email + '/user/' + email,
-		user.getUser(), {}
+		'users/' + userId + '/user/' + userId,
+		Object.assign({}, user), {}
 	)
 	return doc
 }
 
-export function* createDefaultItemsFirebase(items: ItemClass[], user: UserClass) {
-	const email = user.Setting.Email
+export function* createDefaultItemsFirebase(items: Items, user: User) {
+	const userId = user.ID
 	yield all(
-		items.map(item => {
+		items.items.map(item => {
 			return call(
 				firestore.setDocument,
-				'users/' + email + '/items/' + item.ID,
-				item.getItem(), {}
+				'users/' + userId + '/items/' + item.ID,
+				Object.assign({}, item), {}
 			)
 		})
 	)
 }
 
-export function* getUserFirebase(email: Setting["Email"]) {
-	let user = new UserClass()
+export function* getUserFirebase(userId: User["ID"]) {
+	let user = new User()
 	const userCollection: any = yield call(
 		firestore.getCollection,
-		'users/' + email + '/user/'
+		'users/' + userId + '/user/'
 	)
 	userCollection.forEach((doc: any) => {
 		user.setID(doc.data().ID)
@@ -209,20 +209,19 @@ export function* getUserFirebase(email: Setting["Email"]) {
 	return user
 }
 
-export function* getItemsFirebase(email: Setting["Email"]) {
-	let items: ItemClass[] = []
+export function* getItemsFirebase(userId: User["ID"]) {
+	let items: Item[] = []
 	const itemsCollection = yield call(
 		firestore.getCollection,
-		'users/' + email + '/items/'
+		'users/' + userId + '/items/'
 	)
 	itemsCollection.forEach((doc: any) => {
-		let item = new ItemClass()
+		let item = new Item()
 		item = doc.data()
 		items.push(item)
 	});
-	console.log("items2", items)
 
-	return items
+	return new Items(items)
 }
 
 /*export function* updateItemsToStore(items: Item[]) {

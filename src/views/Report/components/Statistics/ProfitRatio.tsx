@@ -42,16 +42,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const ProfitRatio: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    profitRatio: number;
+}
+
+const ProfitRatio: React.FC<Props> = props => {
+    const { profitRatio } = props;
 
     const classes = useStyles();
 
     return (
-        <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
-        >
+        <Card>
             <CardContent>
                 <Grid container justify="space-between">
                     <Grid item>
@@ -63,7 +64,7 @@ const ProfitRatio: React.FC = props => {
                         >
                             ProfitRatio
                         </Typography>
-                        <Typography variant="h3">160%</Typography>
+                        <Typography variant="h3">{profitRatio}</Typography>
                     </Grid>
                     <Grid item>
                         <Avatar className={classes.avatar}>

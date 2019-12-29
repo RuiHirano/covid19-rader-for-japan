@@ -9,12 +9,11 @@ import * as Yup from "yup";
 import { Item, MarketType, TradeType, LoadingState } from "../../types";
 import moment from "moment";
 import uuid from "uuid";
-import { mockItems } from "../../common/mockData";
 import { useDispatch, useSelector } from "react-redux";
 import { itemActions } from "../../redux/saga/Item/itemSaga";
 import { useLoading } from "../../common/hooks/useLoading";
-import { ItemClass } from "../../types/item";
 import { AppState } from "../../redux/module/rootModule";
+import { Iterator } from "../../types/iterator";
 
 // Container
 interface ContainerProps {
@@ -28,37 +27,35 @@ const EntryFormContainer: React.FC<ContainerProps> = props => {
     const items = useSelector((state: AppState) => state.Items);
     const handleRegistItem = (values: FormikValues) => {
         console.log("debug value", values);
-        const itemClass: ItemClass = new ItemClass();
-        const item: Item = {
-            ID: values.ID,
-            MarketType: values.MarketType,
-            StartDate: values.StartDate,
-            EndDate: values.EndDate,
-            TradeType: values.TradeType,
-            Pair: values.Pair,
-            Lot: values.Lot,
-            EntryRate: values.EntryRate,
-            LossCutRate: values.LossCutRate,
-            SettleRate: values.SettleRate,
-            Profit: values.Profit,
-            BeforeComment: values.BeforeComment,
-            AfterComment: values.AfterComment,
-            Tags: values.Tags,
-            Images: values.Images,
-            UpdatedAt: values.UpdatedAt,
-            CreatedAt: values.CreatedAt
-        };
-        itemClass.setItem(item);
+        const item: Item = new Item();
+        item.ID = values.ID;
+        item.MarketType = values.MarketType;
+        item.StartDate = values.StartDate;
+        item.EndDate = values.EndDate;
+        item.TradeType = values.TradeType;
+        item.Pair = values.Pair;
+        item.Lot = parseFloat(values.Lot);
+        item.EntryRate = parseFloat(values.EntryRate);
+        item.LossCutRate = parseFloat(values.LossCutRate);
+        item.SettleRate = parseFloat(values.SettleRate);
+        item.Profit = parseInt(values.Profit);
+        item.BeforeComment = values.BeforeComment;
+        item.AfterComment = values.AfterComment;
+        item.Tags = values.Tags;
+        item.Images = values.Images;
+        item.UpdatedAt = values.UpdatedAt;
+        item.CreatedAt = values.CreatedAt;
+
         if (match.params.itemId === "new") {
             dispatch(
                 itemActions.createItemAction({
-                    item: itemClass
+                    item: item
                 })
             );
         } else {
             dispatch(
                 itemActions.updateItemAction({
-                    item: itemClass
+                    item: item
                 })
             );
         }
@@ -70,7 +67,7 @@ const EntryFormContainer: React.FC<ContainerProps> = props => {
 
     const { isLoading, isFinishLoading } = useLoading(LoadingState.CREATE_ITEM);
 
-    const [item, setItem] = useState(new ItemClass());
+    const [item, setItem] = useState(new Item());
 
     useEffect(() => {
         if (isFinishLoading) {
@@ -81,7 +78,15 @@ const EntryFormContainer: React.FC<ContainerProps> = props => {
     useEffect(() => {
         if (match.params.itemId === "new") {
         } else if (item.ID !== match.params.itemId) {
-            items.forEach((item_: ItemClass, index: number) => {
+            /*const iterator: Iterator = items.iterator();
+            while (iterator.hasNext()) {
+                const item_ = iterator.next();
+                if (item_.ID === match.params.itemId) {
+                    // urlパラメータと同じIDをもつアイテム
+                    setItem(item_);
+                }
+            }*/
+            items.items.forEach((item_: Item, index: number) => {
                 if (item_.ID === match.params.itemId) {
                     // urlパラメータと同じIDをもつアイテム
                     setItem(item_);
@@ -105,7 +110,7 @@ export default withRouter(EntryFormContainer);
 interface Props {
     handleRegistItem: (values: FormikValues) => void;
     handleBack: () => void;
-    item: ItemClass;
+    item: Item;
 }
 
 const EntryFormView: React.FC<Props> = props => {

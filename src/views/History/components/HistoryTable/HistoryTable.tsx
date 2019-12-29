@@ -19,7 +19,7 @@ import {
 
 import { getInitials } from "../../../../helpers";
 import { itemActions } from "../../../../redux/saga/Item/itemSaga";
-import { Item } from "../../../../types";
+import { Item, Items } from "../../../../types";
 import { withRouter, match } from "react-router";
 import * as H from "history";
 import { useDispatch } from "react-redux";
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    items: Item[];
+    items: Items;
     history: H.History;
     location: H.Location;
     match: match;
@@ -58,7 +58,7 @@ const HistoryTable: React.FC<Props> = props => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
-    const [selectedItem, setSelectedItem] = useState<Item>(items[0]);
+    const [selectedItem, setSelectedItem] = useState<Item>(items.items[0]);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [page, setPage] = useState(0);
 
@@ -161,7 +161,7 @@ const HistoryTable: React.FC<Props> = props => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {items.slice(0, rowsPerPage).map(item => (
+                                {items.items.slice(0, rowsPerPage).map(item => (
                                     <TableRow
                                         //className={classes.tableRow}
                                         hover
@@ -203,7 +203,7 @@ const HistoryTable: React.FC<Props> = props => {
             <CardActions className={classes.actions}>
                 <TablePagination
                     component="div"
-                    count={items.length}
+                    count={items.items.length}
                     onChangePage={handlePageChange}
                     onChangeRowsPerPage={handleRowsPerPageChange}
                     page={page}

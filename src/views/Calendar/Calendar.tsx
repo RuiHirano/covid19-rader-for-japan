@@ -4,18 +4,18 @@ import Calendar from "react-calendar/dist/entry.nostyle";
 import { width } from "@material-ui/system";
 import { Grid, Typography } from "@material-ui/core";
 import { Details, Statistics } from "./components";
-import { Item, PeriodType } from "../../types";
+import { Item, PeriodType, Items } from "../../types";
 import moment, { Moment } from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import { AppState } from "../../redux/module/rootModule";
-import { ItemClass } from "../../types/item";
 import { CalendarStats } from "./CalendarStats";
+import { Iterator } from "../../types/iterator";
 
 // Container
 interface ContainerProps {}
 const CalendarContainer: React.FC<ContainerProps> = props => {
     const dispatch = useDispatch();
-    const items = useSelector((state: AppState) => state.Items);
+    const items: Items = useSelector((state: AppState) => state.Items);
     console.log("items: ", items);
 
     /*const { isLoading, isFinishLoading } = useLoading(
@@ -39,7 +39,7 @@ interface tileContentProps {
 }
 
 interface Props {
-    items: ItemClass[];
+    items: Items;
 }
 
 const CalendarView: React.FC<Props> = props => {
@@ -55,7 +55,16 @@ const CalendarView: React.FC<Props> = props => {
     const getTileContent = ({ date, view }: tileContentProps) => {
         // 月表示のときのみ
         let content: any = [];
-        items.forEach((item: ItemClass, index: number) => {
+        /*const iterator: Iterator = items.iterator();
+        while(iterator.hasNext()){
+			const item = iterator.next()
+			if (moment(item.StartDate).isSame(moment(date), "days")) {
+                content.push(
+                    <Typography variant={"h6"}>{item.Pair}</Typography>
+                );
+            }
+		}*/
+        items.items.forEach((item: Item, index: number) => {
             if (moment(item.StartDate).isSame(moment(date), "days")) {
                 content.push(
                     <Typography variant={"h6"}>{item.Pair}</Typography>
@@ -79,8 +88,8 @@ const CalendarView: React.FC<Props> = props => {
                         }}
                         onActiveDateChange={values => {
                             console.log(values);
-                            stats.changePeriod(moment(values.activeStartDate));
-                            stats.calcStatistics();
+                            //stats.changePeriod(moment(values.activeStartDate));
+                            //stats.calcStatistics();
                             setDate(values.activeStartDate);
                         }}
                         tileContent={getTileContent}

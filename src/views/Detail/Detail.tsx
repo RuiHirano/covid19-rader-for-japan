@@ -5,9 +5,9 @@ import { Content, DateBar } from "./components";
 import * as H from "history";
 import { withRouter, match } from "react-router";
 import { Item, TradeType, MarketType } from "../../types";
+import { useSelector, useDispatch } from "react-redux";
 import moment, { Moment } from "moment";
 import uuid from "uuid";
-import { mockItems } from "../../common/mockData";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -52,7 +52,7 @@ interface Props {
 const DetailView: React.FC<Props> = props => {
     const { match, items, history } = props;
     const classes = useStyles();
-
+    //const items = useSelector((state: AppState) => state.Items);
     const [date, setDate] = useState(moment(match.params.date)); // 表示する月日
     const [targetItems, setTargetItems] = useState<Item[]>([]); //　表示する月日のアイテム
     const [dates, setDates] = useState<Moment[]>([]); // 取引したことのある日付の昇順配列
@@ -63,12 +63,12 @@ const DetailView: React.FC<Props> = props => {
     }, []);
 
     const dateSort = (dates: Moment[]) => {
-        mockItems.forEach((item: Item, index: number) => {
+        items.forEach((item: Item, index: number) => {
             if (index === 0) {
                 dates.push(moment(item.StartDate));
             } else if (
                 !moment(item.StartDate).isSame(
-                    moment(mockItems[index - 1].StartDate),
+                    moment(items[index - 1].StartDate),
                     "day"
                 )
             ) {
@@ -92,7 +92,7 @@ const DetailView: React.FC<Props> = props => {
         let items: Item[] = [];
         let dates: Moment[] = [];
 
-        mockItems.forEach((item: Item, index: number) => {
+        items.forEach((item: Item, index: number) => {
             if (moment(item.StartDate).isSame(tdate)) {
                 items.push(item);
             }
@@ -100,7 +100,7 @@ const DetailView: React.FC<Props> = props => {
                 dates.push(moment(item.StartDate));
             } else if (
                 !moment(item.StartDate).isSame(
-                    moment(mockItems[index - 1].StartDate),
+                    moment(items[index - 1].StartDate),
                     "day"
                 )
             ) {

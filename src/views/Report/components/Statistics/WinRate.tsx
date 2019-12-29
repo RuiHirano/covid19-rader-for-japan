@@ -42,16 +42,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const WinRate: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    winRate: number;
+}
+
+const WinRate: React.FC<Props> = props => {
+    const { winRate } = props;
 
     const classes = useStyles();
 
     return (
-        <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
-        >
+        <Card>
             <CardContent>
                 <Grid container justify="space-between">
                     <Grid item>
@@ -63,7 +64,7 @@ const WinRate: React.FC = props => {
                         >
                             WinRate
                         </Typography>
-                        <Typography variant="h3">160%</Typography>
+                        <Typography variant="h3">{winRate}</Typography>
                     </Grid>
                     <Grid item>
                         <Avatar className={classes.avatar}>

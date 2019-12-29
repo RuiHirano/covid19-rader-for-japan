@@ -24,7 +24,7 @@ import ProfitByPair from "./ProfitByPair";
 import TradeNumByPair from "./TradeNumByPair";
 import TradeNumByClass from "./TradeNumByClass";
 import moment from "moment";
-import { PeriodType } from "../../../../types";
+import { PeriodType, StatsResult } from "../../../../types";
 import { ReportStats } from "../../ReportStats";
 import { AppState } from "../../../../redux/module/rootModule";
 import { useSelector } from "react-redux";
@@ -53,12 +53,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    stats: ReportStats;
+    statsValues: StatsResult;
 }
 
 const Graphs: React.FC<Props> = props => {
-    const { stats } = props;
-    console.log("debug", stats);
+    const { statsValues } = props;
+    console.log("graph: ", statsValues);
 
     const classes = useStyles();
     const theme = useTheme();
@@ -67,22 +67,28 @@ const Graphs: React.FC<Props> = props => {
         <div className={classes.root}>
             <Grid container spacing={4}>
                 <Grid item lg={6} sm={6} xl={3} xs={12}>
-                    <TotalAssets />
+                    <TotalAssets
+                        totalAssetsData={
+                            statsValues.Graphs.TotalAssetsTransition
+                        }
+                    />
                 </Grid>
                 <Grid item lg={6} sm={6} xl={3} xs={12}>
-                    <ProfitTransition />
+                    <ProfitTransition profitData={
+                            statsValues.Graphs.ProfitTransition
+                        }/>
                 </Grid>
                 <Grid item lg={6} sm={6} xl={3} xs={12}>
                     <ProfitByDate />
                 </Grid>
                 <Grid item lg={6} sm={6} xl={3} xs={12}>
-                    <ProfitByPair />
+                    <ProfitByPair profitByPairData={statsValues.Graphs.PairRatio}/>
                 </Grid>
                 <Grid item lg={8} md={12} xl={9} xs={12}>
-                    <TradeNumByPair />
+                    <TradeNumByPair tradeNumByPairData={statsValues.Graphs.PairRatio}/>
                 </Grid>
                 <Grid item lg={4} md={6} xl={3} xs={12}>
-                    <TradeNumByClass />
+                    <TradeNumByClass tradeNumByClassData={statsValues.Graphs.TradeTypeRatio}/>
                 </Grid>
             </Grid>
         </div>

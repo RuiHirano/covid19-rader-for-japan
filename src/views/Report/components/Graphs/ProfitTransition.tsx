@@ -11,10 +11,12 @@ import {
     Divider,
     Button
 } from "@material-ui/core";
+import { ChartData } from "chart.js";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 
-import { data, options } from "./chart";
+import { options } from "./chart";
+import { TransitionPoint } from "../../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -27,15 +29,38 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const ProfitTransition: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    profitData: TransitionPoint[];
+}
+
+const createData = (totalAssetsData: TransitionPoint[]) => {
+    const labels: string[] = [];
+    const values: number[] = [];
+    totalAssetsData.forEach((value, index) => {
+        labels.push((index + 1).toString());
+        values.push(value.Value);
+    });
+    const data: ChartData = {
+        labels: labels,
+        datasets: [
+            {
+                label: "this",
+                backgroundColor: "#3f51b5",
+                data: values
+            }
+        ]
+    };
+    return data;
+};
+
+const ProfitTransition: React.FC<Props> = props => {
+    const { profitData } = props;
 
     const classes = useStyles();
+    const data = createData(profitData);
 
     return (
         <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
         >
             <CardHeader
                 action={

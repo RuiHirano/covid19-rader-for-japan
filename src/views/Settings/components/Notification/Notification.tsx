@@ -15,11 +15,16 @@ import {
 import { Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { userActions } from "../../../../redux/saga/User/userSaga";
-import { useDispatch } from "react-redux";
-import { LoadingState } from "../../../../types";
+import { useDispatch, useSelector } from "react-redux";
+import {
+    LoadingState,
+    User,
+    Notification as NotificationType
+} from "../../../../types";
 import { useLoading } from "../../../../common/hooks/useLoading";
 import { withRouter, match } from "react-router";
 import * as H from "history";
+import { AppState } from "../../../../redux/module/rootModule";
 
 // Container
 interface ContainerProps {
@@ -31,24 +36,27 @@ const NotificationContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
     const handleUpdateNotification = (values: FormikValues) => {
-        dispatch(
-            userActions.updateNotificationAction({
-                emailNotify: values.emailNotify,
-                pushNotify: values.pushNotify
-            })
-        );
+        const notification = values.notification;
+        user.Setting.Notification = notification;
+        dispatch(userActions.updateUserAction({ user: user }));
     };
 
-    const { isLoading, isFinishLoading } = useLoading(
-        LoadingState.UPDATE_NOTIFICATION
-    );
+    const { isLoading, isFinishLoading } = useLoading(LoadingState.UPDATE_USER);
     useEffect(() => {
         if (isFinishLoading) {
-            history.push("/dashboard");
+            //history.push("/dashboard");
         }
     }, [isLoading]);
 
-    return <Notification handleUpdateNotification={handleUpdateNotification} />;
+    const user: User = useSelector((state: AppState) => state.User);
+    let notification: NotificationType = user.Setting.Notification;
+
+    return (
+        <Notification
+            handleUpdateNotification={handleUpdateNotification}
+            notification={notification}
+        />
+    );
 };
 
 export default withRouter(NotificationContainer);
@@ -56,22 +64,19 @@ export default withRouter(NotificationContainer);
 // Presentational
 interface Props {
     handleUpdateNotification: (values: FormikValues) => void;
+    notification: NotificationType;
 }
 
 export const Notification: React.FC<Props> = props => {
-    const { handleUpdateNotification } = props;
+    const { handleUpdateNotification, notification } = props;
 
     const classes = useStyles();
 
     return (
-        <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
-        >
+        <Card>
             <Formik
                 initialValues={{
-                    emailNotify: true,
-                    pushNotify: true
+                    notification: notification
                 }}
                 onSubmit={values => handleUpdateNotification(values)}
                 validationSchema={Yup.object().shape({})}
@@ -110,14 +115,17 @@ export const Notification: React.FC<Props> = props => {
                                             <Checkbox
                                                 color="primary"
                                                 checked={
-                                                    values.emailNotify || false
+                                                    values.notification.Email ||
+                                                    false
                                                 }
-                                                onChange={() =>
+                                                onChange={() => {
+                                                    values.notification.Email = !values
+                                                        .notification.Email;
                                                     setFieldValue(
-                                                        "emailNotify",
-                                                        !values.emailNotify
-                                                    )
-                                                }
+                                                        "notification",
+                                                        values.notification
+                                                    );
+                                                }}
                                             />
                                         }
                                         label="Email"
@@ -127,14 +135,17 @@ export const Notification: React.FC<Props> = props => {
                                             <Checkbox
                                                 color="primary"
                                                 checked={
-                                                    values.pushNotify || false
+                                                    values.notification.Push ||
+                                                    false
                                                 }
-                                                onChange={() =>
+                                                onChange={() => {
+                                                    values.notification.Push = !values
+                                                        .notification.Push;
                                                     setFieldValue(
-                                                        "pushNotify",
-                                                        !values.pushNotify
-                                                    )
-                                                }
+                                                        "notification",
+                                                        values.notification
+                                                    );
+                                                }}
                                             />
                                         }
                                         label="Push Notifications"

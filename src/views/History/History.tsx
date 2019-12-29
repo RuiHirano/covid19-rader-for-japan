@@ -2,12 +2,11 @@ import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 
 import { HistoryToolbar, HistoryTable } from "./components";
-import { mockItems } from "./../../common/mockData";
 import { useSelector } from "react-redux";
 import { AppState } from "../../redux/module/rootModule";
 import { useLoading } from "../../common/hooks/useLoading";
-import { ItemClass } from "../../types/item";
-import { LoadingState } from "../../types";
+import { Item } from "../../types/item";
+import { LoadingState, Items } from "../../types";
 
 // Container
 interface ContainerProps {}
@@ -37,9 +36,8 @@ const HistoryContainer: React.FC<ContainerProps> = props => {
 export default HistoryContainer;
 
 interface Props {
-    items: ItemClass[];
+    items: Items;
 }
-
 
 const HistoryView: React.FC<Props> = props => {
     const { items } = props;

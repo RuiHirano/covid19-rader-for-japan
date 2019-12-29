@@ -30,16 +30,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const TotalProfit: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    totalProfit: number;
+}
+
+const TotalProfit: React.FC<Props> = props => {
+    const { totalProfit } = props;
 
     const classes = useStyles();
 
     return (
-        <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
-        >
+        <Card>
             <CardContent>
                 <Grid container justify="space-between">
                     <Grid item>
@@ -52,7 +53,7 @@ const TotalProfit: React.FC = props => {
                             TotalProfit
                         </Typography>
                         <Typography color="inherit" variant="h3">
-                            $23,200
+                            {totalProfit}
                         </Typography>
                     </Grid>
                     <Grid item>

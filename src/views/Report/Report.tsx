@@ -6,63 +6,65 @@ import { Grid, Button, Typography } from "@material-ui/core";
 import { Graphs, Statistics, DateBar } from "./components";
 import { AppState } from "../../redux/module/rootModule";
 import { useSelector, useDispatch } from "react-redux";
-import { PeriodType } from "../../types";
+import { PeriodType, Items, StatsResult } from "../../types";
 import { ReportStats } from "./ReportStats";
-import moment from "moment";
+import moment, { Moment } from "moment";
 
 // Container
 interface ContainerProps {}
 const ReportContainer: React.FC<ContainerProps> = props => {
     const dispatch = useDispatch();
-    const items = useSelector((state: AppState) => state.Items);
+    const items: Items = useSelector((state: AppState) => state.Items);
     console.log("items: ", items);
 
-    /*const { isLoading, isFinishLoading } = useLoading(
-        LoadingState.UPDATE_PASSWORD
+    const content = useSelector(
+        (state: AppState) => state.User.Setting.Content
     );
-    useEffect(() => {
-        if (isFinishLoading) {
-            //history.push("/dashboard");
-        }
-    }, [isLoading]);*/
 
-    return <ReportView />;
+    const [date, setDate] = useState<Moment>(moment());
+    const [statsValues, setStatsValues] = useState<StatsResult>(
+        items.calculator(date, PeriodType.DAY, content)
+    );
+
+    useEffect(() => {
+        console.log("date: ", date);
+        setStatsValues(items.calculator(date, PeriodType.DAY, content));
+    }, [date]);
+
+    const changeDate = (nextDate: Moment) => {
+        setDate(nextDate);
+    };
+
+    return (
+        <ReportView
+            statsValues={statsValues}
+            date={date}
+            changeDate={changeDate}
+        />
+    );
 };
 
 export default ReportContainer;
 
-interface Props {}
+interface Props {
+    statsValues: StatsResult;
+    date: Moment;
+    changeDate: (date: Moment) => void;
+}
 
 const ReportView: React.FC<Props> = props => {
-    const {} = props;
+    const { statsValues, date, changeDate } = props;
     const classes = useStyles();
-
-    const items = useSelector((state: AppState) => state.Items);
-    const content = useSelector(
-        (state: AppState) => state.User.Setting.Content
-    );
-    const [date, setDate] = useState(moment());
-
-    const [stats, setStats] = useState(
-        new ReportStats(
-            items,
-            PeriodType.MONTH,
-            date,
-            content.InitialInvestment,
-            content.AllowableLossRate,
-            content.BankruptcyReductionRate
-        )
-    );
 
     return (
         <div className={classes.root}>
             <Grid className={classes.root} container>
                 <Grid xs={12} sm={12} className={classes.date}>
-                    <DateBar date={date} />
+                    <DateBar date={date} changeDate={changeDate} />
                 </Grid>
                 <Grid xs={12} sm={12} className={classes.content}>
-                    <Statistics stats={stats} />
-                    <Graphs stats={stats} />
+                    <Statistics statsValues={statsValues} />
+                    <Graphs statsValues={statsValues} />
                 </Grid>
             </Grid>
         </div>

@@ -13,8 +13,11 @@ import {
 } from "@material-ui/core";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import { ChartData } from "chart.js";
 
 import { data, options } from "./chart";
+import { PairRatio } from "../../../../types";
+import theme from "../../../../theme";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -27,10 +30,36 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const ProfitByPair: React.FC = props => {
-    //const { className, ...rest } = props;
+const createData = (profitByPairData: PairRatio[], theme: Theme) => {
+    const labels: string[] = [];
+    const values: number[] = [];
+    profitByPairData.forEach((value, index) => {
+        labels.push(value.Pair);
+        values.push(value.Profit);
+    });
+    const data: ChartData = {
+        labels: labels,
+        datasets: [
+            {
+                label: "this",
+                data: values,
+                backgroundColor: "#3f51b5"
+            }
+        ]
+    };
+    return data;
+};
+
+interface Props {
+    profitByPairData: PairRatio[];
+}
+
+const ProfitByPair: React.FC<Props> = props => {
+    const { profitByPairData } = props;
 
     const classes = useStyles();
+    const theme = useTheme();
+    const data = createData(profitByPairData, theme);
 
     return (
         <Card

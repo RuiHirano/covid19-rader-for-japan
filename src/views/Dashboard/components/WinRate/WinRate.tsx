@@ -38,15 +38,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const TasksProgress: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    winRate: number;
+}
+
+const WinRate: React.FC<Props> = props => {
+    const { winRate } = props;
 
     const classes = useStyles();
 
     return (
         <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
         >
             <CardContent>
                 <Grid container justify="space-between">
@@ -59,7 +61,7 @@ const TasksProgress: React.FC = props => {
                         >
                             Win Rate
                         </Typography>
-                        <Typography variant="h3">60.5%</Typography>
+                        <Typography variant="h3">{winRate}</Typography>
                     </Grid>
                     <Grid item>
                         <Avatar className={classes.avatar}>
@@ -77,8 +79,4 @@ const TasksProgress: React.FC = props => {
     );
 };
 
-TasksProgress.propTypes = {
-    className: PropTypes.string
-};
-
-export default TasksProgress;
+export default WinRate;

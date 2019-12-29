@@ -5,8 +5,8 @@ import { AppState, ActionTypes } from "../../redux/configureStore";
 import * as H from "history";
 import { withRouter, match } from "react-router";
 import { Item, Loading, MarketType, TradeType } from "../../types";
+import { useSelector, useDispatch } from "react-redux";
 import DetailView from "./Detail";
-import { mockItems } from "../../common/mockData";
 
 interface Props {
     history: H.History;
@@ -18,12 +18,10 @@ interface Props {
 
 const Container: React.FC<Props> = props => {
     const { isLoading, loadingState } = props;
+    const items = useSelector((state: AppState) => state.Items);
+    useEffect(() => {});
 
-    useEffect(() => {
-        console.log("mockItem", mockItems);
-    });
-
-    return <DetailView items={mockItems} />;
+    return <DetailView items={items} />;
 };
 
 function mapStateToProps(state: AppState) {
@@ -39,8 +37,5 @@ function mapDispatchToProps(dispatch: Dispatch<Action>) {
 }
 
 export default withRouter(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps
-    )(Container)
+    connect(mapStateToProps, mapDispatchToProps)(Container)
 );

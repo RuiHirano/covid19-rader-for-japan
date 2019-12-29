@@ -42,16 +42,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const ExpectedValue: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    expectedValue: number;
+}
+
+const ExpectedValue: React.FC<Props> = props => {
+    const { expectedValue } = props;
 
     const classes = useStyles();
 
     return (
-        <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
-        >
+        <Card>
             <CardContent>
                 <Grid container justify="space-between">
                     <Grid item>
@@ -63,7 +64,7 @@ const ExpectedValue: React.FC = props => {
                         >
                             ExpectedValue
                         </Typography>
-                        <Typography variant="h3">160%</Typography>
+                        <Typography variant="h3">{expectedValue}</Typography>
                     </Grid>
                     <Grid item>
                         <Avatar className={classes.avatar}>

@@ -42,16 +42,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const TotalAssets: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    totalAssets: number;
+}
+
+const TotalAssets: React.FC<Props> = props => {
+    const { totalAssets } = props;
 
     const classes = useStyles();
 
     return (
-        <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
-        >
+        <Card>
             <CardContent>
                 <Grid container justify="space-between">
                     <Grid item>
@@ -63,7 +64,7 @@ const TotalAssets: React.FC = props => {
                         >
                             TotalAssets
                         </Typography>
-                        <Typography variant="h3">160%</Typography>
+                        <Typography variant="h3">{totalAssets}</Typography>
                     </Grid>
                     <Grid item>
                         <Avatar className={classes.avatar}>

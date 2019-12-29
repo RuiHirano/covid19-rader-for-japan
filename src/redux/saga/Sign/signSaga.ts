@@ -25,10 +25,8 @@ import moment from 'moment'
 //import { checkErrorCode } from '../../../app/firebase/errors'
 
 import actionCreatorFactory from 'typescript-fsa';
-import { Loading, LoadingState, Notification, Setting, Item, Profile, Error, User, State } from '../../../types/types'
+import { Loading, LoadingState, Notification, Setting, Item, Profile, Error, User, State, Items } from '../../../types'
 import { defaultItems, defaultUser } from './data'
-import { UserClass } from '../../../types/user'
-import { ItemClass } from '../../../types/item'
 const actionCreator = actionCreatorFactory();
 
 
@@ -60,6 +58,12 @@ function* handleSignIn(action: ReturnType<typeof signActions.signInAction>) {
 	try {
 		const { email, password } = action.payload
 
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// LoadingをTrueにする
 		let loading = <Loading>{
 			IsLoading: true,
@@ -72,11 +76,12 @@ function* handleSignIn(action: ReturnType<typeof signActions.signInAction>) {
 		console.log("data: ", data)
 
 		// ユーザ情報を取得
-		const user: UserClass = yield getUserFirebase(email)
+		const userId: User["ID"] = data.user.uid
+		const user: User = yield getUserFirebase(userId)
 		console.log("user: ", user)
 
 		// Items情報を取得
-		const items: ItemClass[] = yield getItemsFirebase(email)
+		const items: Items = yield getItemsFirebase(userId)
 
 		// ユーザ情報をStoreへ更新
 		yield updateUserStore(user)
@@ -117,6 +122,12 @@ function* handleSignUp(action: ReturnType<typeof signActions.signUpAction>) {
 	try {
 		const { email, password, name } = action.payload
 
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// LoadingをTrueにする
 		let loading = <Loading>{
 			IsLoading: true,
@@ -128,13 +139,13 @@ function* handleSignUp(action: ReturnType<typeof signActions.signUpAction>) {
 		const auth = yield signUpFirebase(email, password)
 
 		// User情報の初期値を取得
-		const user: UserClass = defaultUser()
+		const user: User = defaultUser()
 		user.ID = auth.user.uid
 		user.Setting.Email = email
 		user.Profile.Name = name
 
 		// Itemの初期値を取得
-		const items: ItemClass[] = defaultItems()
+		const items: Items = defaultItems()
 
 		// FirebaseにUserを生成
 		yield createDefaultUserFirebase(user)
@@ -179,7 +190,14 @@ function* handleSignUp(action: ReturnType<typeof signActions.signUpAction>) {
 
 function* handleSignOut(action: ReturnType<typeof signActions.signOutAction>) {
 	try {
-		// Loading介し
+
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
+		// Loading開始
 		let loading = <Loading>{
 			IsLoading: true,
 			LoadingState: LoadingState.SIGN_OUT
@@ -190,11 +208,11 @@ function* handleSignOut(action: ReturnType<typeof signActions.signOutAction>) {
 		yield signOutFirebase()
 
 		// StoreのItemsを初期化
-		const items: ItemClass[] = []
+		const items: Items = new Items([])
 		yield updateItemsStore(items)
 
 		// Storeのユーザ情報を初期化
-		const user: UserClass = new UserClass()
+		const user: User = new User()
 		yield updateUserStore(user)
 
 		// StoreのAppSateをSighoutに

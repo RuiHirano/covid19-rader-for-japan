@@ -1,9 +1,8 @@
-export { default as Budget } from './Asset';
+export { default as TotalAssets } from './TotalAssets';
 export { default as LatestOrders } from './LatestOrders';
-export { default as LatestProducts } from './LatestProducts';
 export { default as LatestCalendar } from './LatestCalendar';
 export { default as LatestProfit } from './LatestProfit';
-export { default as TasksProgress } from './TasksProgress';
+export { default as WinRate } from './WinRate';
 export { default as TotalProfit } from './TotalProfit';
-export { default as TotalUsers } from './ProfitRatio';
-export { default as UsersByDevice } from './TradesByPair';
+export { default as ProfitRatio } from './ProfitRatio';
+export { default as TradesByPair } from './TradesByPair';

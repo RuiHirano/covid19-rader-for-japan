@@ -2,7 +2,6 @@ import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import clsx from "clsx";
 import { makeStyles, Theme, useTheme } from "@material-ui/core/styles";
-import { ChartData, ChartOptions } from "chart.js";
 import {
     Card,
     CardHeader,
@@ -13,9 +12,11 @@ import {
     createStyles
 } from "@material-ui/core";
 import LaptopMacIcon from "@material-ui/icons/LaptopMac";
+import { ChartData } from "chart.js";
 import PhoneIphoneIcon from "@material-ui/icons/PhoneIphone";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import TabletMacIcon from "@material-ui/icons/TabletMac";
+import { TradeTypeRatio } from "../../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -40,16 +41,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const TradeNumByClass: React.FC = props => {
-    //const { className, ...rest } = props;
-
-    const classes = useStyles();
-    const theme = useTheme();
-
-    const data: object = {
+const createData = (tradeNumByClassData: TradeTypeRatio, theme: Theme) => {
+    const labels: string[] = [];
+    const values: number[] = [];
+    const data: ChartData = {
+        labels: ["Buy", "Sell"],
         datasets: [
             {
-                data: [63, 15, 22],
+                label: "this",
+                data: [tradeNumByClassData.BUY, tradeNumByClassData.SELL],
                 backgroundColor: [
                     theme.palette.primary.main,
                     theme.palette.error.main,
@@ -62,9 +62,23 @@ const TradeNumByClass: React.FC = props => {
                 borderColor: theme.palette.common.white,
                 hoverBorderColor: theme.palette.common.white
             }
-        ],
-        labels: ["Desktop", "Tablet", "Mobile"]
+        ]
     };
+
+    return data;
+};
+
+interface Props {
+    tradeNumByClassData: TradeTypeRatio;
+}
+
+const TradeNumByClass: React.FC<Props> = props => {
+    const { tradeNumByClassData } = props;
+
+    const classes = useStyles();
+    const theme = useTheme();
+
+    const data = createData(tradeNumByClassData, theme);
 
     const options: object = {
         legend: {

@@ -20,7 +20,6 @@ import {
 import { Formik, yupToFormErrors, FormikValues } from "formik";
 import * as Yup from "yup";
 import { Item, MarketType } from "../../../../types";
-import { ItemClass } from "../../../../types/item";
 
 const useStyles = makeStyles((theme: Theme) => ({
     textField: {
@@ -46,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    item: ItemClass;
+    item: Item;
     handleRegistItem: (values: FormikValues) => void;
 }
 
@@ -58,7 +57,7 @@ const Form: React.FC<Props> = props => {
     const classes = useStyles();
 
     const initialValues = {
-		ID: item.ID,
+        ID: item.ID,
         MarketType: item.MarketType,
         StartDate: item.StartDate,
         EndDate: item.EndDate,

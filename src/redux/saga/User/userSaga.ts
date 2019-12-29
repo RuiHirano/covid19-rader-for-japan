@@ -14,8 +14,7 @@ import {
 	updateUserFirestore,
 } from '../utilSaga'
 import actionCreatorFactory from 'typescript-fsa';
-import { User, Item, Notification, Profile, Setting, Content, BankAccount, Loading, LoadingState, Error, App, State, Language } from '../../../types'
-import { UserClass } from '../../../types/user';
+import { User, Item, Notification, Profile, Setting, Content, BankAccount, Loading, LoadingState, Error, App, State, Language, Plan } from '../../../types'
 
 
 const actionCreator = actionCreatorFactory();
@@ -98,7 +97,15 @@ export interface UpdatePasswordState {
 }
 
 export interface UpdateLanguageState {
-	language: string,
+	language: Language,
+}
+
+export interface UpdatePlanState {
+	plan: Plan,
+}
+
+export interface UpdateUserState {
+	user: User,
 }
 
 export interface UpdateNotificationState {
@@ -111,26 +118,30 @@ export interface UpdateBankAccountState {
 }
 
 export enum UserActions {
-	UPDATE_PROFILE_ACTION = "UPDATE_PROFILE_ACTION",
-	UPDATE_SETTING_ACTION = "UPDATE_SETTING_ACTION",
-	UPDATE_CONTENT_ACTION = "UPDATE_CONTENT_ACTION",
+	//UPDATE_PROFILE_ACTION = "UPDATE_PROFILE_ACTION",
+	//UPDATE_SETTING_ACTION = "UPDATE_SETTING_ACTION",
+	//UPDATE_CONTENT_ACTION = "UPDATE_CONTENT_ACTION",
 	UPDATE_EMAIL_ACTION = "UPDATE_EMAIL_ACTION",
 	UPDATE_PASSWORD_ACTION = "UPDATE_PASSWORD_ACTION",
-	UPDATE_BANK_ACCOUNT_ACTION = "UPDATE_BANK_ACCOUNT_ACTION",
-	UPDATE_NOTIFICATION_ACTION = "UPDATE_NOTIFICATION_ACTION",
-	UPDATE_LANGUAGE_ACTION = "UPDATE_LANGUAGE_ACTION",
+	UPDATE_USER_ACTION = "UPDATE_USER_ACTION",
+	//UPDATE_BANK_ACCOUNT_ACTION = "UPDATE_BANK_ACCOUNT_ACTION",
+	//UPDATE_NOTIFICATION_ACTION = "UPDATE_NOTIFICATION_ACTION",
+	//UPDATE_LANGUAGE_ACTION = "UPDATE_LANGUAGE_ACTION",
+	//UPDATE_PLAN_ACTION = "UPDATE_PLAN_ACTION",
 	DELETE_ACCOUNT_ACTION = "DELETE_ACCOUNT_ACTION",
 }
 
 export const userActions = {
-	updateProfileAction: actionCreator<UpdateProfileState>(UserActions.UPDATE_PROFILE_ACTION),
-	updateSettingAction: actionCreator<UpdateSettingState>(UserActions.UPDATE_SETTING_ACTION),
-	updateContentAction: actionCreator<UpdateContentState>(UserActions.UPDATE_CONTENT_ACTION),
+	//updateProfileAction: actionCreator<UpdateProfileState>(UserActions.UPDATE_PROFILE_ACTION),
+	//updateSettingAction: actionCreator<UpdateSettingState>(UserActions.UPDATE_SETTING_ACTION),
+	//updateContentAction: actionCreator<UpdateContentState>(UserActions.UPDATE_CONTENT_ACTION),
+	updateUserAction: actionCreator<UpdateUserState>(UserActions.UPDATE_USER_ACTION),
 	updateEmailAction: actionCreator<UpdateEmailState>(UserActions.UPDATE_EMAIL_ACTION),
 	updatePasswordAction: actionCreator<UpdatePasswordState>(UserActions.UPDATE_PASSWORD_ACTION),
-	updateNotificationAction: actionCreator<UpdateNotificationState>(UserActions.UPDATE_NOTIFICATION_ACTION),
-	updateLanguageAction: actionCreator<UpdateLanguageState>(UserActions.UPDATE_LANGUAGE_ACTION),
-	updateBankAccountAction: actionCreator<UpdateBankAccountState>(UserActions.UPDATE_BANK_ACCOUNT_ACTION),
+	//updateNotificationAction: actionCreator<UpdateNotificationState>(UserActions.UPDATE_NOTIFICATION_ACTION),
+	//updateLanguageAction: actionCreator<UpdateLanguageState>(UserActions.UPDATE_LANGUAGE_ACTION),
+	//updatePlanAction: actionCreator<UpdatePlanState>(UserActions.UPDATE_PLAN_ACTION),
+	//updateBankAccountAction: actionCreator<UpdateBankAccountState>(UserActions.UPDATE_BANK_ACCOUNT_ACTION),
 	deleteAccountAction: actionCreator(UserActions.DELETE_ACCOUNT_ACTION),
     /*downloadUserImageRequest: actionCreator<DownloadUserImageState>('DOWNLOAD_USER_IMAGE_REQUEST'),
     postInquiryRequest: actionCreator<PostInquiryState>('POST_INQUIRY_REQUEST'),
@@ -555,6 +566,12 @@ function* handleUpdateEmail(action: ReturnType<typeof userActions.updateEmailAct
 	try {
 		const { email } = action.payload
 
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// loading true
 		let loading = <Loading>{
 			IsLoading: true,
@@ -566,7 +583,7 @@ function* handleUpdateEmail(action: ReturnType<typeof userActions.updateEmailAct
 		yield updateEmailFirestore(email)
 
 		// modified user data
-		var user: UserClass = yield select(getUser)
+		var user: User = yield select(getUser)
 		user.Setting.Email = email
 
 		// regist userdata to firebase
@@ -602,6 +619,12 @@ function* handleUpdatePassword(action: ReturnType<typeof userActions.updatePassw
 	try {
 		const { password } = action.payload
 
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// loading true
 		let loading = <Loading>{
 			IsLoading: true,
@@ -636,6 +659,13 @@ function* handleUpdatePassword(action: ReturnType<typeof userActions.updatePassw
 
 function* handleDeleteAccount(action: ReturnType<typeof userActions.deleteAccountAction>) {
 	try {
+
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// loading true
 		let loading = <Loading>{
 			IsLoading: true,
@@ -644,11 +674,11 @@ function* handleDeleteAccount(action: ReturnType<typeof userActions.deleteAccoun
 		yield updateLoadingStore(loading)
 
 		// delete account
-		const user: UserClass = yield select(getUser)
+		const user: User = yield select(getUser)
 		yield deleteAllDataFirestore(user.ID)
 
 		// delete store
-		const newUser = new UserClass()
+		const newUser = new User()
 		yield updateUserStore(newUser)
 
 		// signout
@@ -677,10 +707,63 @@ function* handleDeleteAccount(action: ReturnType<typeof userActions.deleteAccoun
 	}
 }
 
+function* handleUpdateUser(action: ReturnType<typeof userActions.updateUserAction>) {
+	try {
+		const { user } = action.payload
+
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
+		// loading true
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_USER
+		}
+		yield updateLoadingStore(loading)
+
+		// regist userdata to firebase
+		yield updateUserFirestore(user)
+
+		yield updateUserStore(user)
+
+		// loading false
+		loading.IsLoading = false
+		yield updateLoadingStore(loading)
+
+	} catch ({ code, message }) {
+		// error
+		const errorMessage = "checkErrorCode(code)"
+		let error = <Error>{
+			IsError: true,
+			Status: errorMessage,
+		}
+		yield updateErrorStore(error)
+
+		// loading終了
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_USER
+		}
+		yield updateLoadingStore(loading)
+
+
+		console.log('update user error... \n', code)
+	}
+}
+
 // Profileの更新
-function* handleUpdateProfile(action: ReturnType<typeof userActions.updateProfileAction>) {
+/*function* handleUpdateProfile(action: ReturnType<typeof userActions.updateProfileAction>) {
 	try {
 		const { profile } = action.payload
+
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
 
 		// loading開始
 		let loading = <Loading>{
@@ -690,11 +773,11 @@ function* handleUpdateProfile(action: ReturnType<typeof userActions.updateProfil
 		yield updateLoadingStore(loading)
 
 		// user情報取得
-		var user: UserClass = yield select(getUser)
+		var user: User = yield select(getUser)
 		user.Profile = profile
 
 		// firestoreに更新
-		yield updateUserFirestore(user.getUser())
+		yield updateUserFirestore(user)
 
 		// storeに更新
 		yield updateUserStore(user)
@@ -727,6 +810,12 @@ function* handleUpdateSetting(action: ReturnType<typeof userActions.updateSettin
 	try {
 		const { setting } = action.payload
 
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// loading true
 		let loading = <Loading>{
 			IsLoading: true,
@@ -735,7 +824,7 @@ function* handleUpdateSetting(action: ReturnType<typeof userActions.updateSettin
 		yield updateLoadingStore(loading)
 
 		// userName to userData
-		var user: UserClass = yield select(getUser)
+		var user: User = yield select(getUser)
 		user.Setting = setting
 
 		// regist userdata to firebase
@@ -770,6 +859,12 @@ function* handleUpdateContent(action: ReturnType<typeof userActions.updateConten
 	try {
 		const { content } = action.payload
 
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// loading true
 		let loading = <Loading>{
 			IsLoading: true,
@@ -778,7 +873,7 @@ function* handleUpdateContent(action: ReturnType<typeof userActions.updateConten
 		yield updateLoadingStore(loading)
 
 		// userName to userData
-		let user: UserClass = yield select(getUser)
+		let user: User = yield select(getUser)
 		user.Setting.Content = content
 
 		// regist userdata to firebase
@@ -813,6 +908,12 @@ function* handleUpdateNotification(action: ReturnType<typeof userActions.updateN
 	try {
 		const { emailNotify, pushNotify } = action.payload
 
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// loading true
 		let loading = <Loading>{
 			IsLoading: true,
@@ -821,7 +922,7 @@ function* handleUpdateNotification(action: ReturnType<typeof userActions.updateN
 		yield updateLoadingStore(loading)
 
 		// userName to userData
-		let user: UserClass = yield select(getUser)
+		let user: User = yield select(getUser)
 		user.Setting.Notification = <Notification>{
 			Email: emailNotify,
 			Push: pushNotify
@@ -858,6 +959,14 @@ function* handleUpdateLanguage(action: ReturnType<typeof userActions.updateLangu
 	try {
 		const { language } = action.payload
 
+		console.log("language: ", language)
+
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// loading true
 		let loading = <Loading>{
 			IsLoading: true,
@@ -866,12 +975,8 @@ function* handleUpdateLanguage(action: ReturnType<typeof userActions.updateLangu
 		yield updateLoadingStore(loading)
 
 		// userName to userData
-		let user: UserClass = yield select(getUser)
-		if (language === Language[0]) {
-			user.Setting.Language = 0
-		} else if (language === Language[1]) {
-			user.Setting.Language = 1
-		}
+		let user: User = yield select(getUser)
+		user.Setting.Language = language
 
 		// regist userdata to firebase
 		yield updateUserFirestore(user)
@@ -905,6 +1010,12 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
 	try {
 		const { bankAccount } = action.payload
 
+		// errorをfalseにする
+		let error = <Error>{
+			IsError: false,
+		}
+		yield updateErrorStore(error)
+
 		// loading true
 		let loading = <Loading>{
 			IsLoading: true,
@@ -913,7 +1024,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
 		yield updateLoadingStore(loading)
 
 		// userName to userData
-		var user: UserClass = yield select(getUser)
+		var user: User = yield select(getUser)
 		user.Setting.BankAccount = bankAccount
 
 		// regist userdata to firebase
@@ -942,7 +1053,7 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
 		yield updateErrorStore(error)
 		console.log('update username error... \n', code)
 	}
-}
+}*/
 
 /*function* handlePostInquiryRequest(action: ReturnType<typeof userActions.postInquiryRequest>) {
     try {
@@ -1119,15 +1230,16 @@ function* handleUpdateBankAccount(action: ReturnType<typeof userActions.updateBa
 }*/
 
 function* signSaga() {
-	yield takeEvery(UserActions.UPDATE_PROFILE_ACTION, handleUpdateProfile)
-	yield takeEvery(UserActions.UPDATE_SETTING_ACTION, handleUpdateSetting)
-	yield takeEvery(UserActions.UPDATE_CONTENT_ACTION, handleUpdateContent)
+	//yield takeEvery(UserActions.UPDATE_PROFILE_ACTION, handleUpdateProfile)
+	//yield takeEvery(UserActions.UPDATE_SETTING_ACTION, handleUpdateSetting)
+	//yield takeEvery(UserActions.UPDATE_CONTENT_ACTION, handleUpdateContent)
 	yield takeEvery(UserActions.UPDATE_EMAIL_ACTION, handleUpdateEmail)
 	yield takeEvery(UserActions.UPDATE_PASSWORD_ACTION, handleUpdatePassword)
-	yield takeEvery(UserActions.UPDATE_LANGUAGE_ACTION, handleUpdateLanguage)
+	//yield takeEvery(UserActions.UPDATE_LANGUAGE_ACTION, handleUpdateLanguage)
 	yield takeEvery(UserActions.DELETE_ACCOUNT_ACTION, handleDeleteAccount)
-	yield takeEvery(UserActions.UPDATE_BANK_ACCOUNT_ACTION, handleUpdateBankAccount)
-	yield takeEvery(UserActions.UPDATE_NOTIFICATION_ACTION, handleUpdateNotification)
+	//yield takeEvery(UserActions.UPDATE_BANK_ACCOUNT_ACTION, handleUpdateBankAccount)
+	//yield takeEvery(UserActions.UPDATE_NOTIFICATION_ACTION, handleUpdateNotification)
+	yield takeEvery(UserActions.UPDATE_USER_ACTION, handleUpdateUser)
     /*yield takeEvery(userActions.updateLanguageRequest.toString(), handleUpdateLanguageRequest)
     yield takeEvery(
         userActions.updateInitialInvestmentRequest.toString(),

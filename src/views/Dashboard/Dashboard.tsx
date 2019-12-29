@@ -1,18 +1,21 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 
 import {
-    Budget,
-    TotalUsers,
-    TasksProgress,
+    TotalAssets,
+    ProfitRatio,
+    WinRate,
     TotalProfit,
     LatestProfit,
-    UsersByDevice,
-    LatestProducts,
+    TradesByPair,
     LatestOrders,
     LatestCalendar
 } from "./components";
+import { useDispatch, useSelector } from "react-redux";
+import { AppState } from "../../redux/module/rootModule";
+import { Items, StatsResult, PeriodType, Item } from "../../types";
+import moment, { Moment } from "moment";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -20,39 +23,73 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const Dashboard: React.FC = () => {
+// Container
+interface ContainerProps {}
+const DashboardContainer: React.FC<ContainerProps> = props => {
+    const dispatch = useDispatch();
+    const items: Items = useSelector((state: AppState) => state.Items);
+    console.log("items: ", items);
+
+    const content = useSelector(
+        (state: AppState) => state.User.Setting.Content
+    );
+
+    const [statsValues, setStatsValues] = useState<StatsResult>(
+        items.calculator(moment(), PeriodType.ALL, content)
+    );
+
+    return <DashboardView statsValues={statsValues} items={items} />;
+};
+
+export default DashboardContainer;
+
+interface Props {
+    statsValues: StatsResult;
+    items: Items;
+}
+
+const DashboardView: React.FC<Props> = props => {
+    const { statsValues, items } = props;
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
             <Grid container spacing={4}>
                 <Grid item lg={3} sm={6} xl={3} xs={12}>
-                    <Budget />
+                    <TotalAssets
+                        totalAssets={statsValues.Statistics.TotalAssets}
+                    />
                 </Grid>
                 <Grid item lg={3} sm={6} xl={3} xs={12}>
-                    <TotalUsers />
+                    <ProfitRatio
+                        profitRatio={statsValues.Statistics.ProfitRatio}
+                    />
                 </Grid>
                 <Grid item lg={3} sm={6} xl={3} xs={12}>
-                    <TasksProgress />
+                    <WinRate winRate={statsValues.Statistics.WinRate} />
                 </Grid>
                 <Grid item lg={3} sm={6} xl={3} xs={12}>
-                    <TotalProfit />
+                    <TotalProfit
+                        totalProfit={statsValues.Statistics.TotalProfit}
+                    />
                 </Grid>
                 <Grid item lg={8} md={12} xl={9} xs={12}>
-                    <LatestProfit />
+                    <LatestProfit
+                        profitData={statsValues.Graphs.ProfitTransition}
+                    />
                 </Grid>
                 <Grid item lg={4} md={6} xl={3} xs={12}>
-                    <UsersByDevice />
+                    <TradesByPair pairData={statsValues.Graphs.PairRatio} />
                 </Grid>
                 <Grid item lg={4} md={6} xl={3} xs={12}>
                     <LatestCalendar />
                 </Grid>
                 <Grid item lg={8} md={12} xl={9} xs={12}>
-                    <LatestOrders />
+                    <LatestOrders items={items} />
                 </Grid>
             </Grid>
         </div>
     );
 };
 
-export default Dashboard;
+//export default Dashboard;

@@ -1,8 +1,46 @@
-import { MarketType, TradeType, Image, Item } from "./types"
 import uuid from "uuid"
 import moment from "moment"
 
-export class ItemClass {
+export enum MarketType {
+	FX,
+	STOCK,
+}
+
+export enum TradeType {
+	BUY,
+	SELL,
+	RECORD,
+	WITHDRAWAL,
+	DEPOSIT,
+}
+
+export interface Image {
+	url: string,
+	size: number,
+}
+
+export interface a {
+	id: number
+	get(): void
+}
+
+export class b implements a {
+	id = 8
+
+	constructor() {
+
+	}
+
+	get() {
+
+	}
+
+	set() {
+
+	}
+}
+
+export class Item {
 	ID: string
 	MarketType: MarketType
 	StartDate: string
@@ -41,47 +79,68 @@ export class ItemClass {
 		this.CreatedAt = moment().toISOString()
 	}
 
-	getItem(): Item {
-		const item: Item = {
-			ID: this.ID,
-			MarketType: this.MarketType,
-			StartDate: this.StartDate,
-			EndDate: this.EndDate,
-			TradeType: this.TradeType,
-			Pair: this.Pair,
-			Lot: this.Lot,
-			EntryRate: this.EntryRate,
-			LossCutRate: this.LossCutRate,
-			SettleRate: this.SettleRate,
-			Profit: this.Profit,
-			BeforeComment: this.BeforeComment,
-			AfterComment: this.AfterComment,
-			Tags: this.Tags,
-			Images: this.Images,
-			UpdatedAt: this.UpdatedAt,
-			CreatedAt: this.CreatedAt,
-		}
-		return item
+	setID(id: string) {
+		this.ID = id
 	}
 
-	setItem(item: Item) {
-		this.ID = item.ID
-		this.MarketType = item.MarketType
-		this.StartDate = item.StartDate
-		this.EndDate = item.EndDate
-		this.TradeType = item.TradeType
-		this.Pair = item.Pair
-		this.Lot = item.Lot
-		this.EntryRate = item.EntryRate
-		this.LossCutRate = item.LossCutRate
-		this.SettleRate = item.SettleRate
-		this.Profit = item.Profit
-		this.BeforeComment = item.BeforeComment
-		this.AfterComment = item.AfterComment
-		this.Tags = item.Tags
-		this.Images = item.Images
-		this.UpdatedAt = item.UpdatedAt
-		this.CreatedAt = item.CreatedAt
+	setStartDate(startDate: string) {
+		this.StartDate = startDate
+	}
+
+	setEndDate(endDate: string) {
+		this.EndDate = endDate
+	}
+
+	setTradeType(tradeType: TradeType) {
+		this.TradeType = tradeType
+	}
+
+	setPair(pair: string) {
+		this.Pair = pair
+	}
+
+	setLot(lot: number) {
+		this.Lot = lot
+	}
+
+	setEntryRate(entryRate: number) {
+		this.EntryRate = entryRate
+	}
+
+	setLossCutRate(lossCutRate: number) {
+		this.LossCutRate = lossCutRate
+	}
+
+	setSettleRate(settleRate: number) {
+		this.SettleRate = settleRate
+	}
+
+	setProfit(profit: number) {
+		this.Profit = profit
+	}
+
+	setBeforeComment(beforeComment: string) {
+		this.BeforeComment = beforeComment
+	}
+
+	setAfterComment(afterComment: string) {
+		this.AfterComment = afterComment
+	}
+
+	setTags(tags: string[]) {
+		this.Tags = tags
+	}
+
+	setImages(images: Image[]) {
+		this.Images = images
+	}
+
+	setUpdatedAt(updatedAt: string) {
+		this.UpdatedAt = updatedAt
+	}
+
+	setCreatedAt(createdAt: string) {
+		this.CreatedAt = createdAt
 	}
 
 }

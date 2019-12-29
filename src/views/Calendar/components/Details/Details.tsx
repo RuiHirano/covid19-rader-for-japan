@@ -5,8 +5,9 @@ import * as H from "history";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import DetailCard from "./DetailCard";
 import moment, { Moment } from "moment";
-import { Item } from "../../../../types";
+import { Item, Items } from "../../../../types";
 import { withRouter, match } from "react-router";
+import { Iterator } from "../../../../types/iterator";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface Props {
     date: Moment;
-    items: Item[];
+    items: Items;
     history: H.History;
     location: H.Location;
     match: match;
@@ -56,7 +57,14 @@ const Details: React.FC<Props> = props => {
 
     const queryDateItems = () => {
         let dateItems: Item[] = [];
-        items.forEach(item => {
+        /*const iterator: Iterator = items.iterator()
+		while(iterator.hasNext()){
+			const item = iterator.next()
+			if (moment(item.StartDate).isSame(moment(date), "days")) {
+                dateItems.push(item);
+            }
+		}*/
+        items.items.forEach(item => {
             if (moment(item.StartDate).isSame(moment(date), "days")) {
                 dateItems.push(item);
             }

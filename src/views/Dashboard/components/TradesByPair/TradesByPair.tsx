@@ -16,6 +16,7 @@ import LaptopMacIcon from "@material-ui/icons/LaptopMac";
 import PhoneIphoneIcon from "@material-ui/icons/PhoneIphone";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import TabletMacIcon from "@material-ui/icons/TabletMac";
+import { PairRatio } from "../../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -40,13 +41,51 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const TradesByPair: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    pairData: PairRatio[];
+}
+
+const createData = (tradeNumByPairData: PairRatio[], theme: Theme) => {
+    const labels: string[] = [];
+    const values: number[] = [];
+
+    tradeNumByPairData.forEach((value, index) => {
+        labels.push(value.Pair);
+        values.push(value.Num);
+    });
+    const data: ChartData = {
+        labels: labels,
+        datasets: [
+            {
+                label: "this",
+                data: values,
+                backgroundColor: [
+                    theme.palette.primary.main,
+                    theme.palette.error.main,
+                    //theme.palette.warning.main
+                    theme.palette.error.main
+                ],
+                borderWidth: 8,
+                //borderColor: theme.palette.white,
+                //hoverBorderColor: theme.palette.white
+                borderColor: theme.palette.common.white,
+                hoverBorderColor: theme.palette.common.white
+            }
+        ]
+    };
+
+    return data;
+};
+
+const TradesByPair: React.FC<Props> = props => {
+    const { pairData } = props;
 
     const classes = useStyles();
     const theme = useTheme();
 
-    const data: object = {
+    const data = createData(pairData, theme);
+
+    /*const data: object = {
         datasets: [
             {
                 data: [63, 15, 22],
@@ -64,7 +103,7 @@ const TradesByPair: React.FC = props => {
             }
         ],
         labels: ["Desktop", "Tablet", "Mobile"]
-    };
+    };*/
 
     const options: object = {
         legend: {

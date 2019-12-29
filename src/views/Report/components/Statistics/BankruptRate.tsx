@@ -42,16 +42,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const BankruptRate: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    bankruptRate: number;
+}
+
+const BankruptRate: React.FC<Props> = props => {
+    const { bankruptRate } = props;
 
     const classes = useStyles();
 
     return (
-        <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
-        >
+        <Card>
             <CardContent>
                 <Grid container justify="space-between">
                     <Grid item>
@@ -63,7 +64,7 @@ const BankruptRate: React.FC = props => {
                         >
                             BankruptRate
                         </Typography>
-                        <Typography variant="h3">160%</Typography>
+                        <Typography variant="h3">{bankruptRate}</Typography>
                     </Grid>
                     <Grid item>
                         <Avatar className={classes.avatar}>

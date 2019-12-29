@@ -1,6 +1,4 @@
-import React from "react";
-import PropTypes from "prop-types";
-import clsx from "clsx";
+import React, { useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
     Card,
@@ -14,10 +12,15 @@ import {
     Typography,
     Button
 } from "@material-ui/core";
-import { Formik, yupToFormErrors } from "formik";
+import { Formik, yupToFormErrors, FormikValues } from "formik";
 import * as Yup from "yup";
 import { withRouter, match } from "react-router";
 import * as H from "history";
+import { AppState } from "../../../../redux/module/rootModule";
+import { useSelector, useDispatch } from "react-redux";
+import { LoadingState, Plan as PlanType, User } from "../../../../types";
+import { useLoading } from "../../../../common/hooks/useLoading";
+import { userActions } from "../../../../redux/saga/User/userSaga";
 
 // Container
 interface ContainerProps {
@@ -27,39 +30,53 @@ interface ContainerProps {
 }
 const PlanContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
-    /*const dispatch = useDispatch();
+	const dispatch = useDispatch();
+	const handleUpdatePlan = (values: FormikValues) => {
+		const plan = values.plan
+		user.Setting.Plan = plan
+        dispatch(
+            userActions.updateUserAction({ user: user })
+        );
+    };
 
     const { isLoading, isFinishLoading } = useLoading(
-        LoadingState.DELETE_ACCOUNT
+        LoadingState.UPDATE_USER
     );
     useEffect(() => {
         if (isFinishLoading) {
-            history.push("/home");
+            //history.push("/home");
         }
-    }, [isLoading]);*/
+	}, [isLoading]);
+	
+	const user: User = useSelector(
+        (state: AppState) => state.User
+	);
+	const plan: PlanType = user.Setting.Plan
 
-    return <Plan />;
+    return <Plan plan={plan} handleUpdatePlan={handleUpdatePlan}/>;
 };
 
 export default withRouter(PlanContainer);
 
+export interface Props{
+	plan: PlanType;
+	handleUpdatePlan: (values: FormikValues) => void;
+}
 
 // presentational
-const Plan: React.FC = props => {
-    //const { className, ...rest } = props;
+const Plan: React.FC<Props> = props => {
+    const { plan, handleUpdatePlan } = props;
 
     const classes = useStyles();
 
     return (
         <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
         >
             <Formik
                 initialValues={{
-                    plan: "free"
+                    plan: plan
                 }}
-                onSubmit={values => console.log("debug6 ", values)}
+                onSubmit={values => handleUpdatePlan(values)}
                 validationSchema={Yup.object().shape({})}
             >
                 {({
@@ -96,13 +113,13 @@ const Plan: React.FC = props => {
                                             <Checkbox
                                                 color="primary"
                                                 checked={
-                                                    values.plan == "free" ||
+                                                    values.plan === PlanType.FREE ||
                                                     false
                                                 }
                                                 onChange={() =>
                                                     setFieldValue(
                                                         "plan",
-                                                        "free"
+                                                        PlanType.FREE
                                                     )
                                                 }
                                             />
@@ -114,13 +131,13 @@ const Plan: React.FC = props => {
                                             <Checkbox
                                                 color="primary"
                                                 checked={
-                                                    values.plan == "standard" ||
+                                                    values.plan === PlanType.STANDARD ||
                                                     false
                                                 }
                                                 onChange={() =>
                                                     setFieldValue(
                                                         "plan",
-                                                        "standard"
+                                                        PlanType.STANDARD
                                                     )
                                                 }
                                             />
@@ -132,13 +149,13 @@ const Plan: React.FC = props => {
                                             <Checkbox
                                                 color="primary"
                                                 checked={
-                                                    values.plan == "premium" ||
+                                                    values.plan === PlanType.PREMIUM ||
                                                     false
                                                 }
                                                 onChange={() =>
                                                     setFieldValue(
                                                         "plan",
-                                                        "premium"
+                                                        PlanType.PREMIUM
                                                     )
                                                 }
                                             />

@@ -16,12 +16,17 @@ import {
 } from "@material-ui/core";
 import { Formik, yupToFormErrors, FormikValues } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { withRouter, match } from "react-router";
 import * as H from "history";
 import { useLoading } from "../../../../common/hooks/useLoading";
-import { LoadingState } from "../../../../types";
+import {
+    LoadingState,
+    Language as LanguageType,
+    User
+} from "../../../../types";
 import { userActions } from "../../../../redux/saga/User/userSaga";
+import { AppState } from "../../../../redux/module/rootModule";
 
 export const useStyles = makeStyles(() => ({
     root: {},
@@ -41,21 +46,27 @@ const LanguageContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
     const handleUpdateLanguage = (values: FormikValues) => {
-        dispatch(
-            userActions.updateLanguageAction({ language: values.language })
-        );
+        const language = values.language;
+        user.Setting.Language = language;
+        dispatch(userActions.updateUserAction({ user: user }));
     };
 
-    const { isLoading, isFinishLoading } = useLoading(
-        LoadingState.UPDATE_LANGUAGE
-    );
+    const { isLoading, isFinishLoading } = useLoading(LoadingState.UPDATE_USER);
     useEffect(() => {
         if (isFinishLoading) {
-            history.push("/dashboard");
+            //history.push("/dashboard");
         }
     }, [isLoading]);
 
-    return <Language handleUpdateLanguage={handleUpdateLanguage} />;
+    const user: User = useSelector((state: AppState) => state.User);
+    const language: LanguageType = user.Setting.Language;
+
+    return (
+        <Language
+            handleUpdateLanguage={handleUpdateLanguage}
+            language={language}
+        />
+    );
 };
 
 export default withRouter(LanguageContainer);
@@ -63,10 +74,11 @@ export default withRouter(LanguageContainer);
 // Presentational
 interface Props {
     handleUpdateLanguage: (values: FormikValues) => void;
+    language: LanguageType;
 }
 
 export const Language: React.FC<Props> = props => {
-    const { handleUpdateLanguage } = props;
+    const { handleUpdateLanguage, language } = props;
 
     const classes = useStyles();
 
@@ -77,7 +89,7 @@ export const Language: React.FC<Props> = props => {
         >
             <Formik
                 initialValues={{
-                    language: "ja"
+                    language: language
                 }}
                 onSubmit={values => handleUpdateLanguage(values)}
                 validationSchema={Yup.object().shape({})}
@@ -116,13 +128,13 @@ export const Language: React.FC<Props> = props => {
                                             <Checkbox
                                                 color="primary"
                                                 checked={
-                                                    values.language == "en" ||
-                                                    false
+                                                    values.language ==
+                                                        LanguageType.en || false
                                                 }
                                                 onChange={() =>
                                                     setFieldValue(
                                                         "language",
-                                                        "en"
+                                                        LanguageType.en
                                                     )
                                                 }
                                             />
@@ -134,13 +146,13 @@ export const Language: React.FC<Props> = props => {
                                             <Checkbox
                                                 color="primary"
                                                 checked={
-                                                    values.language == "ja" ||
-                                                    false
+                                                    values.language ==
+                                                        LanguageType.ja || false
                                                 }
                                                 onChange={() =>
                                                     setFieldValue(
                                                         "language",
-                                                        "ja"
+                                                        LanguageType.ja
                                                     )
                                                 }
                                             />

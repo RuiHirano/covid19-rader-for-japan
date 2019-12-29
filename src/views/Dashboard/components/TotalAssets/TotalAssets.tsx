@@ -40,8 +40,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const Asset: React.FC = props => {
-    //const { className, ...rest } = props;
+interface Props {
+    totalAssets: number;
+}
+
+const TotalAssets: React.FC<Props> = props => {
+    
+    const { totalAssets } = props;
 
     const classes = useStyles();
 
@@ -61,7 +66,7 @@ const Asset: React.FC = props => {
                         >
                             Total Assets
                         </Typography>
-                        <Typography variant="h3">$2,400,000</Typography>
+                        <Typography variant="h3">{totalAssets}</Typography>
                     </Grid>
                     <Grid item>
                         <Avatar className={classes.avatar}>
@@ -89,4 +94,4 @@ const Asset: React.FC = props => {
     );
 };
 
-export default Asset;
+export default TotalAssets;

@@ -1,6 +1,6 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
 import actionCreatorFactory from 'typescript-fsa';
-import { App, Loading, Error, State, LoadingState } from '../../../types/types'
+import { App, Loading, Error, State, LoadingState } from '../../../types'
 
 const actionCreator = actionCreatorFactory();
 

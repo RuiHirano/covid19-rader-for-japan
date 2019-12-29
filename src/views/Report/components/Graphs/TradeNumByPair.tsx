@@ -2,7 +2,6 @@ import React from "react";
 import { Doughnut } from "react-chartjs-2";
 import clsx from "clsx";
 import { makeStyles, Theme, useTheme } from "@material-ui/core/styles";
-import { ChartData, ChartOptions } from "chart.js";
 import {
     Card,
     CardHeader,
@@ -14,8 +13,10 @@ import {
 } from "@material-ui/core";
 import LaptopMacIcon from "@material-ui/icons/LaptopMac";
 import PhoneIphoneIcon from "@material-ui/icons/PhoneIphone";
+import { ChartData } from "chart.js";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import TabletMacIcon from "@material-ui/icons/TabletMac";
+import { PairRatio } from "../../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -40,13 +41,36 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-const TradeNumByPair: React.FC = props => {
-    //const { className, ...rest } = props;
+const createData = (tradeNumByPairData: PairRatio[], theme: Theme) => {
+    const labels: string[] = [];
+    const values: number[] = [];
 
-    const classes = useStyles();
-    const theme = useTheme();
+    tradeNumByPairData.forEach((value, index) => {
+        labels.push(value.Pair);
+        values.push(value.Num);
+    });
+    const data: ChartData = {
+        labels: labels,
+        datasets: [
+            {
+                label: "this",
+                data: values,
+                backgroundColor: [
+                    theme.palette.primary.main,
+                    theme.palette.error.main,
+                    //theme.palette.warning.main
+                    theme.palette.error.main
+                ],
+                borderWidth: 8,
+                //borderColor: theme.palette.white,
+                //hoverBorderColor: theme.palette.white
+                borderColor: theme.palette.common.white,
+                hoverBorderColor: theme.palette.common.white
+            }
+        ]
+    };
 
-    const data: object = {
+    /*const data: object = {
         datasets: [
             {
                 data: [63, 15, 22],
@@ -64,7 +88,21 @@ const TradeNumByPair: React.FC = props => {
             }
         ],
         labels: ["Desktop", "Tablet", "Mobile"]
-    };
+    };*/
+    return data;
+};
+
+interface Props {
+    tradeNumByPairData: PairRatio[];
+}
+
+const TradeNumByPair: React.FC<Props> = props => {
+    const { tradeNumByPairData } = props;
+
+    const classes = useStyles();
+    const theme = useTheme();
+
+    const data = createData(tradeNumByPairData, theme);
 
     const options: object = {
         legend: {
