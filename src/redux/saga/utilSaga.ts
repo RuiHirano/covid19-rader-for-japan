@@ -66,6 +66,7 @@ export function* updatePasswordFirestore(password: string) {
 }
 
 export function* deleteAllDataFirestore(userId: User["ID"]) {
+	console.log("userId", userId, 'users/' + userId)
 	yield call(firestore.deleteDocument, 'users/' + userId)
 	yield call(auth.deleteProfile)
 }

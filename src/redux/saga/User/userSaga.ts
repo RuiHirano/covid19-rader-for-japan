@@ -14,7 +14,7 @@ import {
 	updateUserFirestore,
 } from '../utilSaga'
 import actionCreatorFactory from 'typescript-fsa';
-import { User, Item, Notification, Profile, Setting, Content, BankAccount, Loading, LoadingState, Error, App, State, Language, Plan } from '../../../types'
+import { User, Item, Notification, Profile, Setting, Content, BankAccount, Loading, LoadingState, Error, App, State, Language, Plan, Items } from '../../../types'
 
 
 const actionCreator = actionCreatorFactory();
@@ -641,18 +641,19 @@ function* handleUpdatePassword(action: ReturnType<typeof userActions.updatePassw
 
 	} catch ({ code, message }) {
 		// error
-		let loading = <Loading>{
-			IsLoading: true,
-			LoadingState: LoadingState.UPDATE_PASSWORD
-		}
-		yield updateLoadingStore(loading)
-
 		const errorMessage = "checkErrorCode(code)"
 		let error = <Error>{
 			IsError: true,
 			Status: errorMessage,
 		}
 		yield updateErrorStore(error)
+		// loading終了
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.UPDATE_PASSWORD
+		}
+		yield updateLoadingStore(loading)
+
 		console.log('Update password error... \n', code)
 	}
 }
@@ -666,43 +667,49 @@ function* handleDeleteAccount(action: ReturnType<typeof userActions.deleteAccoun
 		}
 		yield updateErrorStore(error)
 
-		// loading true
+		// loading開始
 		let loading = <Loading>{
 			IsLoading: true,
 			LoadingState: LoadingState.DELETE_ACCOUNT
 		}
 		yield updateLoadingStore(loading)
 
-		// delete account
+		// アカウントとデータベースを削除
 		const user: User = yield select(getUser)
 		yield deleteAllDataFirestore(user.ID)
 
-		// delete store
+		// storeのユーザ情報を初期化
 		const newUser = new User()
 		yield updateUserStore(newUser)
+
+		// storeのItemsを初期化
+		const newItem = new Items([])
+		yield updateItemsStore(newItem)
 
 		// signout
 		let appState: State = yield select(getAppState)
 		appState.IsSignIn = false
 		yield updateAppStateStore(appState)
 
-		// loading false
+		// loading終了
 		loading.IsLoading = false
 		yield updateLoadingStore(loading)
 	} catch ({ code, message }) {
 		// error
-		let loading = <Loading>{
-			IsLoading: true,
-			LoadingState: LoadingState.DELETE_ACCOUNT
-		}
-		yield updateLoadingStore(loading)
-
 		const errorMessage = "checkErrorCode(code)"
 		let error = <Error>{
 			IsError: true,
 			Status: errorMessage,
 		}
 		yield updateErrorStore(error)
+
+		// ローディング終了
+		let loading = <Loading>{
+			IsLoading: true,
+			LoadingState: LoadingState.DELETE_ACCOUNT
+		}
+		yield updateLoadingStore(loading)
+
 		console.log('Delete account error... \n', code)
 	}
 }
