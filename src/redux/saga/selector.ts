@@ -1,5 +1,5 @@
 
-import { AppState } from '../module/rootModule'
+import { AppState } from '../module'
 
 export const getItems = (state: AppState) => state.Items
 export const getUser = (state: AppState) => state.User

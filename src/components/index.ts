@@ -1,3 +1,3 @@
-export { default as SearchInput } from './SearchInput';
-export { default as StatusBullet } from './StatusBullet';
-export { default as RouteWithLayout } from './RouteWithLayout';
+export { default as SearchInput } from './search-input';
+export { default as StatusBullet } from './status-bullet';
+export { default as RouteWithLayout } from './route-with-layout';

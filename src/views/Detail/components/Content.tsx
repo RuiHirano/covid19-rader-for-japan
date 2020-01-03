@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Grid, Button, Typography, CardContent, Card } from "@material-ui/core";
-import { Item } from "../../../types";
+import { Item, Items } from "../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    items: Item[];
+    items: Items;
     toEdit: (item: Item) => void;
 }
 
@@ -39,7 +39,7 @@ const Content: React.FC<Props> = props => {
     const getContent = () => {
         // 月表示のときのみ
         let content: any = [];
-        items.forEach((item, index) => {
+        items.items.forEach((item: Item, index: number) => {
             content.push(
                 <Card
                 //{...rest}

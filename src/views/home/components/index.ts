@@ -1,0 +1,6 @@
+export { default as HeaderTitle } from "./header-title"
+export { default as FeatureTopSection } from "./feature-top-section"
+export { default as FeatureBottomSection } from "./feature-bottom-section"
+export { default as DownloadSection } from "./download-section"
+export { default as PlanSection } from "./plan-section"
+export { default as ReviewSection } from "./review-section"

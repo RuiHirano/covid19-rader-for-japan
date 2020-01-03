@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { LoadingState } from "../../types";
-import { AppState } from "../../redux/module/rootModule";
+import { AppState } from "../../redux/module";
 import { useSelector } from "react-redux";
 
 function usePrevious(value: any) {

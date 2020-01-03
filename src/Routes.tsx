@@ -1,14 +1,10 @@
 import React from "react";
-import { Switch, Redirect, Router, BrowserRouter } from "react-router-dom";
+import { Switch, Redirect } from "react-router-dom";
 
 import { RouteWithLayout } from "./components";
-import { Main as MainLayout, Minimal as MinimalLayout } from "./layouts";
+import { Main as MainLayout, Home as HomeLayout } from "./layouts";
 import {
     Dashboard as DashboardView,
-    //ProductList as ProductListView,
-    //UserList as UserListView,
-    //Typography as TypographyView,
-    //Icons as IconsView,
     Account as AccountView,
     Settings as SettingsView,
     SignUp as SignUpView,
@@ -19,8 +15,8 @@ import {
     History as HistoryView,
     Report as ReportView
 } from "./views";
-import EntryFormView from "./views/EntryForm/EntryForm";
-import DetailView from "./views/Detail/Detail";
+import EntryFormView from "./views/entry-form";
+import DetailView from "./views/detail";
 
 const Routes: React.FC = () => {
     return (
@@ -29,7 +25,7 @@ const Routes: React.FC = () => {
             <RouteWithLayout
                 component={HomeView}
                 exact
-                layout={MinimalLayout}
+                layout={HomeLayout}
                 path="/home"
             />
             <RouteWithLayout
@@ -83,19 +79,19 @@ const Routes: React.FC = () => {
             <RouteWithLayout
                 component={SignUpView}
                 exact
-                layout={MinimalLayout}
+                layout={HomeLayout}
                 path="/sign-up"
             />
             <RouteWithLayout
                 component={SignInView}
                 exact
-                layout={MinimalLayout}
+                layout={HomeLayout}
                 path="/sign-in"
             />
             <RouteWithLayout
                 component={NotFoundView}
                 exact
-                layout={MinimalLayout}
+                layout={HomeLayout}
                 path="/not-found"
             />
             <Redirect to="/not-found" />

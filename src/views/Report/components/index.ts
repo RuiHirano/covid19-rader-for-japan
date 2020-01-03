@@ -1,3 +1,3 @@
-export { Statistics } from './Statistics';
-export { Graphs } from './Graphs';
-export { DateBar } from './DateBar';
+export { default as Statistics } from './statistics';
+export { default as Graphs } from './graphs';
+export { default as DateBar } from './date-bar';

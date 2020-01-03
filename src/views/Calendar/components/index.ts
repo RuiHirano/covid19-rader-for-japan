@@ -1,2 +1,2 @@
-export { Details } from './Details';
-export { Statistics } from './Statistics';
+export { default as Details } from './details';
+export { default as Statistics } from './statistics';

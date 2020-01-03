@@ -1,3 +1,3 @@
-export { default as AccountDetails } from './AccountDetail';
-export { default as AccountProfile } from './AccountProfile';
-export { default as AccountDelete } from './AccountDelete';
+export { default as AccountDetails } from './account-detail';
+export { default as AccountProfile } from './account-profile';
+export { default as AccountDelete } from './account-delete';
