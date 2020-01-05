@@ -31,14 +31,16 @@ const EmailContainer: React.FC<ContainerProps> = props => {
         dispatch(userActions.updateEmailAction({ email: values.email }));
     };
 
-    const { isLoading, isFinishLoading } = useLoading(
-        LoadingState.UPDATE_EMAIL
-    );
-    useEffect(() => {
-        if (isFinishLoading) {
-            history.push("/dashboard");
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
+            //history.push("/home");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.UPDATE_EMAIL, callback);
 
     return <Email handleUpdateEmail={handleUpdateEmail} />;
 };

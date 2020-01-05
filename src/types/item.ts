@@ -14,30 +14,17 @@ export enum TradeType {
 	DEPOSIT,
 }
 
+export enum ImageStatus {
+	DELETE,
+	UPDATE,
+	NONE,
+}
+
 export interface Image {
+	id: string,
 	url: string,
 	size: number,
-}
-
-export interface a {
-	id: number
-	get(): void
-}
-
-export class b implements a {
-	id = 8
-
-	constructor() {
-
-	}
-
-	get() {
-
-	}
-
-	set() {
-
-	}
+	status: ImageStatus
 }
 
 export class Item {

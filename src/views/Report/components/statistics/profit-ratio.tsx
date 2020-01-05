@@ -66,13 +66,13 @@ const ProfitRatio: React.FC<Props> = props => {
                         </Typography>
                         <Typography variant="h3">{profitRatio}</Typography>
                     </Grid>
-                    <Grid item>
+                    {/*<Grid item>
                         <Avatar className={classes.avatar}>
                             <PeopleIcon className={classes.icon} />
                         </Avatar>
-                    </Grid>
+					</Grid>*/}
                 </Grid>
-                <div className={classes.difference}>
+                {/*<div className={classes.difference}>
                     <ArrowUpwardIcon className={classes.differenceIcon} />
                     <Typography
                         className={classes.differenceValue}
@@ -86,7 +86,7 @@ const ProfitRatio: React.FC<Props> = props => {
                     >
                         Since last month
                     </Typography>
-                </div>
+                </div>*/}
             </CardContent>
         </Card>
     );

@@ -32,17 +32,20 @@ const ContentContainer: React.FC<ContainerProps> = props => {
     const handleUpdateContent = (values: FormikValues) => {
         const content = values.content;
         user.Setting.Content = content;
-        dispatch(userActions.updateUserAction({ user: user }));
+        dispatch(userActions.updateUserAction({ user: user,
+			loadingStatus: LoadingState.UPDATE_CONTENT }));
     };
 
-    const { isLoading, isFinishLoading } = useLoading(
-        LoadingState.UPDATE_PASSWORD
-    );
-    useEffect(() => {
-        if (isFinishLoading) {
-            //history.push("/dashboard");
+	const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
+            //history.push("/home");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.UPDATE_PASSWORD, callback);
 
     const user: User = useSelector((state: AppState) => state.User);
     const content: ContentTypes = user.Setting.Content;

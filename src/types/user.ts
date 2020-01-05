@@ -1,4 +1,5 @@
 import uuid from "uuid"
+import { Image, ImageStatus } from "./item"
 
 export interface Notification {
 	Email: boolean,
@@ -10,7 +11,7 @@ export interface Profile {
 	Age: number,
 	Sex: Sex,
 	Message: string,
-	Thumbnail: string
+	Thumbnail: Image
 }
 
 export interface BankAccount {
@@ -74,7 +75,12 @@ export class User {
 			Age: 0,
 			Message: "",
 			Sex: Sex.MALE,
-			Thumbnail: "",
+			Thumbnail: <Image>{
+				id: "thumbnail",
+				status: ImageStatus.NONE,
+				url: "",
+				size: 0
+			},
 		}
 		this.Setting = <Setting>{
 			Email: "",

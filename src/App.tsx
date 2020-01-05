@@ -12,6 +12,7 @@ import validators from "./common/validators";
 import Routes from "./Routes";
 import configureStore from "./redux/store";
 import { Provider as ReduxProvider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 const Chart = require("react-chartjs-2").Chart;
 
@@ -31,11 +32,13 @@ const { store, persistor } = configureStore();
 const App: React.FC = () => {
     return (
         <ReduxProvider store={store}>
-            <ThemeProvider theme={theme}>
-                <Router history={browserHistory}>
-                    <Routes />
-                </Router>
-            </ThemeProvider>
+            <PersistGate loading={null} persistor={persistor}>
+                <ThemeProvider theme={theme}>
+                    <Router history={browserHistory}>
+                        <Routes />
+                    </Router>
+                </ThemeProvider>
+            </PersistGate>
         </ReduxProvider>
     );
 };

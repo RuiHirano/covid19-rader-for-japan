@@ -30,9 +30,9 @@ const Settings: React.FC = () => {
                 <Grid item md={5} xs={12}>
                     <Password />
                 </Grid>
-                <Grid item md={7} xs={12}>
+                {/*<Grid item md={7} xs={12}>
                     <BankAccount />
-                </Grid>
+	</Grid>*/}
                 <Grid item md={5} xs={12}>
                     <Content />
                 </Grid>

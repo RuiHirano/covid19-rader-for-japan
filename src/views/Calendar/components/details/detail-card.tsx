@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Grid, Card, CardContent, Typography, Button } from "@material-ui/core";
 import { Item } from "../../../../types";
+import { styled } from "@material-ui/core/styles";
+import moment from "moment";
 
 const useStyles = makeStyles((theme: Theme) => ({}));
 
@@ -11,23 +13,45 @@ interface Props {
     toDetail: (item: Item) => void;
 }
 
+const CardContainer = styled(Card)({
+    borderStyle: "solid",
+    borderRadius: 10,
+    borderWidth: 1,
+    margin: 10
+});
+
 const DetailCard: React.FC<Props> = props => {
     const { item, toEdit, toDetail } = props;
-    const classes = useStyles();
 
     return (
-        <Card>
+        <CardContainer>
             <CardContent>
-                <Button onClick={() => toEdit(item)}>Edit</Button>
-                <Button onClick={() => toDetail(item)}>Detail</Button>
-                <Typography variant="h6">{item.TradeType}</Typography>
-                <Typography variant="h6">{item.StartDate}</Typography>
-                <Typography variant="h6">{item.Pair}</Typography>
-                <Typography variant="h6">{item.Lot}</Typography>
-                <Typography variant="h6">{item.Profit}</Typography>
-                <Typography variant="h6">{item.BeforeComment}</Typography>
+                <Button onClick={() => toEdit(item)} variant={"outlined"}>
+                    Edit
+                </Button>
+                <Button onClick={() => toDetail(item)} variant={"outlined"}>
+                    Detail
+                </Button>
+                <Typography variant="subtitle1">
+                    {item.TradeType === 0 ? "FX" : "STOCK"}
+                </Typography>
+                <Typography variant="subtitle1">
+                    {"Time: " + moment(item.StartDate).format("hh:mm")}
+                </Typography>
+                <Typography variant="subtitle1">
+                    {"Pair: " + item.Pair}
+                </Typography>
+                <Typography variant="subtitle1">
+                    {"Lot: " + item.Lot}
+                </Typography>
+                <Typography variant="subtitle1">
+                    {"Profit: " + item.Profit}
+                </Typography>
+                <Typography variant="subtitle1">
+                    {item.BeforeComment}
+                </Typography>
             </CardContent>
-        </Card>
+        </CardContainer>
     );
 };
 

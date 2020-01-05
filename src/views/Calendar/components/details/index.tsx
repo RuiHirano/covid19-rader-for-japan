@@ -8,6 +8,7 @@ import moment, { Moment } from "moment";
 import { Item, Items } from "../../../../types";
 import { withRouter, match } from "react-router";
 import { Iterator } from "../../../../types/iterator";
+import { styled } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -33,6 +34,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         width: "100%"
     }
 }));
+
+const Date = styled(Typography)({
+    textAlign: "center"
+});
 
 interface Props {
     date: Moment;
@@ -77,7 +82,7 @@ const Details: React.FC<Props> = props => {
     return (
         <div>
             <PerfectScrollbar>
-                <Typography variant="h5">{date.toLocaleString()}</Typography>
+                <Date variant="h6">{date.format("YYYY/MM/DD")}</Date>
                 {dateItems.map((item, index) => (
                     <DetailCard
                         item={item}

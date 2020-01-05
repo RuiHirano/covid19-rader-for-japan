@@ -1,44 +1,37 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import {
-    Badge,
-    AppBar,
-    Toolbar,
-    Hidden,
-    IconButton,
-    Button
-} from "@material-ui/core";
 import { useMediaQuery } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
-import MenuIcon from "@material-ui/icons/Menu";
-import NotificationsIcon from "@material-ui/icons/Notifications";
-import InputIcon from "@material-ui/icons/Input";
-import { Footer, Sidebar } from "../components";
+import { Footer, Sidebar, Header } from "../components";
 import theme from "../../styles/theme";
-import imgPath from "../../app/assets/app_icon.png";
 
-const LogoImage = styled("img")({
-    background: theme.palette.primary.main,
-    color: "white",
-    height: 48
-});
-
-const Title = styled(Button)({
-    background: theme.palette.primary.main,
-    fontSize: 20,
-    textAlign: "start",
-    color: "white",
-    height: 48
-});
-
-const Div = styled("div")({
-    background: theme.palette.primary.main,
-    flexGrow: 1
-});
+const drawerWidth = 240;
 
 const ContentContainer = styled("div")({
-    marginTop: 60,
-    paddingLeft: 240
+    paddingTop: 20,
+    paddingRight: 20,
+    paddingLeft: drawerWidth + 20,
+
+    [theme.breakpoints.down("sm")]: {
+        paddingLeft: 20
+    }
+});
+
+const HeaderContainer = styled("div")({
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+
+    [theme.breakpoints.down("sm")]: {
+        width: "100%",
+        marginLeft: 0
+    }
+});
+
+const SidebarContainer = styled("div")({
+    width: drawerWidth,
+
+    [theme.breakpoints.down("sm")]: {
+        width: 0
+    }
 });
 
 interface Props {
@@ -67,54 +60,17 @@ const Main: React.FC<Props> = props => {
 
     return (
         <div>
-            <AppBar>
-                <Toolbar>
-                    <Hidden smUp>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Link to="/">
-                            <LogoImage alt="logo" src={imgPath} />
-                        </Link>
-                        <Title>{"Trading Manager"}</Title>
-                    </Hidden>
-                    <Hidden smDown>
-                        <IconButton
-                            edge="start"
-                            color="inherit"
-                            aria-label="open drawer"
-                        >
-                            <MenuIcon />
-                        </IconButton>
-                        <Link to="/">
-                            <LogoImage alt="logo" src={imgPath} />
-                        </Link>
-                        <Title>{"Trading Manager"}</Title>
-                        <Div />
-                        <IconButton color="inherit">
-                            <Badge
-                                //badgeContent={notifications.length}
-                                color="primary"
-                                variant="dot"
-                            >
-                                <NotificationsIcon />
-                            </Badge>
-                        </IconButton>
-                        <IconButton color="inherit">
-                            <InputIcon />
-                        </IconButton>
-                    </Hidden>
-                </Toolbar>
-            </AppBar>
-            <Sidebar
-                onClose={handleSidebarClose}
-                open={shouldOpenSidebar}
-                variant={isDesktop ? "persistent" : "temporary"}
-            />
+            <HeaderContainer>
+                <Header isHome={false} onSidebarOpen={handleSidebarOpen} />
+            </HeaderContainer>
+            <SidebarContainer>
+                <Sidebar
+                    isHome={false}
+                    onClose={handleSidebarClose}
+                    open={shouldOpenSidebar}
+                    variant={isDesktop ? "permanent" : "temporary"}
+                />
+            </SidebarContainer>
             <ContentContainer>{children}</ContentContainer>
         </div>
     );

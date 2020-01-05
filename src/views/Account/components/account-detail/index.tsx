@@ -30,15 +30,20 @@ const AccountDetailContainer: React.FC<ContainerProps> = props => {
     const handleUpdateProfile = (values: FormikValues) => {
         const profile = values.profile;
         user.Setting.Plan = profile;
-        dispatch(userActions.updateUserAction({ user: user }));
+        dispatch(userActions.updateUserAction({ user: user,
+			loadingStatus: LoadingState.UPDATE_PROFILE }));
     };
 
-    const { isLoading, isFinishLoading } = useLoading(LoadingState.UPDATE_USER);
-    useEffect(() => {
-        if (isFinishLoading) {
-            //history.push("/dashboard");
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
+            //history.push("/home");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.UPDATE_PROFILE, callback);
 
     const user: User = useSelector((state: AppState) => state.User);
     let profile: Profile = user.Profile;

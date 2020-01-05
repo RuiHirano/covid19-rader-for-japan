@@ -2,9 +2,10 @@ import { put, call, all, take } from 'redux-saga/effects'
 import { AppActions } from '../module/app'
 import { ItemActions } from '../module/item'
 import { UserActions } from '../module/user'
-import firebase from './../../app/firebase'
+import firebase from '../firebase'
 import ReduxSagaFirebase from 'redux-saga-firebase'
-import { Item, Loading, State, User, Error, Setting, Image, Items } from '../../types'
+import { Item, Loading, State, User, Error, Setting, Image, Items, ImageStatus } from '../../types'
+import uuid from 'uuid'
 
 const rsf = new ReduxSagaFirebase(firebase)
 const { firestore, auth, storage } = rsf
@@ -81,14 +82,40 @@ function fetchImageBlob(url: string): Promise<any> {
 		})
 }
 
+export function* uploadThumbnailStorage(thumbnail: Image, userID: User["ID"]) {
+	var fileDir = '/users/' + userID + '/'
+	var filePath = fileDir + "thumbnail"
+	const metadata = { contentType: 'image/jpeg' }
+	const status = thumbnail.status
+	if (status === ImageStatus.DELETE) {
+		yield call(storage.deleteFile, filePath)
+	} else if (status === ImageStatus.UPDATE) {
+		yield call(storage.uploadString, filePath, thumbnail.url, 'data_url', metadata)
+	}
+
+	// fireStorageのURLを取得
+	const url: string = yield call(storage.getDownloadURL, filePath)
+	const metadata2: any = yield call(storage.getFileMetadata, filePath)
+
+	const image: Image = {
+		url: url,
+		status: ImageStatus.NONE,
+		id: thumbnail.id,
+		size: metadata2.size,
+	}
+	return image
+}
+
 export function* uploadImageStorage(images: Item["Images"], userID: User["ID"], itemID: string) {
 	var fileDir = '/users/' + userID + '/items/' + itemID + '/'
+	/*// Blob形式に変換
 	var blobs: any[] = yield all(
 		images.map(image => {
 			return call(fetchImageBlob, image.url)
 		})
 	)
 
+	// 画像を保存
 	yield all(
 		blobs.map((blob, index) => {
 			var fileName = 'image-' + index
@@ -96,33 +123,72 @@ export function* uploadImageStorage(images: Item["Images"], userID: User["ID"], 
 			const metadata = { contentType: 'image/jpeg' }
 			return call(storage.uploadFile, filePath, blob, metadata)
 		})
+	)*/
+	// コピー
+	var imgs = images.concat()
+	// ImageStatus: DELETEの画像を削除
+	yield all(
+		images.map((image, index) => {
+			if (image.status === ImageStatus.DELETE) {
+				// imgsから削除
+				imgs.splice(index, 1)
+				console.log("delete", image)
+				var filePath = fileDir + image.id
+				return call(storage.deleteFile, filePath)
+			}
+		})
 	)
 
+	// ImageStatus: UPDATEの画像を保存
+	yield all(
+		imgs.map((image, index) => {
+			if (image.status === ImageStatus.UPDATE) {
+				var filePath = fileDir + image.id
+				const metadata = { contentType: 'image/jpeg' }
+				return call(storage.uploadString, filePath, image.url, 'data_url', metadata)
+			}
+		})
+	)
+
+
+	/*// Firestorage上の画像のURLを取得
 	var storageUrls: string[] = yield all(
 		blobs.map((blob, index) => {
 			var fileName = 'image-' + index
 			var filePath = fileDir + fileName
 			return call(storage.getDownloadURL, filePath)
 		})
+	)*/
+
+	// 画像のfirestoreのURLを取得
+	var storageUrls: string[] = yield all(
+		imgs.map((image, index) => {
+			var filePath = fileDir + image.id
+			return call(storage.getDownloadURL, filePath)
+		})
 	)
+
+	// メタデータ取得
 	var metadatas: any[] = yield all(
 		storageUrls.map((url, index) => {
-			var fileName = 'image-' + index
-			var filePath = fileDir + fileName
+			var filePath = fileDir + imgs[index].id
 			return call(storage.getFileMetadata, filePath)
 		})
 	)
-	// modified storageSize
+	// storageSizeを計算
 	var storageSizes: number[] = []
 	metadatas.forEach(meta => {
 		storageSizes.push(meta.size)
 	})
 
+	//新しく作成
 	let newImages: Item["Images"] = []
 	storageUrls.forEach((url: string, index: number) => {
 		newImages.push({
+			id: imgs[index].id,
 			url: url,
-			size: storageSizes[index]
+			size: storageSizes[index],
+			status: ImageStatus.NONE
 		})
 	});
 

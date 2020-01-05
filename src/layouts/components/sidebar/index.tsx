@@ -1,66 +1,67 @@
 import React, { useState, useEffect } from "react";
-import clsx from "clsx";
-import PropTypes from "prop-types";
-import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Divider, Drawer } from "@material-ui/core";
+import { Divider, Drawer, createStyles, Theme } from "@material-ui/core";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import PeopleIcon from "@material-ui/icons/People";
-import ShoppingBasketIcon from "@material-ui/icons/ShoppingBasket";
-import TextFieldsIcon from "@material-ui/icons/TextFields";
-import ImageIcon from "@material-ui/icons/Image";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import SettingsIcon from "@material-ui/icons/Settings";
-import LockOpenIcon from "@material-ui/icons/LockOpen";
 import { useLoading } from "../../../common/hooks/useLoading";
 import { LoadingState } from "../../../types";
 import { useDispatch } from "react-redux";
 import { signActions } from "../../../redux/saga/sign";
 import { withRouter, RouteComponentProps, match } from "react-router";
 import * as H from "history";
+import { styled } from "@material-ui/core/styles";
+import theme from "../../../styles/theme";
 
 import SidebarNav from "../sidebar-nav";
 import Profile from "../profile";
+import { makeStyles } from "@material-ui/styles";
 
-const useStyles = makeStyles((theme: Theme) => ({
-    drawer: {
-        width: 240,
-        marginTop: 64,
-        [theme.breakpoints.up("lg")]: {
-            marginTop: 64,
-            height: "calc(100% - 64px)"
+const drawerWidth = 240;
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            display: "flex"
+        },
+        appBar: {
+            width: `calc(100% - ${drawerWidth}px)`,
+            marginLeft: drawerWidth
+        },
+        drawer: {
+            width: drawerWidth,
+            flexShrink: 0
+        },
+        drawerPaper: {
+            width: drawerWidth
+        },
+        toolbar: theme.mixins.toolbar,
+        content: {
+            flexGrow: 1,
+            backgroundColor: theme.palette.background.default,
+            padding: theme.spacing(3)
         }
-    },
-    root: {
-        backgroundColor: theme.palette.common.white,
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-        padding: theme.spacing(2)
-    },
-    divider: {
-        margin: theme.spacing(2, 0)
-    },
-    nav: {
-        marginBottom: theme.spacing(2)
-    }
-}));
+    })
+);
+
+const DrawerContainer = styled(props => <div {...props} />)({
+    width: props => (props.isHome === true ? 0 : drawerWidth)
+});
 
 interface Props {
     history: H.History;
     location: H.Location;
     match: match;
-    className?: string;
+    isHome: boolean;
     onClose: () => void;
     open: boolean;
     variant: "permanent" | "persistent" | "temporary" | undefined;
 }
 
 const Sidebar: React.FC<Props> = props => {
-    const { open, variant, onClose, className, history } = props;
+    const { open, variant, onClose, history, isHome } = props;
 
-    const classes = useStyles();
-
-    const pages = [
+    const mainPages = [
         {
             title: "Dashboard",
             href: "/dashboard",
@@ -98,15 +99,31 @@ const Sidebar: React.FC<Props> = props => {
         }
     ];
 
+    const homePages = [
+        {
+            title: "Sign In",
+            href: "/sign-in",
+            icon: <SettingsIcon />
+        },
+        {
+            title: "Sign Up",
+            href: "/sign-up",
+            icon: <SettingsIcon />
+        }
+    ];
+
     const dispatch = useDispatch();
 
-    const { isLoading, isFinishLoading } = useLoading(LoadingState.SIGN_OUT);
-
-    useEffect(() => {
-        if (isFinishLoading) {
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
             history.push("/");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.SIGN_OUT, callback);
 
     const handleSignOut = () => {
         dispatch(signActions.signOutAction());
@@ -119,22 +136,29 @@ const Sidebar: React.FC<Props> = props => {
     };
 
     return (
-        <Drawer
-            anchor="left"
-            classes={{ paper: classes.drawer }}
-            onClose={onClose}
-            open={open}
-            variant={variant}
-        >
-            <div className={clsx(classes.root, className)}>
-                <Profile />
-                <Divider className={classes.divider} />
-                <SidebarNav
-                    className={classes.nav}
-                    pages={pages}
-                    signout={signout}
-                />
-            </div>
+        <Drawer anchor="left" onClose={onClose} open={open} variant={variant}>
+            {isHome ? (
+                <DrawerContainer isHome={isHome}>
+                    <Divider />
+                    <SidebarNav
+                        pages={homePages}
+                        isHome={true}
+                        signout={signout}
+                        onClose={onClose}
+                    />
+                </DrawerContainer>
+            ) : (
+                <DrawerContainer isHome={isHome}>
+                    <Profile />
+                    <Divider />
+                    <SidebarNav
+                        isHome={false}
+                        pages={mainPages}
+                        signout={signout}
+                        onClose={onClose}
+                    />
+                </DrawerContainer>
+            )}
         </Drawer>
     );
 };

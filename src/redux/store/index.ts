@@ -106,7 +106,7 @@ export default function configureStore() {
 
 	// 永続化の設定
 	const persistConfig = {
-		key: 'root', // Storageに保存されるキー名を指定する
+		key: 'root2', // Storageに保存されるキー名を指定する
 		storage, // 保存先としてlocalStorageがここで設定される
 		transforms: [dateTransform],
 		//whitelist: ['userStatus'] // Stateは`todos`のみStorageに保存する

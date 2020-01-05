@@ -14,10 +14,11 @@ import {
 } from "@material-ui/core";
 import { withRouter, match } from "react-router";
 import * as H from "history";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { LoadingState } from "../../../../types";
 import { useLoading } from "../../../../common/hooks/useLoading";
 import { userActions } from "../../../../redux/saga/user";
+import { AppState } from "../../../../redux/module";
 
 // Container
 interface ContainerProps {
@@ -32,15 +33,16 @@ const AccountDeleteContainer: React.FC<ContainerProps> = props => {
         dispatch(userActions.deleteAccountAction());
     };
 
-    const { isLoading, isFinishLoading } = useLoading(
-        LoadingState.DELETE_ACCOUNT
-    );
-    useEffect(() => {
-        console.log("delete account", isFinishLoading);
-        if (isFinishLoading) {
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("toHome");
             history.push("/home");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.DELETE_ACCOUNT, callback);
 
     return <AccountDelete handleDeleteAccount={handleDeleteAccount} />;
 };

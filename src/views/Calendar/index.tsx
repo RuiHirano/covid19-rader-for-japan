@@ -78,7 +78,7 @@ const CalendarView: React.FC<Props> = props => {
         items.items.forEach((item: Item, index: number) => {
             if (moment(item.StartDate).isSame(moment(date), "days")) {
                 content.push(
-                    <Typography variant={"h6"}>{item.Pair}</Typography>
+                    <Typography variant={"subtitle1"}>{item.Pair}</Typography>
                 );
             }
         });
@@ -129,7 +129,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     detail: {
         height: "100%",
-        display: "flex",
         backgroundColor: theme.palette.common.white
     },
     statistics: {

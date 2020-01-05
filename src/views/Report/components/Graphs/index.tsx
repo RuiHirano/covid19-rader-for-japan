@@ -1,12 +1,6 @@
 import React from "react";
-import {
-    makeStyles,
-    Theme,
-    useTheme
-} from "@material-ui/core/styles";
-import {
-    Grid
-} from "@material-ui/core";
+import { makeStyles, Theme, useTheme } from "@material-ui/core/styles";
+import { Grid } from "@material-ui/core";
 import TotalAssets from "./total-assets";
 import ProfitTransition from "./profit-transition";
 import ProfitByDate from "./profit-by-date";
@@ -63,20 +57,20 @@ const Graphs: React.FC<Props> = props => {
                         profitData={statsValues.Graphs.ProfitTransition}
                     />
                 </Grid>
-                <Grid item lg={6} sm={6} xl={3} xs={12}>
+                {/*<Grid item lg={6} sm={6} xl={3} xs={12}>
                     <ProfitByDate />
-                </Grid>
+					</Grid>*/}
                 <Grid item lg={6} sm={6} xl={3} xs={12}>
                     <ProfitByPair
                         profitByPairData={statsValues.Graphs.PairRatio}
                     />
                 </Grid>
-                <Grid item lg={8} md={12} xl={9} xs={12}>
+                <Grid item lg={6} md={6} xl={3} xs={12}>
                     <TradeNumByPair
                         tradeNumByPairData={statsValues.Graphs.PairRatio}
                     />
                 </Grid>
-                <Grid item lg={4} md={6} xl={3} xs={12}>
+                <Grid item lg={6} md={6} xl={3} xs={12}>
                     <TradeNumByClass
                         tradeNumByClassData={statsValues.Graphs.TradeTypeRatio}
                     />

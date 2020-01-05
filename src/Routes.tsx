@@ -31,48 +31,56 @@ const Routes: React.FC = () => {
             <RouteWithLayout
                 component={DashboardView}
                 exact
+                auth
                 layout={MainLayout}
                 path="/dashboard"
             />
             <RouteWithLayout
                 component={CalendarView}
                 exact
+                auth
                 layout={MainLayout}
                 path="/calendar"
             />
             <RouteWithLayout
                 component={EntryFormView}
                 exact
+                auth
                 layout={MainLayout}
                 path="/entry/:itemId"
             />
             <RouteWithLayout
                 component={DetailView}
                 exact
+                auth
                 layout={MainLayout}
                 path="/detail/:date"
             />
             <RouteWithLayout
                 component={HistoryView}
                 exact
+                auth
                 layout={MainLayout}
                 path="/history"
             />
             <RouteWithLayout
                 component={ReportView}
                 exact
+                auth
                 layout={MainLayout}
                 path="/report"
             />
             <RouteWithLayout
                 component={AccountView}
                 exact
+                auth
                 layout={MainLayout}
                 path="/account"
             />
             <RouteWithLayout
                 component={SettingsView}
                 exact
+                auth
                 layout={MainLayout}
                 path="/settings"
             />

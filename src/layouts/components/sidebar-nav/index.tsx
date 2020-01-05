@@ -1,11 +1,10 @@
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/display-name */
 import React, { forwardRef } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
 import clsx from "clsx";
-import PropTypes from "prop-types";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { List, ListItem, Button, colors } from "@material-ui/core";
+import { styled } from "@material-ui/core/styles";
+import theme from "../../../styles/theme";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -40,6 +39,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
+const SidebarContainer = styled("div")({
+    paddingLeft: 15
+});
+
 const CustomRouterLink = forwardRef((props: any, ref: any) => (
     <div ref={ref} style={{ flexGrow: 1 }}>
         <RouterLink {...props} />
@@ -47,51 +50,59 @@ const CustomRouterLink = forwardRef((props: any, ref: any) => (
 ));
 
 interface Props {
-    className: string;
     pages: { title: string; href: string; icon: any }[];
+    isHome: boolean;
     signout: { title: string; icon: any; handleSignOut: () => void };
+    onClose: () => void;
 }
 
 const SidebarNav: React.FC<Props> = props => {
-    const { pages, className, signout } = props;
+    const { pages, signout, isHome, onClose } = props;
 
     const classes = useStyles();
 
     return (
-        <List className={clsx(classes.root, className)}>
-            {pages.map(page => (
-                <ListItem
-                    className={classes.item}
-                    disableGutters
-                    key={page.title}
-                >
-                    <Button
-                        activeClassName={classes.active}
-                        className={classes.button}
-                        component={CustomRouterLink}
-                        to={page.href}
+        <SidebarContainer>
+            <List>
+                {pages.map(page => (
+                    <ListItem
+                        className={classes.item}
+                        disableGutters
+                        key={page.title}
                     >
-                        <div className={classes.icon}> {page.icon} </div>
-                        {page.title}
-                    </Button>
-                </ListItem>
-            ))}
-            <ListItem
-                className={classes.item}
-                disableGutters
-                key={signout.title}
-            >
-                <Button
-                    //activeClassName={classes.active}
-                    className={classes.button}
-                    //component={CustomRouterLink}
-                    onClick={() => signout.handleSignOut()}
-                >
-                    <div className={classes.icon}> {signout.icon} </div>
-                    {signout.title}
-                </Button>
-            </ListItem>
-        </List>
+                        <Button
+                            activeClassName={classes.active}
+                            className={classes.button}
+                            component={CustomRouterLink}
+                            onClick={() => onClose()}
+                            to={page.href}
+                        >
+                            <div className={classes.icon}> {page.icon} </div>
+                            {page.title}
+                        </Button>
+                    </ListItem>
+                ))}
+                {isHome ? (
+                    <div />
+                ) : (
+                    <ListItem
+                        className={classes.item}
+                        disableGutters
+                        key={signout.title}
+                    >
+                        <Button
+                            //activeClassName={classes.active}
+                            className={classes.button}
+                            //component={CustomRouterLink}
+                            onClick={() => signout.handleSignOut()}
+                        >
+                            <div className={classes.icon}> {signout.icon} </div>
+                            {signout.title}
+                        </Button>
+                    </ListItem>
+                )}
+            </List>
+        </SidebarContainer>
     );
 };
 

@@ -72,12 +72,12 @@ const Statistics: React.FC<Props> = props => {
             <Grid item lg={3} sm={6} xl={3} xs={12}>
                 <ProfitRatio profitRatio={statsValues.Statistics.ProfitRatio} />
             </Grid>
-            <Grid item lg={8} md={12} xl={9} xs={12}>
+            <Grid item lg={3} md={6} xl={3} xs={12}>
                 <ExpectedValue
                     expectedValue={statsValues.Statistics.ProfitAve}
                 />
             </Grid>
-            <Grid item lg={4} md={6} xl={3} xs={12}>
+            <Grid item lg={3} md={6} xl={3} xs={12}>
                 <BankruptRate
                     bankruptRate={statsValues.Statistics.ProfitBefore}
                 />

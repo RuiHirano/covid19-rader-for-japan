@@ -241,90 +241,10 @@ function* handleSignOut(action: ReturnType<typeof signActions.signOutAction>) {
 	}
 }
 
-/*function* handleIsSignInRequest(action: ReturnType<typeof signActions.isSignInRequest>) {
-    try {
-        // loading true
-        const loadingStatus = "IS_SIGN_IN"
-        yield updateLoadingState({loadingStatus: loadingStatus, isLoading: true, error: false, errorMessage: "" })
-
-        // checkIsSignIn
-        const { user, error } = yield checkIsSignIn()
-
-        // update userStatus
-        var userStatus = yield select(getUserStatus)
-        if (user) {
-            userStatus = 'SIGNIN'
-        }
-        yield updateUserStatusToStore({ userStatus: userStatus })
-
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    } catch ({ code, message }) {
-        // error
-        const errorMessage = "checkErrorCode(code)"
-        const loadingStatus = "IS_SIGN_IN"
-        yield updateLoadingState({
-            loadingStatus: loadingStatus,
-            isLoading: false,
-            error: true,
-            errorMessage: errorMessage,
-        })
-        console.log('isSignin error... \n', code)
-    }
-}
-
-function* handleCheckIsMatchPasswordRequest(action: ReturnType<typeof signActions.checkIsMatchPasswordRequest>) {
-    try {
-        const password = action.payload
-
-        // loading true
-        const loadingStatus = "CHECK_PASSWORD"
-        yield updateLoadingState({loadingStatus: loadingStatus, isLoading: true, error: false, errorMessage: "" })
-
-        // isCheckPassword false
-        var isMatchPassword = false
-        yield updateIsMatchPasswordToStore({ isMatchPassword: isMatchPassword })
-
-        // checkIsSignIn
-        var userData = yield select(getUserData)
-        const email = userData.email
-        const { data } = yield checkPassword({
-            password: password,
-            email: email,
-        })
-
-        // isCheckPassword true
-        isMatchPassword = true
-        yield updateIsMatchPasswordToStore({ isMatchPassword: isMatchPassword })
-
-        // loading false
-        loading.IsLoading = false
-        yield updateLoadingStore(loading)
-    } catch ({ code, message }) {
-        // isCheckPassword false
-        isMatchPassword = false
-        yield updateIsMatchPasswordToStore({ isMatchPassword: isMatchPassword })
-
-        // error
-        const errorMessage = "checkErrorCode(code)"
-        const loadingStatus = "CHECK_PASSWORD"
-        yield updateLoadingState({
-            loadingStatus: loadingStatus,
-            isLoading: false,
-            error: true,
-            errorMessage: errorMessage,
-        })
-        console.log('check password error... \n', code)
-    }
-}*/
-
 function* signSaga() {
 	yield takeEvery(SignActions.SIGN_IN_ACTION, handleSignIn)
 	yield takeEvery(SignActions.SIGN_UP_ACTION, handleSignUp)
 	yield takeEvery(SignActions.SIGN_OUT_ACTION, handleSignOut)
-	//yield takeEvery(signActions.isSignInRequest.toString(), handleIsSignInRequest)
-	//yield takeEvery(signActions.checkIsMatchPasswordRequest.toString(), handleCheckIsMatchPasswordRequest)
 }
 
 export default signSaga

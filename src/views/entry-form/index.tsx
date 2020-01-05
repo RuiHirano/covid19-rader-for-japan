@@ -65,15 +65,19 @@ const EntryFormContainer: React.FC<ContainerProps> = props => {
         history.goBack();
     };
 
-    const { isLoading, isFinishLoading } = useLoading(LoadingState.CREATE_ITEM);
 
     const [item, setItem] = useState(new Item());
 
-    useEffect(() => {
-        if (isFinishLoading) {
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
             history.push("/dashboard");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.CREATE_ITEM, callback);
 
     useEffect(() => {
         if (match.params.itemId === "new") {

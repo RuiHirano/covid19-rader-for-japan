@@ -33,14 +33,16 @@ const PasswordContainer: React.FC<ContainerProps> = props => {
         );
     };
 
-    const { isLoading, isFinishLoading } = useLoading(
-        LoadingState.UPDATE_PASSWORD
-    );
-    useEffect(() => {
-        if (isFinishLoading) {
-            history.push("/dashboard");
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
+            //history.push("/home");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.UPDATE_PASSWORD, callback);
 
     return <Password handleUpdatePassword={handleUpdatePassword} />;
 };

@@ -1,18 +1,11 @@
-import { put, takeEvery, call, all } from 'redux-saga/effects'
-import { generateUid } from '../../../common/genuid'
+import { takeEvery } from 'redux-saga/effects'
 import { select } from 'redux-saga/effects'
 import { getItems, getUser } from '../selector'
 import uuid from 'uuid/v1';
 import {
 	updateLoadingStore,
-	updateUserStore,
 	updateErrorStore,
-	updateEmailFirestore,
-	updatePasswordFirestore,
-	deleteAllDataFirestore,
-	updateAppStateStore,
 	updateItemsStore,
-	updateUserFirestore,
 	uploadImageStorage,
 	updateItemFirestore,
 	deleteImageStorage,
@@ -22,7 +15,6 @@ import actionCreatorFactory from 'typescript-fsa';
 import { Item, Loading, LoadingState, Error, User, Items } from '../../../types'
 
 import moment from 'moment'
-import { Iterator } from '../../../types/iterator';
 
 const actionCreator = actionCreatorFactory();
 
@@ -38,14 +30,6 @@ export interface DeleteItemState {
 	item: Item,
 }
 
-/*export interface ImportItemsFromTradingManagerState{
-    items: Item[],
-}
-
-export interface SearchTagsState {
-    searchTags: string[],
-}*/
-
 export enum ItemActions {
 	CREATE_ITEM_ACTION = "CREATE_ITEM_ACTION",
 	UPDATE_ITEM_ACTION = "UPDATE_ITEM_ACTION",
@@ -56,8 +40,6 @@ export const itemActions = {
 	createItemAction: actionCreator<CreateItemState>('CREATE_ITEM_ACTION'),
 	updateItemAction: actionCreator<UpdateItemState>('UPDATE_ITEM_ACTION'),
 	deleteItemAction: actionCreator<DeleteItemState>('DELETE_ITEM_ACTION'),
-	//downloadItemImageRequest: actionCreator('DOWNLOAD_ITEM_IMAGE_REQUEST'),
-	//updateSearchTagsRequest: actionCreator<SearchTagsState>('UPDATE_SEARCH_TAGS_REQUEST'),
 };
 
 
@@ -85,10 +67,10 @@ function* handleCreateItem(action: ReturnType<typeof itemActions.createItemActio
 		item.ID = itemId
 
 		// 画像をStorageへ保存
-		//const images: Item["Images"] = yield uploadImageStorage(item.Images, userId, itemId)
+		const images: Item["Images"] = yield uploadImageStorage(item.Images, user.ID, itemId)
 
 		// imageを更新
-		//item.Images = images
+		item.Images = images
 
 
 		// Itemをfirebaseへ保存
@@ -143,19 +125,11 @@ function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemActio
 		const user: User = yield select(getUser)
 		//const userId = user.ID
 
-		// 画像をfirebaseへupload
-		//const { imagePaths, imageSizes } = yield uploadImageStorage(item.Images, userId, itemId)
+		// 画像をStorageへ保存
+		const images: Item["Images"] = yield uploadImageStorage(item.Images, user.ID, item.ID)
 
 		// imageを更新
-		/*let images: Item["Images"] = []
-		imagePaths.forEach((url: string, index: number) => {
-			images.push({
-				url: url,
-				size: imageSizes[index]
-			})
-		});
-		item.Images = images*/
-		console.log("debug item", item)
+		item.Images = images
 
 		// itemをFirestoreへupload
 		yield updateItemFirestore(item, user)
@@ -167,7 +141,6 @@ function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemActio
 				items.updateItem(index, item)
 			}
 		})
-		console.log("debug items", items)
 
 		//yield updateItemFirestore(items, user)
 		yield updateItemsStore(items)
@@ -253,147 +226,9 @@ function* handleDeleteItem(action: ReturnType<typeof itemActions.deleteItemActio
 	}
 }
 
-/*function* handleUpdatePassData(action) {
-    try {
-        const { passData } = action.payload
-
-        // loading true
-        const loadingStatus = "UPDATE_PASS_DATA"
-        yield updateLoadingState({loadingStatus: loadingStatus, isLoading: true, error: false })
-
-        // update items state
-        yield updatePassDataToStore({ passData: passData })
-
-        // loading false
-        yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false })
-    } catch ({ code, message }) {
-        // error
-        const error_message = checkErrorCode(code)
-        const loadingStatus = "UPDATE_PASS_DATA"
-        yield updateLoadingState({
-            loadingStatus: loadingStatus,
-            isLoading: false,
-            error: true,
-            error_message: error_message,
-        })
-        console.log('Update PassData error... \n', code)
-    }
-}*/
-
-/*function* handleDownloadItemImageRequest(action: ReturnType<typeof itemActions.downloadItemImageRequest>) {
-    try {
-        const { passData } = action.payload
-        const { item } = passData
-        const { imagePaths } = item
-
-        // loading true
-        const loadingStatus = "DOWNLOAD_ITEM_IMAGE"
-        yield updateLoadingState({loadingStatus: loadingStatus, isLoading: true, error: false })
-
-        //download item image from storage
-        const images = yield downloadImageFromStorage({
-            imagePaths: imagePaths,
-        })
-
-        // update items state
-        item.images = images
-        passData.item = item
-        console.log('passdata', passData)
-        yield updatePassDataToStore({ passData: passData })
-
-        // loading false
-        yield updateLoadingState({loadingStatus: loadingStatus, isLoading: false, error: false })
-    } catch ({ code, message }) {
-        // error
-        const error_message = checkErrorCode(code)
-        const loadingStatus = "DOWNLOAD_ITEM_IMAGE"
-        yield updateLoadingState({
-            loadingStatus: loadingStatus,
-            isLoading: false,
-            error: true,
-            error_message: error_message,
-        })
-        console.log('Download Item Image error... \n', code)
-    }
-}*/
-
-/*function* handleUpdateSearchTags(action: ReturnType<typeof itemActions.updateSearchTagsRequest>) {
-    try {
-        const { searchTags } = action.payload
-
-        // loading true
-        const loadingStatus = "UPDATE_SEARCH_TAGS"
-        yield updateLoadingState(<AppState>{loadingStatus: loadingStatus, isLoading: true, error: false, errorMessage: '' })
-
-        // update items state
-        yield updateSearchTagsToStore({ searchTags: searchTags })
-
-        // loading false
-        yield updateLoadingState(<AppState>{loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: '' })
-    } catch ({ code, message }) {
-        // error
-        const errorMessage = checkErrorCode(code)
-        const loadingStatus = "UPDATE_SEARCH_TAGS"
-        yield updateLoadingState(<AppState>{
-            loadingStatus: loadingStatus,
-            isLoading: false,
-            error: true,
-            errorMessage: errorMessage,
-        })
-        console.log('Update PassData error... \n', code)
-    }
-}
-
-function* handleImportItemsFromTradingManagerRequest(action: ReturnType<typeof itemActions.importItemsFromTradingManagerRequest>) {
-    try {
-        const { items } = action.payload
-
-        // loading true
-        const loadingStatus = "IMPORT_ITEM_FROM_TRADING_MANAGER"
-        yield updateLoadingState(<AppState>{loadingStatus: loadingStatus, isLoading: true, error: false, errorMessage: '' })
-
-const userData = yield select(getUserData)
-        const userId = userData.userId
-        // create items to firebase
-        yield createItemsToFirestore({
-            userId: userId,
-            items: items,
-        })
-
-        // regist items to state
-        const storeItems = yield select(getItems)
-        const newItems =  storeItems.concat(items)
-        yield updateItemsToStore(newItems)
-        
-
-        // loading false
-        yield updateLoadingState(<AppState>{loadingStatus: loadingStatus, isLoading: false, error: false, errorMessage: '' })
-    } catch ({ code, message }) {
-        // error
-        const errorMessage = checkErrorCode(code)
-        const loadingStatus = "IMPORT_ITEM_FROM_TRADING_MANAGER"
-        yield updateLoadingState(<AppState>{
-            loadingStatus: loadingStatus,
-            isLoading: false,
-            error: true,
-            errorMessage: errorMessage,
-        })
-        console.log('import items from trading manager error... \n', code)
-    }
-}*/
-
 function* itemSaga() {
 	yield takeEvery(ItemActions.CREATE_ITEM_ACTION, handleCreateItem)
 	yield takeEvery(ItemActions.UPDATE_ITEM_ACTION, handleUpdateItem)
 	yield takeEvery(ItemActions.DELETE_ITEM_ACTION, handleDeleteItem)
-	//yield takeEvery(itemActions.updateSearchTagsRequest.toString(), handleUpdateSearchTags)
-    /*yield takeEvery(
-        itemActions.downloadItemImageRequest.toString(),
-        handleDownloadItemImageRequest
-    )*/
-    /*yield takeEvery(
-        itemActions.importItemsFromTradingManagerRequest.toString(),
-        handleImportItemsFromTradingManagerRequest
-    )*/
 }
 export default itemSaga

@@ -38,15 +38,20 @@ const NotificationContainer: React.FC<ContainerProps> = props => {
     const handleUpdateNotification = (values: FormikValues) => {
         const notification = values.notification;
         user.Setting.Notification = notification;
-        dispatch(userActions.updateUserAction({ user: user }));
+        dispatch(userActions.updateUserAction({ user: user,
+			loadingStatus: LoadingState.UPDATE_NOTIFICATION }));
     };
 
-    const { isLoading, isFinishLoading } = useLoading(LoadingState.UPDATE_USER);
-    useEffect(() => {
-        if (isFinishLoading) {
-            //history.push("/dashboard");
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
+            //history.push("/home");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.UPDATE_NOTIFICATION, callback);
 
     const user: User = useSelector((state: AppState) => state.User);
     let notification: NotificationType = user.Setting.Notification;

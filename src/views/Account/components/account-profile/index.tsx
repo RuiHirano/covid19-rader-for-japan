@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import moment from "moment";
@@ -16,93 +16,153 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { withRouter } from "react-router";
 import { AppState } from "../../../../redux/module";
-import { Setting, Profile } from "../../../../types";
+import {
+    Setting,
+    Profile,
+    User,
+    Image,
+    ImageStatus,
+    LoadingState
+} from "../../../../types";
+import myAvatar from "../../../../app/assets/app_icon.png";
+import Dropzone from "react-dropzone";
+import { userActions } from "../../../../redux/saga/user";
+import { useLoading } from "../../../../common/hooks/useLoading";
 
 // Container
 interface ContainerProps {}
 const AccountProfileContainer: React.FC<ContainerProps> = props => {
     const {} = props;
     const dispatch = useDispatch();
-    const email = useSelector((state: AppState) => state.User.Setting.Email);
-    const name = useSelector((state: AppState) => state.User.Profile.Name);
+
+    const user: User = useSelector((state: AppState) => state.User);
+    const isLoading: boolean = useSelector(
+        (state: AppState) => state.App.Loading.IsLoading
+    );
     console.log("account profile");
-    /*const handleUpdateAccountProfile = (values: FormikValues) => {
+    const handleUpdateUser = (user: User) => {
         dispatch(
-            userActions.updateAccountProfileAction({
-                password: values.password
+            userActions.updateUserAction({
+                user: user,
+                loadingStatus: LoadingState.UPDATE_PROFILE
             })
         );
-    };*/
+    };
 
-    //const { isLoading, isFinishLoading } = useLoading(
-    //    LoadingState.UPDATE_PASSWORD
-    //);
-    /*useEffect(() => {
-        if (isFinishLoading) {
-            //history.push("/dashboard");
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
         }
-    }, [isLoading]);*/
+    };
 
-    return <AccountProfile email={email} name={name} />;
+    useLoading(LoadingState.UPDATE_PROFILE, callback);
+
+    const handleRemoveThumbnail = () => {
+        //Status: DELETEでfire-storageから削除
+        user.Profile.Thumbnail.status = ImageStatus.DELETE;
+        handleUpdateUser(user);
+    };
+    const handleUploadThumbnail = (img: Image) => {
+        // storageに保存
+        user.Profile.Thumbnail = img;
+        handleUpdateUser(user);
+    };
+
+    return (
+        <AccountProfile
+            user={user}
+            handleRemoveThumbnail={handleRemoveThumbnail}
+            handleUploadThumbnail={handleUploadThumbnail}
+        />
+    );
 };
 
 export default withRouter(AccountProfileContainer);
 
 // Presentational
 interface Props {
-    name: Profile["Name"];
-    email: Setting["Email"];
+    user: User;
+    handleRemoveThumbnail: () => void;
+    handleUploadThumbnail: (img: Image) => void;
 }
 
 export const AccountProfile: React.FC<Props> = props => {
-    const { name, email } = props;
+    const { user, handleRemoveThumbnail, handleUploadThumbnail } = props;
 
     const classes = useStyles();
 
-    const user = {
-        name: "Rui Hirano",
-        email: "xxx@xxx.com",
-        avatar: "/images/avatars/avatar_11.png"
-    };
-
     return (
-        <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
-        >
+        <Card>
             <CardContent>
                 <div className={classes.details}>
                     <div>
                         <Typography gutterBottom variant="h2">
-                            {name}
+                            {user.Profile.Name}
                         </Typography>
                         <Typography
                             //className={classes.locationText}
                             color="textSecondary"
                             variant="body1"
                         >
-                            {email}
+                            {user.Setting.Email}
                         </Typography>
                     </div>
-                    <Avatar className={classes.avatar} src={user.avatar} />
-                </div>
-                <div className={classes.progress}>
-                    <Typography variant="body1">
-                        Profile Completeness: 70%
-                    </Typography>
-                    <LinearProgress value={70} variant="determinate" />
+                    <Avatar
+                        className={classes.avatar}
+                        src={
+                            user.Profile.Thumbnail.url === ""
+                                ? myAvatar
+                                : user.Profile.Thumbnail.url
+                        }
+                    />
                 </div>
             </CardContent>
             <Divider />
             <CardActions>
-                <Button
-                    className={classes.uploadButton}
-                    color="primary"
-                    variant="text"
+                <Dropzone
+                    onDrop={(acceptedFiles: File[]) => {
+                        const fileData = acceptedFiles[0];
+                        var reader = new FileReader();
+                        // ファイル読み込みに成功したときの処理
+                        reader.onload = function() {
+                            const url = reader.result;
+                            if (!(url instanceof ArrayBuffer) && url !== null) {
+                                // 同じIDで上書きする
+                                const img: Image = {
+                                    id: user.Profile.Thumbnail.id,
+                                    url: url,
+                                    size: fileData.size,
+                                    status: ImageStatus.UPDATE
+                                };
+                                handleUploadThumbnail(img);
+                            }
+                        };
+                        // ファイル読み込みを実行
+                        reader.readAsDataURL(fileData);
+                    }}
+                    accept="image/jpeg,image/png,image/jpg"
                 >
-                    Upload picture
+                    {({ getRootProps, getInputProps }) => (
+                        <section>
+                            <div {...getRootProps()}>
+                                <input {...getInputProps()} />
+                                <Button
+                                    className={classes.uploadButton}
+                                    color="primary"
+                                    variant="text"
+                                >
+                                    Upload picture
+                                </Button>
+                            </div>
+                        </section>
+                    )}
+                </Dropzone>
+
+                <Button variant="text" onClick={() => handleRemoveThumbnail()}>
+                    Remove picture
                 </Button>
-                <Button variant="text">Remove picture</Button>
             </CardActions>
         </Card>
     );

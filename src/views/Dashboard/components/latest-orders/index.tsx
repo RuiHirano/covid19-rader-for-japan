@@ -46,13 +46,9 @@ const LatestOrders: React.FC<Props> = props => {
 
     const classes = useStyles();
 
-    //const [items] = useState(mockData);
-    //const { items } = props;
 
     return (
         <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
         >
             <CardHeader
                 action={

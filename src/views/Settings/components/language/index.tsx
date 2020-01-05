@@ -48,15 +48,20 @@ const LanguageContainer: React.FC<ContainerProps> = props => {
     const handleUpdateLanguage = (values: FormikValues) => {
         const language = values.language;
         user.Setting.Language = language;
-        dispatch(userActions.updateUserAction({ user: user }));
+        dispatch(userActions.updateUserAction({ user: user,
+			loadingStatus: LoadingState.UPDATE_LANGUAGE}));
     };
 
-    const { isLoading, isFinishLoading } = useLoading(LoadingState.UPDATE_USER);
-    useEffect(() => {
-        if (isFinishLoading) {
-            //history.push("/dashboard");
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
+            //history.push("/home");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.UPDATE_LANGUAGE, callback);
 
     const user: User = useSelector((state: AppState) => state.User);
     const language: LanguageType = user.Setting.Language;

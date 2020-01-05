@@ -1,7 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { Link as RouterLink, withRouter } from "react-router-dom";
-import PropTypes, { string } from "prop-types";
-import validate from "validate.js";
+import React, { useState, useEffect, useCallback } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
     Grid,
@@ -19,7 +16,9 @@ import {
 } from "@material-ui/core";
 import { Formik, yupToFormErrors, FormikValues } from "formik";
 import * as Yup from "yup";
-import { Item, MarketType } from "../../../../types";
+import { Item, MarketType, Image, ImageStatus } from "../../../../types";
+import Dropzone from "react-dropzone";
+import uuid from "uuid";
 
 const useStyles = makeStyles((theme: Theme) => ({
     textField: {
@@ -79,6 +78,8 @@ const Form: React.FC<Props> = props => {
     useEffect(() => {
         console.log("initial", initialValues);
     });
+
+    console.log("render");
 
     return (
         <Formik
@@ -312,21 +313,102 @@ const Form: React.FC<Props> = props => {
                             <MenuItem value={30}>Thirty</MenuItem>
                         </Select>
                     </FormControl>
-                    <TextField
-                        className={classes.textField}
-                        //error={errors.email && touched.email ? true : false}
-                        fullWidth
-                        /*helperText={
-                            errors.email && touched.email ? errors.email : null
-                        }*/
-                        label="Image"
-                        name="Image"
-                        onChange={handleChange("email")}
-                        type="text"
-                        value={values.Profit}
-                        variant="outlined"
-                        onBlur={handleBlur("email")}
-                    />
+
+                    <Dropzone
+                        onDrop={(acceptedFiles: File[]) => {
+                            const fileData = acceptedFiles[0];
+                            var reader = new FileReader();
+                            // ファイル読み込みに成功したときの処理
+                            reader.onload = function() {
+                                const url = reader.result;
+                                if (
+                                    !(url instanceof ArrayBuffer) &&
+                                    url !== null
+                                ) {
+                                    let imgs = values.Images.concat();
+                                    imgs.push({
+                                        id: uuid(),
+                                        url: url,
+                                        size: fileData.size,
+                                        status: ImageStatus.UPDATE
+                                    });
+                                    setFieldValue("Images", imgs);
+                                }
+                            };
+                            // ファイル読み込みを実行
+                            reader.readAsDataURL(fileData);
+                        }}
+                        accept="image/jpeg,image/png,image/jpg"
+                    >
+                        {({ getRootProps, getInputProps }) => (
+                            <section>
+                                <div {...getRootProps()}>
+                                    <input {...getInputProps()} />
+                                    <Button variant="contained">Upload</Button>
+                                </div>
+                            </section>
+                        )}
+                    </Dropzone>
+                    <div style={{ height: 300, width: "100%" }}>
+                        <Typography>preview</Typography>
+                        {values.Images.map((image, index) => {
+                            if (image.status !== ImageStatus.DELETE) {
+                                return (
+                                    <li
+                                        key={index}
+                                        style={{
+                                            display: "inline-block",
+                                            listStyleType: "none",
+                                            width: "200px",
+                                            objectFit: "fill",
+                                            marginRight: "10px",
+                                            position: "relative"
+                                        }}
+                                    >
+                                        <img
+                                            src={image.url}
+                                            width={200}
+                                            height={200}
+                                        />
+
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                backgroundColor: "#fff",
+                                                border: "solid 1px #000",
+                                                top: 0,
+                                                right: 0,
+                                                padding: "5px",
+                                                opacity: 0.5,
+                                                cursor: "pointer"
+                                            }}
+                                            onClick={e => {
+                                                let imgs = values.Images.concat();
+                                                if (
+                                                    imgs[index].status ===
+                                                    ImageStatus.UPDATE
+                                                ) {
+                                                    // Updateのままだったら単純に削除する
+                                                    imgs.splice(index, 1);
+                                                } else if (
+                                                    imgs[index].status ===
+                                                    ImageStatus.NONE
+                                                ) {
+                                                    // すでにFirestoreに保存されている画像の場合、削除のためDELETEにする
+                                                    imgs[index].status =
+                                                        ImageStatus.DELETE;
+                                                }
+                                                setFieldValue("Images", imgs);
+                                            }}
+                                        >
+                                            Cancel
+                                        </div>
+                                    </li>
+                                );
+                            }
+                        })}
+                    </div>
+
                     <Button
                         className={classes.signInButton}
                         color="primary"

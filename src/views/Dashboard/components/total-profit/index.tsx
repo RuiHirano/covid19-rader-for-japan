@@ -56,12 +56,27 @@ const TotalProfit: React.FC<Props> = props => {
                             {totalProfit}
                         </Typography>
                     </Grid>
-                    <Grid item>
+                    {/*<Grid item>
                         <Avatar className={classes.avatar}>
-                            <AttachMoneyIcon className={classes.icon} />
+                            <PeopleIcon className={classes.icon} />
                         </Avatar>
-                    </Grid>
+					</Grid>*/}
                 </Grid>
+                {/*<div className={classes.difference}>
+                    <ArrowUpwardIcon className={classes.differenceIcon} />
+                    <Typography
+                        className={classes.differenceValue}
+                        variant="body2"
+                    >
+                        16%
+                    </Typography>
+                    <Typography
+                        //className={classes.caption}
+                        variant="caption"
+                    >
+                        Since last month
+                    </Typography>
+                </div>*/}
             </CardContent>
         </Card>
     );

@@ -34,15 +34,24 @@ const PlanContainer: React.FC<ContainerProps> = props => {
     const handleUpdatePlan = (values: FormikValues) => {
         const plan = values.plan;
         user.Setting.Plan = plan;
-        dispatch(userActions.updateUserAction({ user: user }));
+        dispatch(
+            userActions.updateUserAction({
+                user: user,
+                loadingStatus: LoadingState.UPDATE_PLAN
+            })
+        );
     };
 
-    const { isLoading, isFinishLoading } = useLoading(LoadingState.UPDATE_USER);
-    useEffect(() => {
-        if (isFinishLoading) {
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
             //history.push("/home");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.UPDATE_PLAN, callback);
 
     const user: User = useSelector((state: AppState) => state.User);
     const plan: PlanType = user.Setting.Plan;
@@ -165,6 +174,7 @@ const Plan: React.FC<Props> = props => {
                             <Button
                                 color="primary"
                                 variant="outlined"
+                                disabled
                                 onClick={() => handleSubmit()}
                             >
                                 Save

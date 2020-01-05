@@ -16,12 +16,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppState } from "../../redux/module";
 import { Items, StatsResult, PeriodType, Item } from "../../types";
 import moment, { Moment } from "moment";
-
-const useStyles = makeStyles((theme: Theme) => ({
-    root: {
-        padding: theme.spacing(4)
-    }
-}));
+import { styled } from "@material-ui/core/styles";
+import theme from "../../styles/theme";
 
 // Container
 interface ContainerProps {}
@@ -50,41 +46,40 @@ interface Props {
 
 const DashboardView: React.FC<Props> = props => {
     const { statsValues, items } = props;
-    const classes = useStyles();
 
     return (
-        <div className={classes.root}>
-            <Grid container spacing={4}>
-                <Grid item lg={3} sm={6} xl={3} xs={12}>
+        <div>
+            <Grid container spacing={2}>
+                <Grid item xl={3} lg={3} md={6} sm={6} xs={12}>
                     <TotalAssets
                         totalAssets={statsValues.Statistics.TotalAssets}
                     />
                 </Grid>
-                <Grid item lg={3} sm={6} xl={3} xs={12}>
+                <Grid item xl={3} lg={3} md={6} sm={6} xs={12}>
                     <ProfitRatio
                         profitRatio={statsValues.Statistics.ProfitRatio}
                     />
                 </Grid>
-                <Grid item lg={3} sm={6} xl={3} xs={12}>
+                <Grid item xl={3} lg={3} md={6} sm={6} xs={12}>
                     <WinRate winRate={statsValues.Statistics.WinRate} />
                 </Grid>
-                <Grid item lg={3} sm={6} xl={3} xs={12}>
+                <Grid item xl={3} lg={3} md={6} sm={6} xs={12}>
                     <TotalProfit
                         totalProfit={statsValues.Statistics.TotalProfit}
                     />
                 </Grid>
-                <Grid item lg={8} md={12} xl={9} xs={12}>
+                <Grid item xl={9} lg={8} md={12} sm={12} xs={12}>
                     <LatestProfit
                         profitData={statsValues.Graphs.ProfitTransition}
                     />
                 </Grid>
-                <Grid item lg={4} md={6} xl={3} xs={12}>
+                <Grid item xl={3} lg={4} md={6} sm={12} xs={12}>
                     <TradesByPair pairData={statsValues.Graphs.PairRatio} />
                 </Grid>
-                <Grid item lg={4} md={6} xl={3} xs={12}>
+                <Grid item xl={3} lg={4} md={6} sm={12} xs={12}>
                     <LatestCalendar />
                 </Grid>
-                <Grid item lg={8} md={12} xl={9} xs={12}>
+                <Grid item xl={9} lg={8} md={12} sm={12} xs={12}>
                     <LatestOrders items={items} />
                 </Grid>
             </Grid>

@@ -19,13 +19,16 @@ interface ContainerProps {
 const SignUpContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
 
-    const { isLoading, isFinishLoading } = useLoading(LoadingState.SIGN_UP);
-
-    useEffect(() => {
-        if (isFinishLoading) {
+    const callback = (nowLoading: boolean, finishLoading: boolean) => {
+        if (nowLoading) {
+            console.log("loading now");
+        } else if (finishLoading) {
+            console.log("finish loading");
             history.push("/dashboard");
         }
-    }, [isLoading]);
+    };
+
+    useLoading(LoadingState.SIGN_UP, callback);
 
     return <SignUp />;
 };

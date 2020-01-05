@@ -67,19 +67,19 @@ const TotalAssets: React.FC<Props> = props => {
                         </Typography>
                         <Typography variant="h3">{totalAssets}</Typography>
                     </Grid>
-                    <Grid item>
+                    {/*<Grid item>
                         <Avatar className={classes.avatar}>
-                            <MoneyIcon className={classes.icon} />
+                            <PeopleIcon className={classes.icon} />
                         </Avatar>
-                    </Grid>
+					</Grid>*/}
                 </Grid>
-                <div className={classes.difference}>
-                    <ArrowDownwardIcon className={classes.differenceIcon} />
+                {/*<div className={classes.difference}>
+                    <ArrowUpwardIcon className={classes.differenceIcon} />
                     <Typography
                         className={classes.differenceValue}
                         variant="body2"
                     >
-                        12%
+                        16%
                     </Typography>
                     <Typography
                         //className={classes.caption}
@@ -87,7 +87,7 @@ const TotalAssets: React.FC<Props> = props => {
                     >
                         Since last month
                     </Typography>
-                </div>
+                </div>*/}
             </CardContent>
         </Card>
     );

@@ -3,6 +3,7 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Grid, Card, CardContent, Typography } from "@material-ui/core";
 import { Moment } from "moment";
 import { Item, StatsResult } from "../../../../types";
+import { styled } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -29,6 +30,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
+const StatsContainer = styled("div")({
+    height: "100%",
+    textAlign: "center",
+    alignSelf: "center",
+    borderStyle: "solid",
+    borderRadius: 10,
+    borderWidth: 1,
+    margin: 10
+});
+
 interface Props {
     date: Moment;
     stats: StatsResult;
@@ -39,7 +50,7 @@ const Statistics: React.FC<Props> = props => {
     const classes = useStyles();
 
     return (
-        <div>
+        <StatsContainer>
             <Typography>{"勝率： " + stats.Statistics.WinRate}</Typography>
             <Typography>
                 {stats.Statistics.ProfitRatio == Infinity
@@ -52,7 +63,7 @@ const Statistics: React.FC<Props> = props => {
             <Typography>
                 {"トレード回数： " + stats.Statistics.NumTrade}
             </Typography>
-        </div>
+        </StatsContainer>
     );
 };
 

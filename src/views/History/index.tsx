@@ -20,16 +20,6 @@ const HistoryContainer: React.FC<ContainerProps> = props => {
     const items_ = useSelector((state: AppState) => state.Items);
     const [items, setItems] = useState(items_);
 
-    const { isLoading, isFinishLoading } = useLoading(
-        LoadingState.UPDATE_PASSWORD
-    );
-    useEffect(() => {
-        if (isFinishLoading) {
-            setItems(items);
-            //history.push("/dashboard");
-        }
-    }, [items]);
-
     return <HistoryView items={items} />;
 };
 
