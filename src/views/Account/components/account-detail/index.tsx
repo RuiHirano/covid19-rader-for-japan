@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
-import clsx from "clsx";
-import PropTypes from "prop-types";
+import React from "react";
+
+
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
     Card,
@@ -12,40 +12,28 @@ import {
     Button,
     TextField
 } from "@material-ui/core";
-import { Formik, yupToFormErrors, FormikValues } from "formik";
+import { Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router";
-import { userActions } from "../../../../redux/saga/user";
-import { LoadingState, Profile, User } from "../../../../types";
-import { useLoading } from "../../../../common/hooks/useLoading";
-import { AppState } from "../../../../redux/module";
+import { Profile, User } from "../../../../types";
+import { useUpdateUserInfo } from "../../../../redux/hooks/useUser";
+import { ReduxState } from "../../../../redux/module";
 
 // Container
 interface ContainerProps {}
 const AccountDetailContainer: React.FC<ContainerProps> = props => {
     const {} = props;
     const dispatch = useDispatch();
-    //let profile = useSelector((state: AppState) => state.User.Profile);
+    const {updateUserInfo, status} = useUpdateUserInfo()
+    const user: User = useSelector((state: ReduxState) => state.User);
+    
     const handleUpdateProfile = (values: FormikValues) => {
         const profile = values.profile;
         user.Setting.Plan = profile;
-        dispatch(userActions.updateUserAction({ user: user,
-			loadingStatus: LoadingState.UPDATE_PROFILE }));
+        updateUserInfo(user)
     };
 
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            //history.push("/home");
-        }
-    };
-
-    useLoading(LoadingState.UPDATE_PROFILE, callback);
-
-    const user: User = useSelector((state: AppState) => state.User);
     let profile: Profile = user.Profile;
 
     return (

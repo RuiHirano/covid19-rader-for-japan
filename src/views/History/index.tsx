@@ -3,10 +3,8 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 
 import { HistoryToolbar, HistoryTable } from "./components";
 import { useSelector } from "react-redux";
-import { AppState } from "../../redux/module";
-import { useLoading } from "../../common/hooks/useLoading";
-import { Item } from "../../types/item";
-import { LoadingState, Items } from "../../types";
+import { LoadingState, Item } from "../../types";
+import { ReduxState } from "../../redux/module";
 
 // Container
 interface ContainerProps {}
@@ -17,7 +15,7 @@ const HistoryContainer: React.FC<ContainerProps> = props => {
             userActions.updateHisyoryAction({ password: values.password })
         );
 	};*/
-    const items_ = useSelector((state: AppState) => state.Items);
+    const items_ = useSelector((state: ReduxState) => state.Items);
     const [items, setItems] = useState(items_);
 
     return <HistoryView items={items} />;
@@ -26,14 +24,14 @@ const HistoryContainer: React.FC<ContainerProps> = props => {
 export default HistoryContainer;
 
 interface Props {
-    items: Items;
+    items: Item[];
 }
 
 const HistoryView: React.FC<Props> = props => {
     const { items } = props;
     const classes = useStyles();
 
-    //const items = useSelector((state: AppState) => state.Items);
+    //const items = useSelector((state: ReduxState) => state.Items);
 
     return (
         <div className={classes.root}>

@@ -4,29 +4,32 @@ import Calendar from "react-calendar";
 import { width } from "@material-ui/system";
 import { Grid, Button, Typography } from "@material-ui/core";
 import { Graphs, Statistics, DateBar } from "./components";
-import { AppState } from "../../redux/module";
 import { useSelector, useDispatch } from "react-redux";
-import { PeriodType, Items, StatsResult } from "../../types";
+import { StatsResult, Item, YearStatsBuilder } from "../../types";
 import moment, { Moment } from "moment";
+import { ReduxState } from "../../redux/module";
 
 // Container
 interface ContainerProps {}
 const ReportContainer: React.FC<ContainerProps> = props => {
     const dispatch = useDispatch();
-    const items: Items = useSelector((state: AppState) => state.Items);
+    const items: Item[] = useSelector((state: ReduxState) => state.Items);
     console.log("items: ", items);
 
     const content = useSelector(
-        (state: AppState) => state.User.Setting.Content
+        (state: ReduxState) => state.User.Setting.Content
     );
 
     const [date, setDate] = useState<Moment>(moment());
+    // FIX
     const [statsValues, setStatsValues] = useState<StatsResult>(
-        items.calculator(date, PeriodType.DAY, content)
+        //items.calculator(date, PeriodType.DAY, content)
+        new YearStatsBuilder(items, moment(), content).getResult()
     );
 
     useEffect(() => {
-        setStatsValues(items.calculator(date, PeriodType.DAY, content));
+        // FIX
+        //setStatsValues(items.calculator(date, PeriodType.DAY, content));
     }, [date]);
 
     const changeDate = (nextDate: Moment) => {

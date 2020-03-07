@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import PasswordField from "./password-field";
 import EmailField from "./email-field";
@@ -12,24 +12,45 @@ import theme from "../../../../styles/theme";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import SocialIcon from "./social-sign-in";
-import { SignInState, signActions } from "../../../../redux/saga/sign";
+import { useSignIn } from "../../../../redux/hooks/useAuth";
+import { withRouter, match } from "react-router";
+import * as H from "history";
 
 // Container
+interface RouteProps {
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
 
-const SignInFormContainer: React.FC = () => {
+const SignInFormContainer: React.FC<RouteProps> = (props) => {
+    const {history} = props
     const dispatch = useDispatch();
-    const handleSignIn = (signInState: SignInState) => {
-        dispatch(signActions.signInAction(signInState));
+    const {signIn, status} = useSignIn()
+    const handleSignIn = (email: string, password: string) => {
+        console.log("sign in", email, password)
+        signIn(email, password)
     };
+
+    useEffect(()=>{
+        console.log("signIn status change", status.Progress)
+        if(status.Progress === 100){
+            history.push("/")
+        }
+        if(status.Error !== ""){
+            console.log("error occer: ", status.Error)
+        }
+
+    }, [status])
 
     return <SignInForm handleSignIn={handleSignIn} />;
 };
 
-export default SignInFormContainer;
+export default withRouter(SignInFormContainer);
 
 // Presentational
 interface Props {
-    handleSignIn: (signInState: SignInState) => void;
+    handleSignIn: (email: string, password: string) => void;
 }
 
 const SignInForm: React.FC<Props> = props => {
@@ -53,7 +74,7 @@ const SignInForm: React.FC<Props> = props => {
     return (
         <Formik
             initialValues={initialValues}
-            onSubmit={values => handleSignIn(values)}
+            onSubmit={values => handleSignIn(values.email, values.password)}
             validationSchema={Yup.object().shape(validationSchema)}
         >
             {({

@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import React from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import {
     Card,
     CardHeader,
@@ -12,15 +12,14 @@ import {
     Typography,
     Button
 } from "@material-ui/core";
-import { Formik, yupToFormErrors, FormikValues } from "formik";
+import { Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { withRouter, match } from "react-router";
 import * as H from "history";
-import { AppState } from "../../../../redux/module";
 import { useSelector, useDispatch } from "react-redux";
-import { LoadingState, Plan as PlanType, User } from "../../../../types";
-import { useLoading } from "../../../../common/hooks/useLoading";
-import { userActions } from "../../../../redux/saga/user";
+import {  Plan as PlanType, User } from "../../../../types";
+import { ReduxState } from "../../../../redux/module";
+import { useUpdateUserInfo } from "../../../../redux/hooks/useUser";
 
 // Container
 interface ContainerProps {
@@ -31,29 +30,15 @@ interface ContainerProps {
 const PlanContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
+    const {updateUserInfo, status} = useUpdateUserInfo()
     const handleUpdatePlan = (values: FormikValues) => {
         const plan = values.plan;
         user.Setting.Plan = plan;
-        dispatch(
-            userActions.updateUserAction({
-                user: user,
-                loadingStatus: LoadingState.UPDATE_PLAN
-            })
-        );
+        updateUserInfo(user)
     };
 
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            //history.push("/home");
-        }
-    };
 
-    useLoading(LoadingState.UPDATE_PLAN, callback);
-
-    const user: User = useSelector((state: AppState) => state.User);
+    const user: User = useSelector((state: ReduxState) => state.User);
     const plan: PlanType = user.Setting.Plan;
 
     return <Plan plan={plan} handleUpdatePlan={handleUpdatePlan} />;

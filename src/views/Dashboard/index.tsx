@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import React, { useState } from "react";
 import { Grid } from "@material-ui/core";
 
 import {
@@ -13,25 +12,25 @@ import {
     LatestCalendar
 } from "./components";
 import { useDispatch, useSelector } from "react-redux";
-import { AppState } from "../../redux/module";
-import { Items, StatsResult, PeriodType, Item } from "../../types";
-import moment, { Moment } from "moment";
-import { styled } from "@material-ui/core/styles";
-import theme from "../../styles/theme";
+import { ReduxState } from "../../redux/module";
+import {  StatsResult, Item, YearStatsBuilder } from "../../types";
+import moment from "moment";
 
 // Container
 interface ContainerProps {}
 const DashboardContainer: React.FC<ContainerProps> = props => {
     const dispatch = useDispatch();
-    const items: Items = useSelector((state: AppState) => state.Items);
+    const items: Item[] = useSelector((state: ReduxState) => state.Items);
     console.log("items: ", items);
 
     const content = useSelector(
-        (state: AppState) => state.User.Setting.Content
+        (state: ReduxState) => state.User.Setting.Content
     );
 
+    //FIX
     const [statsValues, setStatsValues] = useState<StatsResult>(
-        items.calculator(moment(), PeriodType.ALL, content)
+        //items.calculator(moment(), PeriodType.ALL, content)
+        new YearStatsBuilder(items, moment(), content).getResult()
     );
 
     return <DashboardView statsValues={statsValues} items={items} />;
@@ -41,7 +40,7 @@ export default DashboardContainer;
 
 interface Props {
     statsValues: StatsResult;
-    items: Items;
+    items: Item[];
 }
 
 const DashboardView: React.FC<Props> = props => {

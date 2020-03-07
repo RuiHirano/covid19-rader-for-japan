@@ -1,5 +1,5 @@
 import { put, takeEvery, call, take } from 'redux-saga/effects'
-import {
+/*import {
 	updateLoadingStore,
 	updateUserStore,
 	updateErrorStore,
@@ -247,4 +247,4 @@ function* signSaga() {
 	yield takeEvery(SignActions.SIGN_OUT_ACTION, handleSignOut)
 }
 
-export default signSaga
+export default signSaga*/

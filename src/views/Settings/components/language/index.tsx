@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
-import clsx from "clsx";
-import { makeStyles, Theme } from "@material-ui/core/styles";
+import React from "react";
+
+
+import { makeStyles } from "@material-ui/core/styles";
 import {
     Card,
     CardHeader,
@@ -14,19 +14,17 @@ import {
     Typography,
     Button
 } from "@material-ui/core";
-import { Formik, yupToFormErrors, FormikValues } from "formik";
+import { Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import { withRouter, match } from "react-router";
 import * as H from "history";
-import { useLoading } from "../../../../common/hooks/useLoading";
 import {
-    LoadingState,
     Language as LanguageType,
     User
 } from "../../../../types";
-import { userActions } from "../../../../redux/saga/user";
-import { AppState } from "../../../../redux/module";
+import { useUpdateUserInfo } from "../../../../redux/hooks/useUser";
+import { ReduxState } from "../../../../redux/module";
 
 export const useStyles = makeStyles(() => ({
     root: {},
@@ -45,25 +43,14 @@ interface ContainerProps {
 const LanguageContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
+    const {updateUserInfo, status} = useUpdateUserInfo()
     const handleUpdateLanguage = (values: FormikValues) => {
         const language = values.language;
         user.Setting.Language = language;
-        dispatch(userActions.updateUserAction({ user: user,
-			loadingStatus: LoadingState.UPDATE_LANGUAGE}));
+        updateUserInfo(user)
     };
 
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            //history.push("/home");
-        }
-    };
-
-    useLoading(LoadingState.UPDATE_LANGUAGE, callback);
-
-    const user: User = useSelector((state: AppState) => state.User);
+    const user: User = useSelector((state: ReduxState) => state.User);
     const language: LanguageType = user.Setting.Language;
 
     return (

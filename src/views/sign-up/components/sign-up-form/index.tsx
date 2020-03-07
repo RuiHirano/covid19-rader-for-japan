@@ -1,5 +1,5 @@
-import React from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import NameField from "./name-field";
 import PasswordConfirmField from "./password-confirm-field";
@@ -14,27 +14,56 @@ import theme from "../../../../styles/theme";
 
 import { Formik } from "formik";
 import * as Yup from "yup";
-import { SignUpState, signActions } from "../../../../redux/saga/sign";
+import { useSignUp } from "../../../../redux/hooks/useAuth";
+import { ReduxState } from "../../../../redux/module";
+import { User } from "../../../../types";
+import { withRouter, match } from "react-router";
+import * as H from "history";
 
 // Container
+interface RouteProps {
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
 
-const SignUpFormContainer: React.FC = () => {
+const SignUpFormContainer: React.FC<RouteProps> = (props) => {
+    const {history} = props
     const dispatch = useDispatch();
-    const handleSignUp = (signUpState: SignUpState) => {
-        dispatch(signActions.signUpAction(signUpState));
+    const {signUp, status} = useSignUp()
+    const handleSignUp = (name: string, email: string, password: string) => {
+        console.log("Sign Up", name, email, password)
+        signUp(name, email, password)
     };
+
+    useEffect(()=>{
+        console.log("signIn status change", status.Progress)
+        if(status.Progress === 100){
+            history.push("/")
+        }
+        if(status.Error !== ""){
+            console.log("error occer: ", status.Error)
+        }
+
+    }, [status])
 
     return <SignUpForm handleSignUp={handleSignUp} />;
 };
 
-export default SignUpFormContainer;
+export default withRouter(SignUpFormContainer);
 
 interface Props {
-    handleSignUp: (signUpState: SignUpState) => void;
+    handleSignUp: (name: string, email: string, password: string) => void;
 }
 
 const SignUpForm: React.FC<Props> = props => {
     const { handleSignUp } = props;
+    const user = useSelector((state: ReduxState)=>state.User)
+    console.log("user json: ", JSON.stringify(user))
+    console.log("user parse: ", JSON.parse(JSON.stringify(user)))
+    const test: User = new User
+    test.setJson(JSON.stringify(user))
+    console.log("user parse: ", test)
 
     const initialValues = {
         email: "",
@@ -64,7 +93,7 @@ const SignUpForm: React.FC<Props> = props => {
     return (
         <Formik
             initialValues={initialValues}
-            onSubmit={values => handleSignUp(values)}
+            onSubmit={values => handleSignUp(values.name, values.email, values.password)}
             validationSchema={Yup.object().shape(validationSchema)}
         >
             {({

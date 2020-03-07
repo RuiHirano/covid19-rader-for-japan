@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Content, DateBar } from "./components";
 import * as H from "history";
 import { withRouter, match } from "react-router";
-import { Item, TradeType, MarketType, Items } from "../../types";
-import { useSelector, useDispatch } from "react-redux";
+import { Item } from "../../types";
+import { useSelector } from "react-redux";
 import moment, { Moment } from "moment";
-import uuid from "uuid";
-import { AppState } from "../../redux/module";
+import { ReduxState } from "../../redux/module";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -53,12 +52,12 @@ interface ContainerProps {
 const DetailContainer: React.FC<ContainerProps> = props => {
     const { history, match } = props;
 
-    const items = useSelector((state: AppState) => state.Items);
+    const items = useSelector((state: ReduxState) => state.Items);
 
-    //const items = useSelector((state: AppState) => state.Items);
+    //const items = useSelector((state: ReduxState) => state.Items);
     console.log("date: ", match.params);
     const [date, setDate] = useState(moment()); // 表示する月日
-    const [targetItems, setTargetItems] = useState<Items>(new Items([])); //　表示する月日のアイテム
+    const [targetItems, setTargetItems] = useState<Item[]>([]); //　表示する月日のアイテム
     const [dates, setDates] = useState<Moment[]>([]); // 取引したことのある日付の昇順配列
 
     useEffect(() => {
@@ -67,14 +66,16 @@ const DetailContainer: React.FC<ContainerProps> = props => {
     }, []);
 
     const dateSort = (dates: Moment[]) => {
-        items.items.forEach((item: Item, index: number) => {
+        items.forEach((item: Item, index: number) => {
             if (index === 0) {
                 dates.push(moment(item.StartDate));
             } else if (
-                !moment(item.StartDate).isSame(
+                true
+                // FIX
+                /*!moment(item.StartDate).isSame(
                     moment(items.getItemAt(index - 1).StartDate),
                     "day"
-                )
+                )*/
             ) {
                 dates.push(moment(item.StartDate));
             }
@@ -91,20 +92,22 @@ const DetailContainer: React.FC<ContainerProps> = props => {
     };
 
     const getTargetItems = (tdate: Moment) => {
-        let items: Items = new Items([]);
+        let items: Item[] = [];
         let dates: Moment[] = [];
 
-        items.items.forEach((item: Item, index: number) => {
+        items.forEach((item: Item, index: number) => {
             if (moment(item.StartDate).isSame(tdate)) {
-                items.appendItem(item);
+                items.push(item);
             }
             if (index === 0) {
                 dates.push(moment(item.StartDate));
             } else if (
-                !moment(item.StartDate).isSame(
+                true
+                //FIX
+                /*!moment(item.StartDate).isSame(
                     moment(items.getItemAt(index - 1).StartDate),
                     "day"
-                )
+                )*/
             ) {
                 dates.push(moment(item.StartDate));
             }
@@ -150,7 +153,7 @@ const DetailContainer: React.FC<ContainerProps> = props => {
 export default withRouter(DetailContainer);
 
 interface Props {
-    targetItems: Items;
+    targetItems: Item[];
     toPrev: () => void;
     toEdit: (item: Item) => void;
     toNext: () => void;

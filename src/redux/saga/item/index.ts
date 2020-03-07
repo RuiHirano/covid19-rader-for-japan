@@ -2,7 +2,7 @@ import { takeEvery } from 'redux-saga/effects'
 import { select } from 'redux-saga/effects'
 import { getItems, getUser } from '../selector'
 import uuid from 'uuid/v1';
-import {
+/*import {
 	updateLoadingStore,
 	updateErrorStore,
 	updateItemsStore,
@@ -136,7 +136,7 @@ function* handleUpdateItem(action: ReturnType<typeof itemActions.updateItemActio
 
 		// storeへitemを更新
 		let items: Items = yield select(getItems)
-		items.items.map((value: Item, index: number) => {
+		items.map((value: Item, index: number) => {
 			if (value.ID === item.ID) {
 				items.updateItem(index, item)
 			}
@@ -197,7 +197,7 @@ function* handleDeleteItem(action: ReturnType<typeof itemActions.deleteItemActio
 
 		//update items to store
 		const items: Items = yield select(getItems)
-		items.items.map((value: Item, index: number) => {
+		items.map((value: Item, index: number) => {
 			if (value.ID === itemId) {
 				items.deleteItem(index)
 			}
@@ -232,3 +232,4 @@ function* itemSaga() {
 	yield takeEvery(ItemActions.DELETE_ITEM_ACTION, handleDeleteItem)
 }
 export default itemSaga
+*/

@@ -1,6 +1,6 @@
 import React from "react";
-import clsx from "clsx";
-import PropTypes from "prop-types";
+
+
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Card, CardContent, Grid, Typography, Avatar } from "@material-ui/core";
 import TotalAssets from "./total-assets";

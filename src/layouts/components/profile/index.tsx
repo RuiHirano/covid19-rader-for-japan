@@ -3,11 +3,10 @@ import { Link as RouterLink } from "react-router-dom";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Avatar, Typography } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
-import theme from "../../../styles/theme";
 import { User } from "../../../types";
-import { AppState } from "../../../redux/module";
 import { useSelector } from "react-redux";
 import myAvatar from "../../../app/assets/app_icon.png";
+import { ReduxState } from "../../../redux/module";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -34,7 +33,7 @@ interface Props {}
 const Profile: React.FC<Props> = () => {
     const classes = useStyles();
 
-    const user: User = useSelector((state: AppState) => state.User);
+    const user: User = useSelector((state: ReduxState) => state.User);
 
     /*const user = {
         name: "Shen Zhi",
@@ -49,9 +48,9 @@ const Profile: React.FC<Props> = () => {
                 className={classes.avatar}
                 component={RouterLink}
                 src={
-                    user.Profile.Thumbnail.url === ""
+                    user.Profile.Thumbnail.Url === ""
                         ? myAvatar
-                        : user.Profile.Thumbnail.url
+                        : user.Profile.Thumbnail.Url
                 }
                 to="/account"
             />

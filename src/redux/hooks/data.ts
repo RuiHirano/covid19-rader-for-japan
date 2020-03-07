@@ -1,4 +1,4 @@
-import { Item, User } from '../../../types'
+import { Item, User } from '../../types'
 
 export const defaultItems = () => {
 	let items: Item[] = []
@@ -29,7 +29,7 @@ export const defaultItems = () => {
 	items.push(item1)
 	items.push(item2)
 	items.push(item3)
-	return []
+	return items
 }
 
 

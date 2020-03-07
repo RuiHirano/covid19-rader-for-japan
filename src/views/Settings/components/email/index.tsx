@@ -13,10 +13,8 @@ import { Formik, yupToFormErrors, FormikValues } from "formik";
 import * as Yup from "yup";
 import { withRouter, match } from "react-router";
 import * as H from "history";
-import { LoadingState } from "../../../../types";
-import { useLoading } from "../../../../common/hooks/useLoading";
 import { useDispatch } from "react-redux";
-import { userActions } from "../../../../redux/saga/user";
+import { useChangeEmail } from "../../../../redux/hooks/useUser";
 
 // Container
 interface ContainerProps {
@@ -27,20 +25,11 @@ interface ContainerProps {
 const EmailContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
+    const {changeEmail, status} = useChangeEmail()
     const handleUpdateEmail = (values: FormikValues) => {
-        dispatch(userActions.updateEmailAction({ email: values.email }));
+        const email = values.email
+        changeEmail(email)
     };
-
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            //history.push("/home");
-        }
-    };
-
-    useLoading(LoadingState.UPDATE_EMAIL, callback);
 
     return <Email handleUpdateEmail={handleUpdateEmail} />;
 };

@@ -2,15 +2,15 @@ import { combineReducers } from 'redux'
 import itemModule from './item'
 import userModule from './user'
 import appModule from './app'
-import { App, Item, User, Items } from '../../types'
+import { App, Item, User } from '../../types'
 
-export interface AppState {
+export interface ReduxState {
 	App: App,
-	Items: Items,
+	Items: Item[],
 	User: User
 }
 
-const rootModule = combineReducers<AppState>({
+const rootModule = combineReducers<ReduxState>({
 	Items: itemModule,
 	User: userModule,
 	App: appModule,

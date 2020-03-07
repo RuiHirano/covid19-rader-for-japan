@@ -1,7 +1,7 @@
 import { takeEvery} from 'redux-saga/effects'
 import { select } from 'redux-saga/effects'
 import { getUser, getAppState } from '../selector'
-import {
+/*import {
 	updateLoadingStore,
 	updateUserStore,
 	updateErrorStore,
@@ -260,3 +260,4 @@ function* signSaga() {
 	yield takeEvery(UserActions.UPDATE_USER_ACTION, handleUpdateUser)
 }
 export default signSaga
+*/

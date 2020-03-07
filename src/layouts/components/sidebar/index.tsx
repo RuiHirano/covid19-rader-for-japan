@@ -4,10 +4,8 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import PeopleIcon from "@material-ui/icons/People";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import SettingsIcon from "@material-ui/icons/Settings";
-import { useLoading } from "../../../common/hooks/useLoading";
 import { LoadingState } from "../../../types";
 import { useDispatch } from "react-redux";
-import { signActions } from "../../../redux/saga/sign";
 import { withRouter, RouteComponentProps, match } from "react-router";
 import * as H from "history";
 import { styled } from "@material-ui/core/styles";
@@ -16,6 +14,7 @@ import theme from "../../../styles/theme";
 import SidebarNav from "../sidebar-nav";
 import Profile from "../profile";
 import { makeStyles } from "@material-ui/styles";
+import { useSignOut } from "../../../redux/hooks/useAuth";
 
 const drawerWidth = 240;
 
@@ -113,20 +112,10 @@ const Sidebar: React.FC<Props> = props => {
     ];
 
     const dispatch = useDispatch();
-
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            history.push("/");
-        }
-    };
-
-    useLoading(LoadingState.SIGN_OUT, callback);
+    const {signOut, status} = useSignOut()
 
     const handleSignOut = () => {
-        dispatch(signActions.signOutAction());
+        signOut();
     };
 
     const signout = {

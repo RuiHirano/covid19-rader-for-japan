@@ -7,16 +7,15 @@ const actionCreator = actionCreatorFactory();
 export const initialState = new User()
 
 export enum UserActions {
-	UPDATE_USER_STORE = "UPDATE_USER_STORE",
+	UPDATE_USER_INFO = "UPDATE_USER_INFO",
 }
 
 export const userActions = {
-	updateUserStore: actionCreator<User>(UserActions.UPDATE_USER_STORE),
+	updateUserInfo: actionCreator<User>(UserActions.UPDATE_USER_INFO),
 };
 
 const userModule = reducerWithInitialState(initialState)
-	.case(userActions.updateUserStore, (state, action) => {
-		const user: User = action
+	.case(userActions.updateUserInfo, (preUser, user) => {
 		return user
 	})
 

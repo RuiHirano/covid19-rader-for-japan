@@ -1,14 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Grid, Hidden } from "@material-ui/core";
 import ImageField from "./components/image-field";
 import BackButton from "./components/back-button";
 import SignUpForm from "./components/sign-up-form";
 import { withRouter, match } from "react-router";
-import { LoadingState } from "../../types";
 import * as H from "history";
-import { useLoading } from "../../common/hooks/useLoading";
 import { styled } from "@material-ui/core/styles";
-import theme from "../../styles/theme";
 
 interface ContainerProps {
     history: H.History;
@@ -18,17 +15,6 @@ interface ContainerProps {
 
 const SignUpContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
-
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            history.push("/dashboard");
-        }
-    };
-
-    useLoading(LoadingState.SIGN_UP, callback);
 
     return <SignUp />;
 };

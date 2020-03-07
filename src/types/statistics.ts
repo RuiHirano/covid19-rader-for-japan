@@ -1,9 +1,7 @@
 import moment, { Moment } from "moment"
-import { Items, PeriodType } from "./items"
 import { Content } from "./user"
 import { Builder } from "./builder"
-import { TradeType } from "./item"
-import { Iterator } from "./iterator"
+import { TradeType, Item } from "./item"
 
 
 export class Statistics {
@@ -87,14 +85,14 @@ export interface StatsResult {
 
 export class YearStatsBuilder extends Builder {
 	private period: Moment
-	private items: Items
+	private items: Item[]
 	private statsParam: Content
-	private periodItems: Items = new Items([])
-	private beforePeriodItems: Items = new Items([])
+	private periodItems: Item[] = []
+	private beforePeriodItems: Item[] = []
 	private stats: Statistics = new Statistics()
 	private graphs: Graphs = new Graphs()
 
-	constructor(items: Items, period: Moment, statsParam: Content) {
+	constructor(items: Item[], period: Moment, statsParam: Content) {
 		super()
 		this.period = period
 		this.items = items
@@ -103,22 +101,18 @@ export class YearStatsBuilder extends Builder {
 
 	// period内のアイテムとそれ以前のitemsを取得
 	queryItems() {
-		const iterator: Iterator = this.items.iterator()
-		while (iterator.hasNext()) {
-			const item = iterator.next()
+		this.items.forEach((item: Item)=>{
 			if (moment(item.StartDate).isSame(moment(this.period), 'year')) {
-				this.periodItems.appendItem(item)
+				this.periodItems.push(item)
 			} else if (moment(item.StartDate).isBefore(moment(this.period), 'year')) {
-				this.beforePeriodItems.appendItem(item)
+				this.beforePeriodItems.push(item)
 			}
-		}
+		})
 	}
 
 	// statisticsを計算
 	calcStats() {
-		const iterator: Iterator = this.periodItems.iterator()
-		while (iterator.hasNext()) {
-			const item = iterator.next()
+		this.periodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.DEPOSIT || item.TradeType === TradeType.WITHDRAWAL) {
 				this.stats.NumDepWith += 1
 				this.stats.AmountDepWith += item.Profit
@@ -131,15 +125,13 @@ export class YearStatsBuilder extends Builder {
 					this.stats.NumWin += 1
 				}
 			}
-		}
+		})
 
-		const iterator2: Iterator = this.beforePeriodItems.iterator()
-		while (iterator2.hasNext()) {
-			const item = iterator2.next()
+		this.beforePeriodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.BUY || item.TradeType === TradeType.SELL) {
 				this.stats.ProfitBefore += item.Profit
 			}
-		}
+		})
 
 		// num trade
 		this.stats.NumTrade = this.stats.NumWin + this.stats.NumLose
@@ -195,10 +187,7 @@ export class YearStatsBuilder extends Builder {
 			this.graphs.TotalAssetsTransition[i] = <TransitionPoint>{ Date: monthDate, Value: 0 }
 		}
 
-		const iterator: Iterator = this.periodItems.iterator()
-		while (iterator.hasNext()) {
-
-			const item = iterator.next()
+		this.periodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.BUY || item.TradeType === TradeType.SELL) {
 				this.graphs.ProfitTransition[moment(item.EndDate).month()].Value += item.Profit
 			} else if (
@@ -241,7 +230,8 @@ export class YearStatsBuilder extends Builder {
 					})
 				}
 			}
-		}
+		})
+		
 	}
 
 	// 結果を取得
@@ -256,14 +246,14 @@ export class YearStatsBuilder extends Builder {
 
 export class MonthStatsBuilder extends Builder {
 	private period: Moment
-	private items: Items
+	private items: Item[]
 	private statsParam: Content
-	private periodItems: Items = new Items([])
-	private beforePeriodItems: Items = new Items([])
+	private periodItems: Item[] = []
+	private beforePeriodItems: Item[] = []
 	private stats: Statistics = new Statistics()
 	private graphs: Graphs = new Graphs()
 
-	constructor(items: Items, period: Moment, statsParam: Content) {
+	constructor(items: Item[], period: Moment, statsParam: Content) {
 		super()
 		this.period = period
 		this.items = items
@@ -272,22 +262,19 @@ export class MonthStatsBuilder extends Builder {
 
 	// period内のアイテムとそれ以前のitemsを取得
 	queryItems() {
-		const iterator: Iterator = this.items.iterator()
-		while (iterator.hasNext()) {
-			const item = iterator.next()
+		this.items.forEach((item: Item)=>{
 			if (moment(item.StartDate).isSame(moment(this.period), 'month')) {
-				this.periodItems.appendItem(item)
+				this.periodItems.push(item)
 			} else if (moment(item.StartDate).isBefore(moment(this.period), 'month')) {
-				this.beforePeriodItems.appendItem(item)
+				this.beforePeriodItems.push(item)
 			}
-		}
+		})
+		
 	}
 
 	// statisticsを計算
 	calcStats() {
-		const iterator: Iterator = this.periodItems.iterator()
-		while (iterator.hasNext()) {
-			const item = iterator.next()
+		this.periodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.DEPOSIT || item.TradeType === TradeType.WITHDRAWAL) {
 				this.stats.NumDepWith += 1
 				this.stats.AmountDepWith += item.Profit
@@ -300,15 +287,13 @@ export class MonthStatsBuilder extends Builder {
 					this.stats.NumWin += 1
 				}
 			}
-		}
+		})
 
-		const iterator2: Iterator = this.beforePeriodItems.iterator()
-		while (iterator2.hasNext()) {
-			const item = iterator2.next()
+		this.beforePeriodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.BUY || item.TradeType === TradeType.SELL) {
 				this.stats.ProfitBefore += item.Profit
 			}
-		}
+		})
 
 		// num trade
 		this.stats.NumTrade = this.stats.NumWin + this.stats.NumLose
@@ -364,10 +349,7 @@ export class MonthStatsBuilder extends Builder {
 			this.graphs.TotalAssetsTransition[i] = <TransitionPoint>{ Date: dayDate, Value: 0 }
 		}
 
-		const iterator: Iterator = this.periodItems.iterator()
-		while (iterator.hasNext()) {
-
-			const item = iterator.next()
+		this.periodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.BUY || item.TradeType === TradeType.SELL) {
 				this.graphs.ProfitTransition[moment(item.EndDate).day()].Value += item.Profit
 			} else if (
@@ -410,7 +392,7 @@ export class MonthStatsBuilder extends Builder {
 					})
 				}
 			}
-		}
+		})
 	}
 
 	// 結果を取得
@@ -425,14 +407,14 @@ export class MonthStatsBuilder extends Builder {
 
 export class DayStatsBuilder extends Builder {
 	private period: Moment
-	private items: Items
+	private items: Item[]
 	private statsParam: Content
-	private periodItems: Items = new Items([])
-	private beforePeriodItems: Items = new Items([])
+	private periodItems: Item[] = []
+	private beforePeriodItems: Item[] = []
 	private stats: Statistics = new Statistics()
 	private graphs: Graphs = new Graphs()
 
-	constructor(items: Items, period: Moment, statsParam: Content) {
+	constructor(items: Item[], period: Moment, statsParam: Content) {
 		super()
 		this.period = period
 		this.items = items
@@ -441,23 +423,19 @@ export class DayStatsBuilder extends Builder {
 
 	// period内のアイテムとそれ以前のitemsを取得
 	queryItems() {
-		const iterator: Iterator = this.items.iterator()
-		while (iterator.hasNext()) {
-			const item = iterator.next()
+		this.items.forEach((item: Item)=>{
 			if (moment(item.StartDate).isSame(moment(this.period), 'day')) {
-				this.periodItems.appendItem(item)
+				this.periodItems.push(item)
 			} else if (moment(item.StartDate).isBefore(moment(this.period), 'day')) {
-				this.beforePeriodItems.appendItem(item)
+				this.beforePeriodItems.push(item)
 			}
-		}
+		})
 		console.log("perioditem: ", this.periodItems, this.beforePeriodItems)
 	}
 
 	// statisticsを計算
 	calcStats() {
-		const iterator: Iterator = this.periodItems.iterator()
-		while (iterator.hasNext()) {
-			const item = iterator.next()
+		this.periodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.DEPOSIT || item.TradeType === TradeType.WITHDRAWAL) {
 				this.stats.NumDepWith += 1
 				this.stats.AmountDepWith += item.Profit
@@ -470,15 +448,13 @@ export class DayStatsBuilder extends Builder {
 					this.stats.NumWin += 1
 				}
 			}
-		}
-
-		const iterator2: Iterator = this.beforePeriodItems.iterator()
-		while (iterator2.hasNext()) {
-			const item = iterator2.next()
+		})
+		
+		this.beforePeriodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.BUY || item.TradeType === TradeType.SELL) {
 				this.stats.ProfitBefore += item.Profit
 			}
-		}
+		})
 
 		// num trade
 		this.stats.NumTrade = this.stats.NumWin + this.stats.NumLose
@@ -535,10 +511,7 @@ export class DayStatsBuilder extends Builder {
 			this.graphs.TotalAssetsTransition[i] = <TransitionPoint>{ Date: hourDate, Value: this.statsParam.InitialInvestment }
 		}
 
-		const iterator: Iterator = this.periodItems.iterator()
-		while (iterator.hasNext()) {
-
-			const item = iterator.next()
+		this.periodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.BUY || item.TradeType === TradeType.SELL) {
 				this.graphs.ProfitTransition[moment(item.EndDate).hour()].Value += item.Profit
 				// TotalAssets, totalProfit, 累積を求める
@@ -588,7 +561,7 @@ export class DayStatsBuilder extends Builder {
 					})
 				}
 			}
-		}
+		})
 	}
 
 	// 結果を取得
@@ -603,14 +576,14 @@ export class DayStatsBuilder extends Builder {
 
 export class AllStatsBuilder extends Builder {
 	private period: Moment
-	private items: Items
+	private items: Item[]
 	private statsParam: Content
-	private periodItems: Items = new Items([])
-	private beforePeriodItems: Items = new Items([])
+	private periodItems: Item[] = []
+	private beforePeriodItems: Item[] = []
 	private stats: Statistics = new Statistics()
 	private graphs: Graphs = new Graphs()
 
-	constructor(items: Items, period: Moment, statsParam: Content) {
+	constructor(items: Item[], period: Moment, statsParam: Content) {
 		super()
 		this.period = period
 		this.items = items
@@ -619,19 +592,16 @@ export class AllStatsBuilder extends Builder {
 
 	// period内のアイテムとそれ以前のitemsを取得
 	queryItems() {
-		const iterator: Iterator = this.items.iterator()
-		while (iterator.hasNext()) {
-			const item = iterator.next()
-			this.periodItems.appendItem(item)
-		}
+		this.items.forEach((item: Item)=>{
+			this.periodItems.push(item)
+		})
+
 		console.log("ALL")
 	}
 
 	// statisticsを計算
 	calcStats() {
-		const iterator: Iterator = this.periodItems.iterator()
-		while (iterator.hasNext()) {
-			const item = iterator.next()
+		this.periodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.DEPOSIT || item.TradeType === TradeType.WITHDRAWAL) {
 				this.stats.NumDepWith += 1
 				this.stats.AmountDepWith += item.Profit
@@ -644,7 +614,7 @@ export class AllStatsBuilder extends Builder {
 					this.stats.NumWin += 1
 				}
 			}
-		}
+		})
 
 		// num trade
 		this.stats.NumTrade = this.stats.NumWin + this.stats.NumLose
@@ -700,10 +670,7 @@ export class AllStatsBuilder extends Builder {
 			this.graphs.TotalAssetsTransition[i] = <TransitionPoint>{ Date: dayDate, Value: 0 }
 		}
 
-		const iterator: Iterator = this.periodItems.iterator()
-		while (iterator.hasNext()) {
-
-			const item = iterator.next()
+		this.periodItems.forEach((item: Item)=>{
 			if (item.TradeType === TradeType.BUY || item.TradeType === TradeType.SELL) {
 				this.graphs.ProfitTransition[moment(item.EndDate).day()].Value += item.Profit
 			} else if (
@@ -746,7 +713,7 @@ export class AllStatsBuilder extends Builder {
 					})
 				}
 			}
-		}
+		})
 	}
 
 	// 結果を取得

@@ -15,10 +15,9 @@ import { Formik, yupToFormErrors, FormikValues } from "formik";
 import * as Yup from "yup";
 import { withRouter, match } from "react-router";
 import * as H from "history";
-import { userActions } from "../../../../redux/saga/user";
 import { useDispatch, useSelector } from "react-redux";
-import { useLoading } from "../../../../common/hooks/useLoading";
-import { AppState } from "../../../../redux/module";
+import { useUpdateUserInfo } from "../../../../redux/hooks/useUser";
+import { ReduxState } from "../../../../redux/module";
 
 // Container
 interface ContainerProps {
@@ -29,25 +28,14 @@ interface ContainerProps {
 const ContentContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
+    const {updateUserInfo, status} = useUpdateUserInfo()
     const handleUpdateContent = (values: FormikValues) => {
         const content = values.content;
         user.Setting.Content = content;
-        dispatch(userActions.updateUserAction({ user: user,
-			loadingStatus: LoadingState.UPDATE_CONTENT }));
+        updateUserInfo(user)
     };
 
-	const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            //history.push("/home");
-        }
-    };
-
-    useLoading(LoadingState.UPDATE_PASSWORD, callback);
-
-    const user: User = useSelector((state: AppState) => state.User);
+    const user: User = useSelector((state: ReduxState) => state.User);
     const content: ContentTypes = user.Setting.Content;
 
     return (

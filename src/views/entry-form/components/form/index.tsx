@@ -1,22 +1,17 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
-    Grid,
     Button,
-    IconButton,
     TextField,
-    Link,
-    FormHelperText,
-    Checkbox,
     Typography,
     FormControl,
     InputLabel,
     Select,
     MenuItem
 } from "@material-ui/core";
-import { Formik, yupToFormErrors, FormikValues } from "formik";
+import { Formik, FormikValues } from "formik";
 import * as Yup from "yup";
-import { Item, MarketType, Image, ImageStatus } from "../../../../types";
+import { Item, ImageStatus } from "../../../../types";
 import Dropzone from "react-dropzone";
 import uuid from "uuid";
 
@@ -326,11 +321,13 @@ const Form: React.FC<Props> = props => {
                                     url !== null
                                 ) {
                                     let imgs = values.Images.concat();
+                                    // FIX
                                     imgs.push({
-                                        id: uuid(),
-                                        url: url,
-                                        size: fileData.size,
-                                        status: ImageStatus.UPDATE
+                                        ID: uuid(),
+                                        Path: "",
+                                        Url: url,
+                                        Size: fileData.size,
+                                        Status: ImageStatus.UPDATE
                                     });
                                     setFieldValue("Images", imgs);
                                 }
@@ -352,7 +349,7 @@ const Form: React.FC<Props> = props => {
                     <div style={{ height: 300, width: "100%" }}>
                         <Typography>preview</Typography>
                         {values.Images.map((image, index) => {
-                            if (image.status !== ImageStatus.DELETE) {
+                            if (image.Status !== ImageStatus.DELETE) {
                                 return (
                                     <li
                                         key={index}
@@ -366,7 +363,7 @@ const Form: React.FC<Props> = props => {
                                         }}
                                     >
                                         <img
-                                            src={image.url}
+                                            src={image.Url}
                                             width={200}
                                             height={200}
                                         />
@@ -385,17 +382,17 @@ const Form: React.FC<Props> = props => {
                                             onClick={e => {
                                                 let imgs = values.Images.concat();
                                                 if (
-                                                    imgs[index].status ===
+                                                    imgs[index].Status ===
                                                     ImageStatus.UPDATE
                                                 ) {
                                                     // Updateのままだったら単純に削除する
                                                     imgs.splice(index, 1);
                                                 } else if (
-                                                    imgs[index].status ===
+                                                    imgs[index].Status ===
                                                     ImageStatus.NONE
                                                 ) {
                                                     // すでにFirestoreに保存されている画像の場合、削除のためDELETEにする
-                                                    imgs[index].status =
+                                                    imgs[index].Status =
                                                         ImageStatus.DELETE;
                                                 }
                                                 setFieldValue("Images", imgs);

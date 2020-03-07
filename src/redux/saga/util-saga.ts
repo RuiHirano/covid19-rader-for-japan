@@ -4,10 +4,10 @@ import { ItemActions } from '../module/item'
 import { UserActions } from '../module/user'
 import firebase from '../firebase'
 import ReduxSagaFirebase from 'redux-saga-firebase'
-import { Item, Loading, State, User, Error, Setting, Image, Items, ImageStatus } from '../../types'
+import { Item, Loading, State, User, Error, Setting, Image, ImageStatus } from '../../types'
 import uuid from 'uuid'
 
-const rsf = new ReduxSagaFirebase(firebase)
+/*const rsf = new ReduxSagaFirebase(firebase)
 const { firestore, auth, storage } = rsf
 
 // App Module
@@ -108,22 +108,7 @@ export function* uploadThumbnailStorage(thumbnail: Image, userID: User["ID"]) {
 
 export function* uploadImageStorage(images: Item["Images"], userID: User["ID"], itemID: string) {
 	var fileDir = '/users/' + userID + '/items/' + itemID + '/'
-	/*// Blob形式に変換
-	var blobs: any[] = yield all(
-		images.map(image => {
-			return call(fetchImageBlob, image.url)
-		})
-	)
 
-	// 画像を保存
-	yield all(
-		blobs.map((blob, index) => {
-			var fileName = 'image-' + index
-			var filePath = fileDir + fileName
-			const metadata = { contentType: 'image/jpeg' }
-			return call(storage.uploadFile, filePath, blob, metadata)
-		})
-	)*/
 	// コピー
 	var imgs = images.concat()
 	// ImageStatus: DELETEの画像を削除
@@ -150,15 +135,6 @@ export function* uploadImageStorage(images: Item["Images"], userID: User["ID"], 
 		})
 	)
 
-
-	/*// Firestorage上の画像のURLを取得
-	var storageUrls: string[] = yield all(
-		blobs.map((blob, index) => {
-			var fileName = 'image-' + index
-			var filePath = fileDir + fileName
-			return call(storage.getDownloadURL, filePath)
-		})
-	)*/
 
 	// 画像のfirestoreのURLを取得
 	var storageUrls: string[] = yield all(
@@ -251,7 +227,7 @@ export function* createDefaultUserFirebase(user: User) {
 export function* createDefaultItemsFirebase(items: Items, user: User) {
 	const userId = user.ID
 	yield all(
-		items.items.map(item => {
+		items.map(item => {
 			return call(
 				firestore.setDocument,
 				'users/' + userId + '/items/' + item.ID,
@@ -289,7 +265,7 @@ export function* getItemsFirebase(userId: User["ID"]) {
 	});
 
 	return new Items(items)
-}
+}*/
 
 /*export function* updateItemsToStore(items: Item[]) {
     yield put({

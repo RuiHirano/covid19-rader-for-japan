@@ -1,15 +1,12 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { withRouter, match } from "react-router-dom";
 import { Grid, Hidden } from "@material-ui/core";
 import ImageField from "./components/image-field";
 import BackButton from "./components/back-button";
 import SignInForm from "./components/sign-in-form";
 
-import { LoadingState } from "../../types";
 import * as H from "history";
-import { useLoading } from "../../common/hooks/useLoading";
 import { styled } from "@material-ui/core/styles";
-import theme from "../../styles/theme";
 
 // Container
 interface ContainerProps {
@@ -20,17 +17,6 @@ interface ContainerProps {
 
 const SignInContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
-
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            history.push("/dashboard");
-        }
-    };
-
-    useLoading(LoadingState.SIGN_IN, callback);
 
     return <SignIn />;
 };

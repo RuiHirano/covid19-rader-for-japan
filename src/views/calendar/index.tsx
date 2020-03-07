@@ -1,33 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import Calendar from "react-calendar/dist/entry.nostyle";
-import { width } from "@material-ui/system";
 import { Grid, Typography } from "@material-ui/core";
 import { Details, Statistics } from "./components";
-import { Item, PeriodType, Items, StatsResult } from "../../types";
+import { Item,  StatsResult } from "../../types";
 import moment, { Moment } from "moment";
 import { useSelector, useDispatch } from "react-redux";
-import { AppState } from "../../redux/module";
-import { Iterator } from "../../types/iterator";
+import { ReduxState } from "../../redux/module";
 
 // Container
 interface ContainerProps {}
 const CalendarContainer: React.FC<ContainerProps> = props => {
     const dispatch = useDispatch();
-    const items: Items = useSelector((state: AppState) => state.Items);
+    const items: Item[] = useSelector((state: ReduxState) => state.Items);
 
     const [date, setDate] = useState<Moment>(moment());
 
     const content = useSelector(
-        (state: AppState) => state.User.Setting.Content
+        (state: ReduxState) => state.User.Setting.Content
     );
 
     const [statsValues, setStatsValues] = useState(
-        items.calculator(moment(), PeriodType.ALL, content)
+        //items.calculator(moment(), PeriodType.ALL, content)
     );
 
     useEffect(() => {
-        setStatsValues(items.calculator(date, PeriodType.MONTH, content));
+        //setStatsValues(items.calculator(date, PeriodType.MONTH, content));
     }, [date]);
 
     const changeDate = (nextDate: Moment) => {
@@ -53,7 +51,7 @@ interface tileContentProps {
 }
 
 interface Props {
-    items: Items;
+    items: Item[];
     statsValues: StatsResult;
     date: Moment;
     changeDate: (date: Moment) => void;
@@ -75,7 +73,7 @@ const CalendarView: React.FC<Props> = props => {
                 );
             }
 		}*/
-        items.items.forEach((item: Item, index: number) => {
+        items.forEach((item: Item, index: number) => {
             if (moment(item.StartDate).isSame(moment(date), "days")) {
                 content.push(
                     <Typography variant={"subtitle1"}>{item.Pair}</Typography>

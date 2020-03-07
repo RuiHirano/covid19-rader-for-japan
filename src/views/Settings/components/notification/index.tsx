@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
     Card,
@@ -14,17 +14,15 @@ import {
 } from "@material-ui/core";
 import { Formik, FormikValues } from "formik";
 import * as Yup from "yup";
-import { userActions } from "../../../../redux/saga/user";
 import { useDispatch, useSelector } from "react-redux";
 import {
-    LoadingState,
     User,
     Notification as NotificationType
 } from "../../../../types";
-import { useLoading } from "../../../../common/hooks/useLoading";
 import { withRouter, match } from "react-router";
 import * as H from "history";
-import { AppState } from "../../../../redux/module";
+import { ReduxState } from "../../../../redux/module";
+import { useUpdateUserInfo } from "../../../../redux/hooks/useUser";
 
 // Container
 interface ContainerProps {
@@ -35,25 +33,14 @@ interface ContainerProps {
 const NotificationContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
+    const {updateUserInfo, status} = useUpdateUserInfo()
     const handleUpdateNotification = (values: FormikValues) => {
         const notification = values.notification;
         user.Setting.Notification = notification;
-        dispatch(userActions.updateUserAction({ user: user,
-			loadingStatus: LoadingState.UPDATE_NOTIFICATION }));
+        updateUserInfo(user)
     };
 
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            //history.push("/home");
-        }
-    };
-
-    useLoading(LoadingState.UPDATE_NOTIFICATION, callback);
-
-    const user: User = useSelector((state: AppState) => state.User);
+    const user: User = useSelector((state: ReduxState) => state.User);
     let notification: NotificationType = user.Setting.Notification;
 
     return (

@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Grid, TextField, Button } from "@material-ui/core";
+import { Grid} from "@material-ui/core";
 import * as H from "history";
-import { withRouter, RouteComponentProps, match } from "react-router";
+import { withRouter, match } from "react-router";
 import { BackButton, Form } from "./components";
-import { Formik, yupToFormErrors, FormikValues } from "formik";
-import * as Yup from "yup";
-import { Item, MarketType, TradeType, LoadingState } from "../../types";
-import moment from "moment";
-import uuid from "uuid";
+import {  FormikValues } from "formik";
+import { Item } from "../../types";
 import { useDispatch, useSelector } from "react-redux";
-import { itemActions } from "../../redux/saga/item";
-import { useLoading } from "../../common/hooks/useLoading";
-import { AppState } from "../../redux/module";
-import { Iterator } from "../../types/iterator";
+import { useCreateItem, useUpdateItem } from "../../redux/hooks/useItem";
+import { ReduxState } from "../../redux/module";
 
 // Container
 interface ContainerProps {
@@ -24,7 +19,9 @@ interface ContainerProps {
 const EntryFormContainer: React.FC<ContainerProps> = props => {
     const { history, match } = props;
     const dispatch = useDispatch();
-    const items = useSelector((state: AppState) => state.Items);
+    const {createItem, status} = useCreateItem()
+    const {updateItem} = useUpdateItem()
+    const items = useSelector((state: ReduxState) => state.Items);
     const handleRegistItem = (values: FormikValues) => {
         console.log("debug value", values);
         const item: Item = new Item();
@@ -47,17 +44,9 @@ const EntryFormContainer: React.FC<ContainerProps> = props => {
         item.CreatedAt = values.CreatedAt;
 
         if (match.params.itemId === "new") {
-            dispatch(
-                itemActions.createItemAction({
-                    item: item
-                })
-            );
+            createItem(item)
         } else {
-            dispatch(
-                itemActions.updateItemAction({
-                    item: item
-                })
-            );
+            updateItem(item)
         }
     };
 
@@ -67,17 +56,6 @@ const EntryFormContainer: React.FC<ContainerProps> = props => {
 
 
     const [item, setItem] = useState(new Item());
-
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            history.push("/dashboard");
-        }
-    };
-
-    useLoading(LoadingState.CREATE_ITEM, callback);
 
     useEffect(() => {
         if (match.params.itemId === "new") {
@@ -90,7 +68,7 @@ const EntryFormContainer: React.FC<ContainerProps> = props => {
                     setItem(item_);
                 }
             }*/
-            items.items.forEach((item_: Item, index: number) => {
+            items.forEach((item_: Item, index: number) => {
                 if (item_.ID === match.params.itemId) {
                     // urlパラメータと同じIDをもつアイテム
                     setItem(item_);

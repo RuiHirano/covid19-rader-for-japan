@@ -76,10 +76,11 @@ export class User {
 			Message: "",
 			Sex: Sex.MALE,
 			Thumbnail: <Image>{
-				id: "thumbnail",
-				status: ImageStatus.NONE,
-				url: "",
-				size: 0
+				ID: "thumbnail",
+				Path: "",
+				Status: ImageStatus.NONE,
+				Url: "",
+				Size: 0
 			},
 		}
 		this.Setting = <Setting>{
@@ -104,6 +105,47 @@ export class User {
 			Device: Device.PC,
 		}
 	}
+
+	setJson(userData: any){
+		const user_: User = JSON.parse(userData)
+		this.ID = user_.ID
+		this.Profile = <Profile>{
+			Name: user_.Profile.Name,
+			Age: user_.Profile.Age,
+			Message: user_.Profile.Message,
+			Sex: user_.Profile.Sex,
+			Thumbnail: <Image>{
+				ID: user_.Profile.Thumbnail.ID,
+				Path: user_.Profile.Thumbnail.Path,
+				Status: user_.Profile.Thumbnail.Status,
+				Url: user_.Profile.Thumbnail.Url,
+				Size: user_.Profile.Thumbnail.Size
+			},
+		}
+		this.Setting = <Setting>{
+			Email: user_.Setting.Email,
+			BankAccount: <BankAccount>{
+				AccountNumber: user_.Setting.BankAccount.AccountNumber,
+			},
+			Language: Language.ja,
+			Notification: <Notification>{
+				Email: user_.Setting.Notification.Email,
+				Push: user_.Setting.Notification.Push,
+			},
+			Content: <Content>{
+				InitialInvestment: user_.Setting.Content.InitialInvestment,
+				AllowableLossRate: user_.Setting.Content.AllowableLossRate,
+				BankruptcyReductionRate: user_.Setting.Content.BankruptcyReductionRate,
+				Currencies:  user_.Setting.Content.Currencies,
+				Stocks:  user_.Setting.Content.Stocks,
+				SearchTags:  user_.Setting.Content.SearchTags,
+			},
+			Plan: user_.Setting.Plan,
+			Device: user_.Setting.Device,
+		}
+	}
+
+	
 
 	setID(id: User["ID"]) {
 		this.ID = id

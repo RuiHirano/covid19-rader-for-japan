@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { makeStyles, Theme, useTheme } from "@material-ui/core/styles";
+import { makeStyles, Theme} from "@material-ui/core/styles";
 import Calendar from "react-calendar";
 import {
     Card,
@@ -10,12 +10,12 @@ import {
     Divider,
     Typography
 } from "@material-ui/core";
-import moment, { Moment } from "moment";
+import moment from "moment";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
-import { Items, Item } from "../../../../types";
-import { AppState } from "../../../../redux/module";
+import { Item } from "../../../../types";
+import { ReduxState } from "../../../../redux/module";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -49,7 +49,7 @@ const LatestCalendar: React.FC = props => {
     //const { className, ...rest } = props;
 
     const classes = useStyles();
-    const items: Items = useSelector((state: AppState) => state.Items);
+    const items: Item[] = useSelector((state: ReduxState) => state.Items);
 
     const [date, setDate] = useState(moment());
 
@@ -65,7 +65,7 @@ const LatestCalendar: React.FC = props => {
             return null;
         }
         let content: any = [];
-        items.items.forEach((item: Item, index: number) => {
+        items.forEach((item: Item, index: number) => {
             if (moment(item.StartDate).isSame(moment(date), "days")) {
                 content.push(
                     <Typography variant={"subtitle1"}>{item.Pair}</Typography>

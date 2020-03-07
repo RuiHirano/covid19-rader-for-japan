@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { LoadingState } from "../../types";
-import { AppState } from "../../redux/module";
+/*import { LoadingState } from "../types";
+import { ReduxState } from "../redux/module";
 import { useSelector } from "react-redux";
 
 // useLoading: loadingStateとloadingが終わったかどうかを返す
@@ -9,11 +9,11 @@ export const useLoading = (
 	callback: (nowLoading: boolean, finishLoading: boolean) => void
 ) => {
 	const isLoading: boolean = useSelector(
-		(state: AppState) => state.App.Loading.IsLoading
+		(state: ReduxState) => state.App.Loading.IsLoading
 	);
 
 	const loadingState = useSelector(
-		(state: AppState) => state.App.Loading.LoadingState
+		(state: ReduxState) => state.App.Loading.LoadingState
 	)
 
 
@@ -51,3 +51,4 @@ function usePrevious(value: any) {
 	});
 	return ref.current;
 }
+*/

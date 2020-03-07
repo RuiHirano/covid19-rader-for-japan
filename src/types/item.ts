@@ -21,10 +21,11 @@ export enum ImageStatus {
 }
 
 export interface Image {
-	id: string,
-	url: string,
-	size: number,
-	status: ImageStatus
+	ID: string,
+	Path: string,
+	Url: string,
+	Size: number,
+	Status: ImageStatus
 }
 
 export class Item {
@@ -64,6 +65,28 @@ export class Item {
 		this.Images = []
 		this.UpdatedAt = moment().toISOString()
 		this.CreatedAt = moment().toISOString()
+	}
+
+	getJson(){
+		return {
+			id: this.ID,
+			marketType: this.MarketType,
+			startDate: this.StartDate,
+			endDate: this.EndDate,
+			tradeType: this.TradeType,
+			pair: this.Pair,
+			lot: this.Lot,
+			entryRate: this.EntryRate,
+			lossCutRate: this.LossCutRate,
+			settleRate: this.SettleRate,
+			profit: this.Profit,
+			beforeComment: this.BeforeComment,
+			afterComment: this.AfterComment,
+			tags: this.Tags,
+			images: this.Images,
+			updatedAt: this.UpdatedAt,
+			createdAt: this.CreatedAt,
+		}
 	}
 
 	setID(id: string) {

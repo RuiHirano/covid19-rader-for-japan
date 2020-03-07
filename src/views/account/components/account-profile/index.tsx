@@ -1,7 +1,4 @@
-import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
-import clsx from "clsx";
-import moment from "moment";
+import React from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
     Card,
@@ -11,63 +8,37 @@ import {
     Typography,
     Divider,
     Button,
-    LinearProgress
 } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { withRouter } from "react-router";
-import { AppState } from "../../../../redux/module";
 import {
-    Setting,
-    Profile,
     User,
     Image,
     ImageStatus,
-    LoadingState
 } from "../../../../types";
 import myAvatar from "../../../../app/assets/app_icon.png";
 import Dropzone from "react-dropzone";
-import { userActions } from "../../../../redux/saga/user";
-import { useLoading } from "../../../../common/hooks/useLoading";
+import { useUpdateUserInfo } from "../../../../redux/hooks/useUser";
+import { ReduxState } from "../../../../redux/module";
 
 // Container
 interface ContainerProps {}
 const AccountProfileContainer: React.FC<ContainerProps> = props => {
     const {} = props;
     const dispatch = useDispatch();
+    const {updateUserInfo, status} = useUpdateUserInfo()
 
-    const user: User = useSelector((state: AppState) => state.User);
-    const isLoading: boolean = useSelector(
-        (state: AppState) => state.App.Loading.IsLoading
-    );
-    console.log("account profile");
-    const handleUpdateUser = (user: User) => {
-        dispatch(
-            userActions.updateUserAction({
-                user: user,
-                loadingStatus: LoadingState.UPDATE_PROFILE
-            })
-        );
-    };
-
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-        }
-    };
-
-    useLoading(LoadingState.UPDATE_PROFILE, callback);
+    const user: User = useSelector((state: ReduxState) => state.User);
 
     const handleRemoveThumbnail = () => {
         //Status: DELETEでfire-storageから削除
-        user.Profile.Thumbnail.status = ImageStatus.DELETE;
-        handleUpdateUser(user);
+        user.Profile.Thumbnail.Status = ImageStatus.DELETE;
+        updateUserInfo(user);
     };
     const handleUploadThumbnail = (img: Image) => {
         // storageに保存
         user.Profile.Thumbnail = img;
-        handleUpdateUser(user);
+        updateUserInfo(user);
     };
 
     return (
@@ -112,9 +83,9 @@ export const AccountProfile: React.FC<Props> = props => {
                     <Avatar
                         className={classes.avatar}
                         src={
-                            user.Profile.Thumbnail.url === ""
+                            user.Profile.Thumbnail.Url === ""
                                 ? myAvatar
-                                : user.Profile.Thumbnail.url
+                                : user.Profile.Thumbnail.Url
                         }
                     />
                 </div>
@@ -131,10 +102,11 @@ export const AccountProfile: React.FC<Props> = props => {
                             if (!(url instanceof ArrayBuffer) && url !== null) {
                                 // 同じIDで上書きする
                                 const img: Image = {
-                                    id: user.Profile.Thumbnail.id,
-                                    url: url,
-                                    size: fileData.size,
-                                    status: ImageStatus.UPDATE
+                                    ID: user.Profile.Thumbnail.ID,
+                                    Path: "",
+                                    Url: url,
+                                    Size: fileData.size,
+                                    Status: ImageStatus.UPDATE
                                 };
                                 handleUploadThumbnail(img);
                             }

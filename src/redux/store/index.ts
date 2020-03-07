@@ -1,16 +1,16 @@
 import { createStore, applyMiddleware } from 'redux'
 import rootModule from '../module'
 import logger from 'redux-logger'
-import createSagaMiddleware from 'redux-saga'
-import rootSaga from '../saga'
+//import createSagaMiddleware from 'redux-saga'
+//import rootSaga from '../saga'
 import {
 	persistReducer,
 	persistStore,
 	createTransform,
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import { appActions, AppActions } from '../module/app'
-import { App, Item, User, Items, Profile, Setting, BankAccount, Content, Notification, Loading, Error, State } from '../../types'
+import { AppActions } from '../module/app'
+import { App, Item, User, Profile, Setting, BankAccount, Content, Notification, Loading, Error, State } from '../../types'
 import { ItemActions } from '../module/item'
 import { UserActions } from '../module/user'
 
@@ -19,7 +19,7 @@ export default function configureStore() {
 	const dateTransform = createTransform(null, (outboundState: any) => {
 		console.log("out: ", outboundState)
 		if (outboundState.items !== undefined) {
-			var items: Items = new Items([])
+			var items: Item[] = []
 			const preItems = outboundState.items
 			preItems.forEach((item: any) => {
 				const preItem: Item = new Item()
@@ -41,20 +41,20 @@ export default function configureStore() {
 				preItem.UpdatedAt = item.UpdatedAt
 				preItem.CreatedAt = item.CreatedAt
 
-				items.appendItem(preItem)
+				items.push(preItem)
 			});
 			return items
-		} else if (outboundState.ID != undefined) {
+		} else if (outboundState.ID !== undefined) {
 			const preUser = outboundState
 			var user: User = new User()
 			user.ID = preUser.ID
-			user.Profile = <Profile>{
+			user.Profile = {
 				Name: preUser.Profile.Name,
 				Age: preUser.Profile.Age,
 				Message: preUser.Profile.Message,
 				Sex: preUser.Profile.Sex,
 				Thumbnail: preUser.Profile.Thumbnail,
-			}
+			} as Profile
 
 			const bankAccount: BankAccount = {
 				AccountNumber: preUser.Setting.BankAccount.AccountNumber,
@@ -113,15 +113,15 @@ export default function configureStore() {
 		// blacklist: ['visibilityFilter'] // `visibilityFilter`は保存しない
 	}
 
-	const sagaMiddleware = createSagaMiddleware()
+	//const sagaMiddleware = createSagaMiddleware()
 	const persistedReducer = persistReducer(persistConfig, rootModule)
 
 	const store = createStore(
 		persistedReducer,
-		applyMiddleware(sagaMiddleware, logger)
+		applyMiddleware(logger)
 	)
 
-	sagaMiddleware.run(rootSaga)
+	//sagaMiddleware.run(rootSaga)
 
 	const persistor = persistStore(store)
 	//persistor.purge()

@@ -2,8 +2,8 @@ import firebase from 'firebase'
 import config from './config'
 import '@firebase/firestore'
 
-const Firebase = firebase.initializeApp(config)
+const firebaseApp = firebase.initializeApp(config)
 
-Firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+firebaseApp.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
 
-export default Firebase
+export default firebaseApp

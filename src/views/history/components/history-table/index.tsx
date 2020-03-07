@@ -17,12 +17,11 @@ import {
     Button
 } from "@material-ui/core";
 
-import { getInitials } from "../../../../helpers";
-import { itemActions } from "../../../../redux/saga/item";
-import { Item, Items } from "../../../../types";
+import { Item } from "../../../../types";
 import { withRouter, match } from "react-router";
 import * as H from "history";
 import { useDispatch } from "react-redux";
+import { useDeleteItem } from "../../../../redux/hooks/useItem";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -45,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    items: Items;
+    items: Item[];
     history: H.History;
     location: H.Location;
     match: match;
@@ -58,7 +57,7 @@ const HistoryTable: React.FC<Props> = props => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
-    const [selectedItem, setSelectedItem] = useState<Item>(items.items[0]);
+    const [selectedItem, setSelectedItem] = useState<Item>(items[0]);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [page, setPage] = useState(0);
 
@@ -95,9 +94,10 @@ const HistoryTable: React.FC<Props> = props => {
 
         setSelectedUsers(newSelectedUsers);
     };*/
+    const {deleteItem, status} = useDeleteItem()
 
     const handleDelete = (item: Item) => {
-        dispatch(itemActions.deleteItemAction({ item: item }));
+        deleteItem(item)
     };
 
     const handleDetail = (item: Item) => {
@@ -161,7 +161,7 @@ const HistoryTable: React.FC<Props> = props => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {items.items.slice(0, rowsPerPage).map(item => (
+                                {items.slice(0, rowsPerPage).map(item => (
                                     <TableRow
                                         //className={classes.tableRow}
                                         hover
@@ -203,7 +203,7 @@ const HistoryTable: React.FC<Props> = props => {
             <CardActions className={classes.actions}>
                 <TablePagination
                     component="div"
-                    count={items.items.length}
+                    count={items.length}
                     onChangePage={handlePageChange}
                     onChangeRowsPerPage={handleRowsPerPageChange}
                     page={page}

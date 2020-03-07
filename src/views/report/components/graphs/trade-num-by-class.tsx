@@ -1,6 +1,6 @@
 import React from "react";
 import { Doughnut } from "react-chartjs-2";
-import clsx from "clsx";
+
 import { makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import {
     Card,

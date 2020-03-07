@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
     Card,
@@ -12,11 +12,9 @@ import {
 import { Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { useDispatch } from "react-redux";
-import { userActions } from "../../../../redux/saga/user";
-import { useLoading } from "../../../../common/hooks/useLoading";
-import { LoadingState } from "../../../../types";
 import { withRouter, match } from "react-router";
 import * as H from "history";
+import { useChangePassword } from "../../../../redux/hooks/useUser";
 
 // Container
 interface ContainerProps {
@@ -27,22 +25,10 @@ interface ContainerProps {
 const PasswordContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
+    const {changePassword, status} = useChangePassword()
     const handleUpdatePassword = (values: FormikValues) => {
-        dispatch(
-            userActions.updatePasswordAction({ password: values.password })
-        );
+        changePassword()
     };
-
-    const callback = (nowLoading: boolean, finishLoading: boolean) => {
-        if (nowLoading) {
-            console.log("loading now");
-        } else if (finishLoading) {
-            console.log("finish loading");
-            //history.push("/home");
-        }
-    };
-
-    useLoading(LoadingState.UPDATE_PASSWORD, callback);
 
     return <Password handleUpdatePassword={handleUpdatePassword} />;
 };

@@ -15,7 +15,7 @@ import {
     TableRow
 } from "@material-ui/core";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
-import { Items, Item } from "../../../../types";
+import { Item } from "../../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    items: Items;
+    items: Item[];
 }
 
 const LatestOrders: React.FC<Props> = props => {
@@ -76,7 +76,7 @@ const LatestOrders: React.FC<Props> = props => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {items.items.map((item: Item) => (
+                                {items.map((item: Item) => (
                                     <TableRow
                                         //className={classes.tableRow}
                                         hover

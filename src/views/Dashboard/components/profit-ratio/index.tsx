@@ -1,10 +1,8 @@
 import React from "react";
-import clsx from "clsx";
-import PropTypes from "prop-types";
+
+
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Card, CardContent, Grid, Typography, Avatar } from "@material-ui/core";
-import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
-import PeopleIcon from "@material-ui/icons/PeopleOutlined";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {

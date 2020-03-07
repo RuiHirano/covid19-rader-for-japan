@@ -38,3 +38,10 @@ export enum LoadingState {
 	UPDATE_ITEM,
 	DELETE_ITEM,
 }
+
+export interface Status{
+	Progress: number,
+	Log: string,
+	Error: string,
+	Loading: boolean
+}
