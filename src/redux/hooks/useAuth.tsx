@@ -48,7 +48,8 @@ export const useSignIn = () => {
         setStatus({...status, Progress: 100})
 
     }catch(err){
-
+      console.log("error: ", err)
+      setStatus({...status, Error: err})
     }
 
   }, [status])
