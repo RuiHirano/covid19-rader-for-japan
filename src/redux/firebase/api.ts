@@ -1,9 +1,5 @@
-import { put, call, all, take } from 'redux-saga/effects'
-import { AppActions } from '../module/app'
-import { ItemActions } from '../module/item'
-import { UserActions } from '../module/user'
+
 import firebaseApp from '.'
-import ReduxSagaFirebase from 'redux-saga-firebase'
 import { Item, Loading, State, User, Error, Setting, Image, ImageStatus } from '../../types'
 import uuid from 'uuid'
 import firebase from 'firebase'

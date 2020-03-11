@@ -45,7 +45,6 @@
     "typescript": "3.6.4",
     "typescript-fsa": "^3.0.0",
     "typescript-fsa-reducers": "^1.2.1",
-    "typescript-fsa-redux-saga": "^2.0.0",
     "underscore": "^1.9.1",
     "uuid": "^3.3.3",
     "validate.js": "^0.13.1",

@@ -1,8 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
 import rootModule from '../module'
 import logger from 'redux-logger'
-//import createSagaMiddleware from 'redux-saga'
-//import rootSaga from '../saga'
 import {
 	persistReducer,
 	persistStore,
