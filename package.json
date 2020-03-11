@@ -41,8 +41,6 @@
     "redux-actions": "^2.6.5",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
-    "redux-saga": "^1.1.1",
-    "redux-saga-firebase": "^0.15.0",
     "styled-components": "^4.4.1",
     "typescript": "3.6.4",
     "typescript-fsa": "^3.0.0",
