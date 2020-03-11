@@ -106,42 +106,42 @@ export class User {
 		}
 	}
 
-	setJson(userData: any){
-		const user_: User = JSON.parse(userData)
-		this.ID = user_.ID
+	setJson(userData: User){
+		//const user_: User = JSON.parse(userData)
+		this.ID = userData.ID
 		this.Profile = <Profile>{
-			Name: user_.Profile.Name,
-			Age: user_.Profile.Age,
-			Message: user_.Profile.Message,
-			Sex: user_.Profile.Sex,
+			Name: userData.Profile.Name,
+			Age: userData.Profile.Age,
+			Message: userData.Profile.Message,
+			Sex: userData.Profile.Sex,
 			Thumbnail: <Image>{
-				ID: user_.Profile.Thumbnail.ID,
-				Path: user_.Profile.Thumbnail.Path,
-				Status: user_.Profile.Thumbnail.Status,
-				Url: user_.Profile.Thumbnail.Url,
-				Size: user_.Profile.Thumbnail.Size
+				ID: userData.Profile.Thumbnail.ID,
+				Path: userData.Profile.Thumbnail.Path,
+				Status: userData.Profile.Thumbnail.Status,
+				Url: userData.Profile.Thumbnail.Url,
+				Size: userData.Profile.Thumbnail.Size
 			},
 		}
 		this.Setting = <Setting>{
-			Email: user_.Setting.Email,
+			Email: userData.Setting.Email,
 			BankAccount: <BankAccount>{
-				AccountNumber: user_.Setting.BankAccount.AccountNumber,
+				AccountNumber: userData.Setting.BankAccount.AccountNumber,
 			},
 			Language: Language.ja,
 			Notification: <Notification>{
-				Email: user_.Setting.Notification.Email,
-				Push: user_.Setting.Notification.Push,
+				Email: userData.Setting.Notification.Email,
+				Push: userData.Setting.Notification.Push,
 			},
 			Content: <Content>{
-				InitialInvestment: user_.Setting.Content.InitialInvestment,
-				AllowableLossRate: user_.Setting.Content.AllowableLossRate,
-				BankruptcyReductionRate: user_.Setting.Content.BankruptcyReductionRate,
-				Currencies:  user_.Setting.Content.Currencies,
-				Stocks:  user_.Setting.Content.Stocks,
-				SearchTags:  user_.Setting.Content.SearchTags,
+				InitialInvestment: userData.Setting.Content.InitialInvestment,
+				AllowableLossRate: userData.Setting.Content.AllowableLossRate,
+				BankruptcyReductionRate: userData.Setting.Content.BankruptcyReductionRate,
+				Currencies:  userData.Setting.Content.Currencies,
+				Stocks:  userData.Setting.Content.Stocks,
+				SearchTags:  userData.Setting.Content.SearchTags,
 			},
-			Plan: user_.Setting.Plan,
-			Device: user_.Setting.Device,
+			Plan: userData.Setting.Plan,
+			Device: userData.Setting.Device,
 		}
 	}
 

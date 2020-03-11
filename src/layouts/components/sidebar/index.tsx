@@ -118,6 +118,17 @@ const Sidebar: React.FC<Props> = props => {
         signOut();
     };
 
+    useEffect(()=>{
+        console.log("signIn status change", status.Progress)
+        if(status.Progress === 100){
+            history.push("/")
+        }
+        if(status.Error !== ""){
+            console.log("error occer: ", status.Error)
+        }
+
+    }, [status])
+
     const signout = {
         title: "Sign Out",
         icon: <SettingsIcon />,

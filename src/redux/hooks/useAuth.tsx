@@ -23,7 +23,6 @@ export const useSignIn = () => {
         
         // sign in auth
         const userCredit = await api.signIn(email, password)
-        console.log("1")
 
         // ユーザー情報を取得
         if(userCredit.user === null){
@@ -34,11 +33,9 @@ export const useSignIn = () => {
 
         // userInfoをstore
         dispatch(userActions.updateUserInfo(userInfo))
-        console.log("2")
 
         // itemsを取得
         const items = await api.getItems(uid)
-        console.log("3")
 
         // itemsをstore
         dispatch(itemActions.createItems(items))
@@ -133,12 +130,10 @@ export const useSignUp = () => {
           await api.signOut()
   
           // StoreのItemsを初期化
-		      const items: Item[] = []
-          dispatch(itemActions.createItems(items))
+          dispatch(itemActions.initItems())
   
           // Storeのユーザ情報を初期化
-          const user: User = new User()
-          dispatch(userActions.updateUserInfo(user))
+          dispatch(userActions.initUserInfo())
   
           // Loading終了
           setStatus({...status, Loading: false})

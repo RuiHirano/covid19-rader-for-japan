@@ -7,6 +7,7 @@ const actionCreator = actionCreatorFactory();
 export const initialState: Item[] = []
 
 export enum ItemActions {
+	INIT_ITEMS = "INIT_ITEMS",	// itemsの初期化
 	CREATE_ITEMS = "CREATE_ITEMS",	// itemsの作成
 	CREATE_ITEM = "CREATE_ITEM",	// itemの作成
 	UPDATE_ITEM = "UPDATE_ITEM",	// itemの更新
@@ -14,6 +15,7 @@ export enum ItemActions {
 }
 
 export const itemActions = {
+	initItems: actionCreator(ItemActions.INIT_ITEMS),
 	createItems: actionCreator<Item[]>(ItemActions.CREATE_ITEMS),
 	createItem: actionCreator<Item>(ItemActions.CREATE_ITEM),
 	updateItem: actionCreator<Item>(ItemActions.UPDATE_ITEM),
@@ -21,15 +23,19 @@ export const itemActions = {
 };
 
 const itemModule = reducerWithInitialState(initialState)
-	.case(itemActions.createItem, (preItems, items) => {
+	.case(itemActions.initItems, (preItems, items) => {
+		// 初期化
+		return [...initialState]
+	})
+	.case(itemActions.createItems, (preItems, items) => {
 		// 複数新規作成
 		const newItems = preItems.concat(items)
-		return {...newItems}
+		return [...newItems]
 	})
 	.case(itemActions.createItem, (items, item) => {
 		// 新規作成
 		items.push(item)
-		return {...items}
+		return [...items]
 	})
 	.case(itemActions.updateItem, (items, item) => {
 		// 更新
@@ -40,7 +46,7 @@ const itemModule = reducerWithInitialState(initialState)
 			}
 		})
 
-		return {...newItems}
+		return [...newItems]
 	})
 	.case(itemActions.deleteItem, (items, item) => {
 		// 削除
@@ -51,7 +57,7 @@ const itemModule = reducerWithInitialState(initialState)
 			}
 		})
 
-		return {...newItems}
+		return [...newItems]
 	})
 
 

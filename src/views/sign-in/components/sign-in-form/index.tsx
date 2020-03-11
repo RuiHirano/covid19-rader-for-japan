@@ -35,7 +35,7 @@ const SignInFormContainer: React.FC<RouteProps> = (props) => {
     useEffect(()=>{
         console.log("signIn status change", status.Progress)
         if(status.Progress === 100){
-            history.push("/")
+            history.push("/dashboard")
         }
         if(status.Error !== ""){
             console.log("error occer: ", status.Error)

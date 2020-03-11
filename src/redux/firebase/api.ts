@@ -70,13 +70,8 @@ export class API {
 
 	async getUserInfo(uid: string) {
         const path = 'users/' + uid + '/user'
-		console.log("user doc: ", path)
 		const userDoc: any = await this.fbApp.firestore().collection(path).doc(uid).get()
-		const userInfo: User = new User()
-		userInfo.setJson(userDoc.data())
-		console.log("user doc: ", userInfo)
-		//const data: any = userDoc.data()
-		//userInfo.setJson(data)
+		const userInfo: User = userDoc.data()
 		return userInfo
 	}
 

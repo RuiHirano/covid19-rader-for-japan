@@ -39,7 +39,7 @@ const SignUpFormContainer: React.FC<RouteProps> = (props) => {
     useEffect(()=>{
         console.log("signIn status change", status.Progress)
         if(status.Progress === 100){
-            history.push("/")
+            history.push("/dashboard")
         }
         if(status.Error !== ""){
             console.log("error occer: ", status.Error)
@@ -61,9 +61,9 @@ const SignUpForm: React.FC<Props> = props => {
     const user = useSelector((state: ReduxState)=>state.User)
     console.log("user json: ", JSON.stringify(user))
     console.log("user parse: ", JSON.parse(JSON.stringify(user)))
-    const test: User = new User
-    test.setJson(JSON.stringify(user))
-    console.log("user parse: ", test)
+    //const test: User = new User
+    //test.setJson(JSON.stringify(user))
+    //console.log("user parse: ", test)
 
     const initialValues = {
         email: "",
