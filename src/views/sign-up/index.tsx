@@ -1,7 +1,7 @@
 import React from "react";
 import imgPath from "../../app/assets/app_icon.png";
 import SignLayout from "../../layouts/sign";
-import SignUpForm from "./molecules/singnup-form";
+import SignUpForm from "./templetes/signup-form";
 
 interface Props {
 }
