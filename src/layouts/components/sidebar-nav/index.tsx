@@ -1,10 +1,16 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { List, ListItem, Button, colors } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import theme from "../../../styles/theme";
+import DialogComponent, { useDialog } from "../../../components/dialog";
+import AlertComponent, { AlertType, useAlert } from "../../../components/alert";
+
+import { withRouter, RouteComponentProps, match } from "react-router";
+import * as H from "history";
+import { useSignOut } from "../../../redux/hooks/useAuth";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -49,16 +55,43 @@ const CustomRouterLink = forwardRef((props: any, ref: any) => (
 ));
 
 interface Props {
+    history: H.History;
+    location: H.Location;
+    match: match;
     pages: { title: string; href: string; icon: any }[];
     isHome: boolean;
-    signout: { title: string; icon: any; handleSignOut: () => void };
+    signout: { title: string; icon: any; };
     onClose: () => void;
 }
 
 const SidebarNav: React.FC<Props> = props => {
-    const { pages, signout, isHome, onClose } = props;
+    const { pages, signout, isHome, onClose, history } = props;
+
+    const { signOut, status } = useSignOut()
+    // alert
+    const { openAlert, closeAlert, alertStatus } = useAlert()
+
+    // dialog
+    const { open, openDialog, closeDialog } = useDialog()
 
     const classes = useStyles();
+
+    const handleSignOut = () => {
+        signOut();
+    };
+
+    useEffect(() => {
+        console.log("signIn status change", status.Progress)
+        if (status.Progress === 100) {
+            openAlert(AlertType.SUCCESS, "finish run command")
+            history.push("/")
+        }
+        if (status.Error !== "") {
+            console.log("error occer: ", status.Error)
+            openAlert(AlertType.ERROR, "error occur while running command")
+        }
+
+    }, [status])
 
     return (
         <SidebarContainer>
@@ -93,7 +126,7 @@ const SidebarNav: React.FC<Props> = props => {
                                 //activeClassName={classes.active}
                                 className={classes.button}
                                 //component={CustomRouterLink}
-                                onClick={() => signout.handleSignOut()}
+                                onClick={() => openDialog()}
                             >
                                 <div className={classes.icon}> {signout.icon} </div>
                                 {signout.title}
@@ -101,8 +134,10 @@ const SidebarNav: React.FC<Props> = props => {
                         </ListItem>
                     )}
             </List>
+            <DialogComponent open={open} closeDialog={closeDialog} runFunc={handleSignOut} />
+            <AlertComponent closeAlert={closeAlert} alertStatus={alertStatus} />
         </SidebarContainer>
     );
 };
 
-export default SidebarNav;
+export default withRouter(SidebarNav);

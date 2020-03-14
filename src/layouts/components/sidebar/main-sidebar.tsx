@@ -21,6 +21,8 @@ import Profile from "../profile";
 import { makeStyles } from "@material-ui/styles";
 import { useSignOut } from "../../../redux/hooks/useAuth";
 import TitleLogo from "../title-logo";
+import AlertComponent, { AlertType, useAlert } from "../../../components/alert";
+import DialogComponent, { useDialog } from "../../../components/dialog";
 
 const drawerWidth = 260;
 
@@ -41,8 +43,8 @@ interface Props {
 }
 
 const Sidebar: React.FC<Props> = props => {
-    const { open, variant, onClose, history, isHome } = props;
-
+    const { variant, onClose, history, isHome } = props;
+    const drawerOpen = props.open
     const mainPages = [
         {
             title: "Dashboard",
@@ -83,40 +85,26 @@ const Sidebar: React.FC<Props> = props => {
 
     const { signOut, status } = useSignOut()
 
-    const handleSignOut = () => {
-        signOut();
-    };
-
-    useEffect(() => {
-        console.log("signIn status change", status.Progress)
-        if (status.Progress === 100) {
-            history.push("/")
-        }
-        if (status.Error !== "") {
-            console.log("error occer: ", status.Error)
-        }
-
-    }, [status])
-
     const signout = {
         title: "Signout",
         icon: <SignoutIcon />,
-        handleSignOut: handleSignOut
     };
 
     return (
-        <Drawer anchor="left" onClose={onClose} open={open} variant={variant}>
-            <DrawerContainer>
-                <TitleLogo />
-                <Divider style={{ backgroundColor: "white" }} />
-                <SidebarNav
-                    isHome={false}
-                    pages={mainPages}
-                    signout={signout}
-                    onClose={onClose}
-                />
-            </DrawerContainer>
-        </Drawer>
+        <div>
+            <Drawer anchor="left" onClose={onClose} open={drawerOpen} variant={variant}>
+                <DrawerContainer>
+                    <TitleLogo />
+                    <Divider style={{ backgroundColor: "white" }} />
+                    <SidebarNav
+                        isHome={false}
+                        pages={mainPages}
+                        signout={signout}
+                        onClose={onClose}
+                    />
+                </DrawerContainer>
+            </Drawer>
+        </div>
     );
 };
 

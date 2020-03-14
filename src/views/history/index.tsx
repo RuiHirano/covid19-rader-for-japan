@@ -37,7 +37,6 @@ const HistoryView: React.FC<Props> = props => {
     return (
 
         <MainLayout title="History">
-            <HistoryToolbar />
             <div className={classes.content}>
                 <HistoryTable items={items} />
             </div>

@@ -20,6 +20,8 @@ import theme from "../../../styles/theme";
 import { useSignOut } from "../../../redux/hooks/useAuth";
 import { withRouter, RouteComponentProps, match } from "react-router";
 import * as H from "history";
+import AlertComponent, { useAlert, AlertType } from "../../../components/alert";
+import DialogComponent, { useDialog } from "../../../components/dialog";
 
 const Title = styled(Typography)({
     fontSize: 20,
@@ -43,6 +45,10 @@ const MainHeader: React.FC<Props> = props => {
     const { title, onSidebarOpen, history } = props;
 
     const { signOut, status } = useSignOut()
+    // alert
+    const { openAlert, closeAlert, alertStatus } = useAlert()
+    // dialog
+    const { open, openDialog, closeDialog } = useDialog()
 
     const handleSignOut = () => {
         signOut();
@@ -51,10 +57,12 @@ const MainHeader: React.FC<Props> = props => {
     useEffect(() => {
         console.log("signIn status change", status.Progress)
         if (status.Progress === 100) {
+            openAlert(AlertType.SUCCESS, "finish run command")
             history.push("/")
         }
         if (status.Error !== "") {
             console.log("error occer: ", status.Error)
+            openAlert(AlertType.ERROR, "error occur while running command")
         }
 
     }, [status])
@@ -84,12 +92,14 @@ const MainHeader: React.FC<Props> = props => {
                             <NotificationsIcon />
                         </Badge>
                     </IconButton>
-                    <IconButton color="inherit" onClick={() => handleSignOut()}>
+                    <IconButton color="inherit" onClick={() => openDialog()}>
                         <InputIcon />
                     </IconButton>
                 </Hidden>
 
             </Toolbar>
+            <DialogComponent open={open} closeDialog={closeDialog} runFunc={handleSignOut} />
+            <AlertComponent closeAlert={closeAlert} alertStatus={alertStatus} />
         </div>
     );
 };

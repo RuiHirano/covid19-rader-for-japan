@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
+import { styled } from "@material-ui/core/styles";
 
 import {
     Notifications,
@@ -12,6 +13,7 @@ import {
     Plan
 } from "./components";
 import { Main as MainLayout } from "../../layouts";
+import theme from "../../styles/theme";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -19,12 +21,35 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
+const GridContainer = styled(Grid)({
+    [theme.breakpoints.down("xl")]: {
+        paddingRight: 300,
+        paddingLeft: 300
+    },
+    [theme.breakpoints.down("lg")]: {
+        paddingRight: 200,
+        paddingLeft: 200
+    },
+    [theme.breakpoints.down("md")]: {
+        paddingRight: 100,
+        paddingLeft: 100
+    },
+    [theme.breakpoints.down("sm")]: {
+        paddingRight: 0,
+        paddingLeft: 0
+    },
+    [theme.breakpoints.down("xs")]: {
+        paddingRight: 0,
+        paddingLeft: 0
+    },
+});
+
 const Settings: React.FC = () => {
     const classes = useStyles();
 
     return (
         <MainLayout title="Settings">
-            <Grid container spacing={4}>
+            <GridContainer container spacing={4}>
                 <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
                     <Notifications />
                 </Grid>
@@ -46,7 +71,7 @@ const Settings: React.FC = () => {
                 <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
                     <Plan />
                 </Grid>
-            </Grid>
+            </GridContainer>
         </MainLayout>
     );
 };

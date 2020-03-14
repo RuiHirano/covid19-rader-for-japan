@@ -2,7 +2,7 @@ import React from "react";
 
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Card, CardContent, Grid, Typography, Avatar } from "@material-ui/core";
+import { Card, CardContent, Grid, Typography, Avatar, Paper } from "@material-ui/core";
 import TotalAssets from "./total-assets";
 import TotalProfit from "./total-profit";
 import WinRate from "./win-rate";
@@ -59,30 +59,35 @@ const Statistics: React.FC<Props> = props => {
     const classes = useStyles();
 
     return (
-        <Grid container spacing={4}>
-            <Grid item lg={3} sm={6} xl={3} xs={12}>
-                <TotalAssets totalAssets={statsValues.Statistics.TotalAssets} />
-            </Grid>
-            <Grid item lg={3} sm={6} xl={3} xs={12}>
-                <TotalProfit totalProfit={statsValues.Statistics.TotalProfit} />
-            </Grid>
-            <Grid item lg={3} sm={6} xl={3} xs={12}>
-                <WinRate winRate={statsValues.Statistics.WinRate} />
-            </Grid>
-            <Grid item lg={3} sm={6} xl={3} xs={12}>
-                <ProfitRatio profitRatio={statsValues.Statistics.ProfitRatio} />
-            </Grid>
-            <Grid item lg={3} md={6} xl={3} xs={12}>
-                <ExpectedValue
-                    expectedValue={statsValues.Statistics.ProfitAve}
-                />
-            </Grid>
-            <Grid item lg={3} md={6} xl={3} xs={12}>
-                <BankruptRate
-                    bankruptRate={statsValues.Statistics.ProfitBefore}
-                />
-            </Grid>
-        </Grid>
+        <div >
+            <Typography style={{}} variant={"subtitle1"}>{"Statistics"}</Typography>
+            <Paper style={{ padding: 10 }}>
+                <Grid container spacing={2}>
+                    <Grid item lg={3} sm={6} xl={3} xs={12}>
+                        <TotalAssets totalAssets={statsValues.Statistics.TotalAssets} />
+                    </Grid>
+                    <Grid item lg={3} sm={6} xl={3} xs={12}>
+                        <TotalProfit totalProfit={statsValues.Statistics.TotalProfit} />
+                    </Grid>
+                    <Grid item lg={3} sm={6} xl={3} xs={12}>
+                        <WinRate winRate={statsValues.Statistics.WinRate} />
+                    </Grid>
+                    <Grid item lg={3} sm={6} xl={3} xs={12}>
+                        <ProfitRatio profitRatio={statsValues.Statistics.ProfitRatio} />
+                    </Grid>
+                    <Grid item lg={3} md={6} xl={3} xs={12}>
+                        <ExpectedValue
+                            expectedValue={statsValues.Statistics.ProfitAve}
+                        />
+                    </Grid>
+                    <Grid item lg={3} md={6} xl={3} xs={12}>
+                        <BankruptRate
+                            bankruptRate={statsValues.Statistics.ProfitBefore}
+                        />
+                    </Grid>
+                </Grid>
+            </Paper>
+        </div>
     );
 };
 

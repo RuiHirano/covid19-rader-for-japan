@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Grid, Button, Typography } from "@material-ui/core";
+import {
+    Grid, Button, Typography,
+    IconButton,
+    Paper,
+    Tooltip
+} from "@material-ui/core";
 import moment, { Moment } from "moment";
+import LeftIcon from "@material-ui/icons/ChevronLeft";
+import RightIcon from "@material-ui/icons/ChevronRight";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -39,36 +46,40 @@ const DateBar: React.FC<Props> = props => {
     const classes = useStyles();
     const date2: Moment = moment(date);
 
+    const handleBackDate = () => {
+        console.log("back date")
+    }
+    const handleForwardDate = () => {
+        console.log("forward date")
+    }
+
     return (
-        <Grid container className={classes.root}>
-            <Grid
-                item
-                xs={12}
-                sm={3}
-                lg={3}
-                xl={3}
-                className={classes.left_button}
-            >
-                <Button onClick={() => changeDate(date2.subtract(1, "days"))}>
-                    {"<"}
-                </Button>
-            </Grid>
-            <Grid item xs={12} sm={6} lg={6} xl={6} className={classes.date}>
-                <Typography>{date.format("YYYY/MM/DD")}</Typography>
-            </Grid>
-            <Grid
-                item
-                xs={12}
-                sm={3}
-                lg={3}
-                xl={3}
-                className={classes.right_button}
-            >
-                <Button onClick={() => changeDate(date2.add(1, "days"))}>
-                    {">"}
-                </Button>
-            </Grid>
-        </Grid>
+        <Paper style={{ display: "flex" }}>
+            <Button variant="outlined" style={{ height: 40 }}>{"今月"}</Button>
+            <Tooltip title="前月">
+                <IconButton
+                    onClick={() => handleBackDate()}
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                >
+                    <LeftIcon />
+                </IconButton>
+            </Tooltip>
+            <Tooltip title="翌月">
+                <IconButton
+                    onClick={() => handleForwardDate()}
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                >
+                    <RightIcon />
+                </IconButton>
+            </Tooltip>
+            <Typography style={{ verticalAlign: "middle", display: "inline-block" }} variant={"h4"}>{date.format("YYYY/MM/DD")}</Typography>
+
+        </Paper>
+
     );
 };
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
@@ -14,14 +14,21 @@ import {
     TableRow,
     Typography,
     TablePagination,
-    Button
+    Button,
+    IconButton
 } from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 
 import { Item } from "../../../../types";
 import { withRouter, match } from "react-router";
 import * as H from "history";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useDeleteItem } from "../../../../redux/hooks/useItem";
+import MUIDataTable, { MUIDataTableOptions } from "mui-datatables";
+import { ReduxState } from "../../../../redux/module";
+import AlertComponent, { AlertType, useAlert } from "../../../../components/alert";
+import DialogComponent, { useDialog } from "../../../../components/dialog";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -50,169 +57,102 @@ interface Props {
     match: match;
 }
 
+const convertTableItems = (items: Item[]) => {
+    /* FileInfoをmaterial-table用に変換する */
+    let tableItems: any[] = []
+    items.forEach((item: Item) => {
+        tableItems.push([
+            item.StartDate, item.TradeType, item.Pair, item.Lot, item.Profit, item.BeforeComment, item.AfterComment
+        ])
+    })
+    console.log("tableItem: ", tableItems)
+    return tableItems
+}
+
 const HistoryTable: React.FC<Props> = props => {
     //const { className, users, ...rest } = props;
-    const { items, history } = props;
+    const { history } = props;
+    const items = useSelector((state: ReduxState) => state.Items)
+    // alert
+    const { openAlert, closeAlert, alertStatus } = useAlert()
+    // dialog
+    const { open, openDialog, closeDialog } = useDialog()
 
-    const classes = useStyles();
-    const dispatch = useDispatch();
+    const [selectedItem, setSelectedItem] = useState<Item>(new Item)
+    const { deleteItem, status } = useDeleteItem()
 
-    const [selectedItem, setSelectedItem] = useState<Item>(items[0]);
-    const [rowsPerPage, setRowsPerPage] = useState<number>(10);
-    const [page, setPage] = useState(0);
+    const handleDelete = () => {
+        console.log("delete: ", selectedItem)
+        deleteItem(selectedItem)
+    };
 
-    /*const handleSelectAll = (event: any) => {
-        let selectedUsers: string[];
-
-        if (event.target.checked) {
-            selectedUsers = items.map(item => item.id);
-        } else {
-            selectedUsers = [];
+    useEffect(() => {
+        console.log("signIn status change", status.Progress)
+        if (status.Progress === 100) {
+            openAlert(AlertType.SUCCESS, "finish run command")
+        }
+        if (status.Error !== "") {
+            console.log("error occer: ", status.Error)
+            openAlert(AlertType.ERROR, "error occur while running command")
         }
 
-        setSelectedUsers(selectedUsers);
+    }, [status])
+
+    const handleEdit = (item: Item) => {
+        console.log("edit: ", item)
+        history.push("/entry/" + item.ID);
     };
 
-    const handleSelectOne = (event: any, id: string) => {
-        const selectedIndex = selectedUsers.indexOf(id);
-        let newSelectedUsers: string[] = [];
 
-        if (selectedIndex === -1) {
-            newSelectedUsers = newSelectedUsers.concat(selectedUsers, id);
-        } else if (selectedIndex === 0) {
-            newSelectedUsers = newSelectedUsers.concat(selectedUsers.slice(1));
-        } else if (selectedIndex === selectedUsers.length - 1) {
-            newSelectedUsers = newSelectedUsers.concat(
-                selectedUsers.slice(0, -1)
-            );
-        } else if (selectedIndex > 0) {
-            newSelectedUsers = newSelectedUsers.concat(
-                selectedUsers.slice(0, selectedIndex),
-                selectedUsers.slice(selectedIndex + 1)
-            );
-        }
+    const columns = ["Date", "TradeType", "Pair", "Lot", "Profit", "BeforeComment", "AfterComment"];
 
-        setSelectedUsers(newSelectedUsers);
-    };*/
-    const {deleteItem, status} = useDeleteItem()
-
-    const handleDelete = (item: Item) => {
-        deleteItem(item)
-    };
-
-    const handleDetail = (item: Item) => {
-        history.push("/detail/" + item.StartDate);
-    };
-
-    const handlePageChange = (event: any, page: number) => {
-        setPage(page);
-    };
-
-    const handleRowsPerPageChange = (event: any) => {
-        setRowsPerPage(event.target.value);
+    const options: MUIDataTableOptions = {
+        filterType: 'checkbox',
+        selectableRows: 'single',
+        customToolbarSelect: (selectedRows: any) => (
+            <div>
+                <IconButton
+                    onClick={() => {
+                        const index: number = selectedRows.data[0].index
+                        console.log("edit", index, items)
+                        handleEdit(items[index])
+                    }}
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                >
+                    <EditIcon />
+                </IconButton>
+                <IconButton
+                    onClick={() => {
+                        const index: number = selectedRows.data[0].index
+                        //handleDelete(items[index])
+                        setSelectedItem(items[index])
+                        openDialog()
+                    }}
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                >
+                    <DeleteIcon />
+                </IconButton>
+            </div>
+        ),
     };
 
     return (
-        <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
-        >
-            <CardContent className={classes.content}>
-                <PerfectScrollbar>
-                    <div className={classes.inner}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>
-                                        <Button
-                                            onClick={() =>
-                                                handleDelete(selectedItem)
-                                            }
-                                        >
-                                            Delete
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button
-                                            onClick={() =>
-                                                handleDetail(selectedItem)
-                                            }
-                                        >
-                                            Detail
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell padding="checkbox">
-                                        <Checkbox
-                                            checked={false}
-                                            color="primary"
-                                            onChange={() => {}}
-                                        />
-                                    </TableCell>
-                                    <TableCell>Pair</TableCell>
-                                    <TableCell>Class</TableCell>
-                                    <TableCell>Lot</TableCell>
-                                    <TableCell>Profit</TableCell>
-                                    <TableCell>StartDate</TableCell>
-                                    <TableCell>EndDate</TableCell>
-                                    <TableCell>BeforeComment</TableCell>
-                                    <TableCell>AfterComment</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {items.slice(0, rowsPerPage).map(item => (
-                                    <TableRow
-                                        //className={classes.tableRow}
-                                        hover
-                                        key={item.ID}
-                                        selected={selectedItem.ID === item.ID}
-                                    >
-                                        <TableCell padding="checkbox">
-                                            <Checkbox
-                                                checked={
-                                                    selectedItem.ID === item.ID
-                                                }
-                                                color="primary"
-                                                onChange={event =>
-                                                    setSelectedItem(item)
-                                                }
-                                                value="true"
-                                            />
-                                        </TableCell>
-                                        <TableCell>{item.Pair}</TableCell>
-                                        <TableCell>{item.TradeType}</TableCell>
-                                        <TableCell>{item.Lot}</TableCell>
-                                        <TableCell>{item.Profit}</TableCell>
-                                        <TableCell>{item.StartDate}</TableCell>
-                                        <TableCell>{item.EndDate}</TableCell>
-                                        <TableCell>
-                                            {item.BeforeComment}
-                                        </TableCell>
-
-                                        <TableCell>
-                                            {item.AfterComment}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </PerfectScrollbar>
-            </CardContent>
-            <CardActions className={classes.actions}>
-                <TablePagination
-                    component="div"
-                    count={items.length}
-                    onChangePage={handlePageChange}
-                    onChangeRowsPerPage={handleRowsPerPageChange}
-                    page={page}
-                    rowsPerPage={rowsPerPage}
-                    rowsPerPageOptions={[5, 10, 25]}
-                />
-            </CardActions>
-        </Card>
-    );
+        <div>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"></link>
+            <MUIDataTable
+                title={"Trade List"}
+                data={convertTableItems(items)}
+                columns={columns}
+                options={options}
+            />
+            <DialogComponent open={open} closeDialog={closeDialog} runFunc={handleDelete} />
+            <AlertComponent closeAlert={closeAlert} alertStatus={alertStatus} />
+        </div>
+    )
 };
 
 export default withRouter(HistoryTable);

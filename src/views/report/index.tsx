@@ -67,6 +67,8 @@ const ReportView: React.FC<Props> = props => {
                 </Grid>
                 <Grid xs={12} sm={12} className={classes.content}>
                     <Statistics statsValues={statsValues} />
+                </Grid>
+                <Grid xs={12} sm={12} className={classes.content}>
                     <Graphs statsValues={statsValues} />
                 </Grid>
             </Grid>
@@ -76,7 +78,7 @@ const ReportView: React.FC<Props> = props => {
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
-        backgroundColor: theme.palette.common.white,
+        backgroundColor: theme.palette.grey[100],
         height: "100%"
     },
     tile: {
@@ -89,11 +91,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: theme.palette.common.white
     },
     date: {
-        backgroundColor: theme.palette.common.white,
+        backgroundColor: theme.palette.grey[100],
         height: "7%"
     },
     content: {
-        backgroundColor: theme.palette.common.white,
+        backgroundColor: theme.palette.grey[100],
         height: "100%"
     }
 }));
