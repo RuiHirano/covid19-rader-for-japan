@@ -1,23 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, ReactNode } from "react";
 import { useMediaQuery } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
-import { Footer, Sidebar, Header } from "../components";
+import { Footer, MainSidebar, MainHeader } from "../components";
+import Header2 from "../components/header/main-header"
 import theme from "../../styles/theme";
 
-const drawerWidth = 240;
+const drawerWidth = 260;
+const headerHeight = 36;
 
 const ContentContainer = styled("div")({
-    paddingTop: 20,
-    paddingRight: 20,
-    paddingLeft: drawerWidth + 20,
+    marginTop: headerHeight,
+    marginLeft: drawerWidth,
+    padding: 20,
 
     [theme.breakpoints.down("sm")]: {
-        paddingLeft: 20
+        marginTop: 20,
+        marginLeft: 0,
+        padding: 20,
     }
 });
 
 const HeaderContainer = styled("div")({
     width: `calc(100% - ${drawerWidth}px)`,
+    height: headerHeight,
     marginLeft: drawerWidth,
 
     [theme.breakpoints.down("sm")]: {
@@ -28,6 +33,7 @@ const HeaderContainer = styled("div")({
 
 const SidebarContainer = styled("div")({
     width: drawerWidth,
+    backgroundColor: "gray",
 
     [theme.breakpoints.down("sm")]: {
         width: 0
@@ -36,11 +42,12 @@ const SidebarContainer = styled("div")({
 
 interface Props {
     className?: string;
-    children?: any;
+    children?: ReactNode;
+    title: string
 }
 
 const Main: React.FC<Props> = props => {
-    const { children } = props;
+    const { children, title } = props;
 
     const isDesktop = useMediaQuery(theme.breakpoints.up("md"), {
         defaultMatches: true
@@ -61,10 +68,10 @@ const Main: React.FC<Props> = props => {
     return (
         <div>
             <HeaderContainer>
-                <Header isHome={false} onSidebarOpen={handleSidebarOpen} />
+                <MainHeader title={title} onSidebarOpen={handleSidebarOpen} />
             </HeaderContainer>
             <SidebarContainer>
-                <Sidebar
+                <MainSidebar
                     isHome={false}
                     onClose={handleSidebarClose}
                     open={shouldOpenSidebar}

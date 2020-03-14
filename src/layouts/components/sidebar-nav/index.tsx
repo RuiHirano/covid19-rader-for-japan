@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         paddingBottom: 0
     },
     button: {
-        color: colors.blueGrey[800],
+        color: theme.palette.background.default,
         padding: "10px 8px",
         justifyContent: "flex-start",
         textTransform: "none",
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
         fontWeight: theme.typography.fontWeightMedium
     },
     icon: {
-        color: theme.palette.primary.light,
+        color: theme.palette.background.default,
         width: 24,
         height: 24,
         display: "flex",
@@ -31,11 +31,10 @@ const useStyles = makeStyles((theme: Theme) => ({
         marginRight: theme.spacing(1)
     },
     active: {
-        color: theme.palette.primary.main,
+        color: theme.palette.background.default,
+        marginRight: 10,
+        backgroundColor: colors.cyan[500],
         fontWeight: theme.typography.fontWeightMedium,
-        "& $icon": {
-            color: theme.palette.primary.main
-        }
     }
 }));
 
@@ -85,22 +84,22 @@ const SidebarNav: React.FC<Props> = props => {
                 {isHome ? (
                     <div />
                 ) : (
-                    <ListItem
-                        className={classes.item}
-                        disableGutters
-                        key={signout.title}
-                    >
-                        <Button
-                            //activeClassName={classes.active}
-                            className={classes.button}
-                            //component={CustomRouterLink}
-                            onClick={() => signout.handleSignOut()}
+                        <ListItem
+                            className={classes.item}
+                            disableGutters
+                            key={signout.title}
                         >
-                            <div className={classes.icon}> {signout.icon} </div>
-                            {signout.title}
-                        </Button>
-                    </ListItem>
-                )}
+                            <Button
+                                //activeClassName={classes.active}
+                                className={classes.button}
+                                //component={CustomRouterLink}
+                                onClick={() => signout.handleSignOut()}
+                            >
+                                <div className={classes.icon}> {signout.icon} </div>
+                                {signout.title}
+                            </Button>
+                        </ListItem>
+                    )}
             </List>
         </SidebarContainer>
     );

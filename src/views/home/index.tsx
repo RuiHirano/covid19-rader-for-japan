@@ -7,17 +7,18 @@ import {
     DownloadSection,
     PlanSection
 } from "./components";
+import { Home as HomeLayout } from "../../layouts";
 
 const Home: React.FC = () => {
     return (
-        <div>
+        <HomeLayout>
             <HeaderTitle />
             <FeatureTopSection />
             <DownloadSection />
             <PlanSection />
             <FeatureBottomSection />
             <ReviewSection />
-        </div>
+        </HomeLayout>
     );
 };
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Grid, Typography } from "@material-ui/core";
+import { Home as HomeLayout } from "../../layouts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -22,7 +23,8 @@ const NotFound: React.FC = () => {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+
+        <HomeLayout>
             <Grid container justify="center" spacing={4}>
                 <Grid item lg={6} xs={12}>
                     <div className={classes.content}>
@@ -42,7 +44,7 @@ const NotFound: React.FC = () => {
                     </div>
                 </Grid>
             </Grid>
-        </div>
+        </HomeLayout>
     );
 };
 

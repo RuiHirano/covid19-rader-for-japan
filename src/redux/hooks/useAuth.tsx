@@ -1,6 +1,6 @@
 import { useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {Status} from '../../types/app'
+import { Status } from '../../types/app'
 import { Item, User } from '../../types'
 import { itemActions } from '../module/item'
 import { userActions } from '../module/user'
@@ -12,45 +12,45 @@ import { defaultUser, defaultItems } from './data'
 ////////////////////////////////////////////////
 
 export const useSignIn = () => {
-  const [status, setStatus] = useState<Status>({Progress: 0, Log: "", Error: "", Loading: false})
+  const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
   const dispatch = useDispatch()
   const api = new API()
 
   const signIn = useCallback(async (email: string, password: string) => {
-    try{
-        // Loading開始
-        setStatus({...status, Loading: true})
-        
-        // sign in auth
-        const userCredit = await api.signIn(email, password)
+    try {
+      // Loading開始
+      setStatus({ ...status, Loading: true })
 
-        // ユーザー情報を取得
-        if(userCredit.user === null){
-          throw console.error("can't find user...")
-        }
-        const uid: User["ID"] = userCredit.user.uid
-        const userInfo: User = await api.getUserInfo(uid)
+      // sign in auth
+      const userCredit = await api.signIn(email, password)
 
-        // userInfoをstore
-        dispatch(userActions.updateUserInfo(userInfo))
+      // ユーザー情報を取得
+      if (userCredit.user === null) {
+        throw console.error("can't find user...")
+      }
+      const uid: User["ID"] = userCredit.user.uid
+      const userInfo: User = await api.getUserInfo(uid)
 
-        // itemsを取得
-        const items = await api.getItems(uid)
+      // userInfoをstore
+      dispatch(userActions.updateUserInfo(userInfo))
 
-        // itemsをstore
-        dispatch(itemActions.createItems(items))
+      // itemsを取得
+      const items = await api.getItems(uid)
 
-        // Loading終了
-        setStatus({...status, Loading: false})
-        setStatus({...status, Progress: 100})
+      // itemsをstore
+      dispatch(itemActions.createItems(items))
 
-    }catch(err){
+      // Loading終了
+      setStatus({ ...status, Loading: false })
+      setStatus({ ...status, Progress: 100 })
+
+    } catch (err) {
       console.log("error: ", err)
-      setStatus({...status, Error: err})
+      setStatus({ ...status, Error: err })
     }
 
   }, [status])
-  return { "signIn": signIn, "status": status}
+  return { "signIn": signIn, "status": status }
 }
 
 /////////////////////////////////////////////////
@@ -58,90 +58,90 @@ export const useSignIn = () => {
 ////////////////////////////////////////////////
 
 export const useSignUp = () => {
-    const [status, setStatus] = useState<Status>({Progress: 0, Log: "", Error: "", Loading: false})
-    const dispatch = useDispatch()
-    const api = new API()
-  
-    const signUp = useCallback(async (name: string, email: string, password: string) => {
-      try{
-          // Loading開始
-          setStatus({...status, Loading: true})
-          
-          // sign in auth
-          const userCredit = await api.signUp(email, password)
-          setStatus({...status, Progress: 30})
+  const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
+  const dispatch = useDispatch()
+  const api = new API()
 
-          // ユーザー情報を作成
-          if(userCredit.user === null){
-            throw console.error("can't find user...")
-          }
-          const uid: User["ID"] = userCredit.user.uid
-          const userInfo: User = defaultUser()
-          userInfo.ID = uid
-          userInfo.Setting.Email = email
-          userInfo.Profile.Name = name
+  const signUp = useCallback(async (name: string, email: string, password: string) => {
+    try {
+      // Loading開始
+      setStatus({ ...status, Loading: true })
 
-          // userInfoをstore
-          dispatch(userActions.updateUserInfo(userInfo))
-          // userInfoをfirestoreへ
-          await api.createUserInfo(userInfo)
-          setStatus({...status, Progress: 60})
+      // sign in auth
+      const userCredit = await api.signUp(email, password)
+      setStatus({ ...status, Progress: 30 })
 
-          // itemsを取得
-          const items = defaultItems()
-
-          // itemsをstore
-          dispatch(itemActions.createItems(items))
-          // itemsをfirestoreへ
-          const path = "users/" + uid + "/items"
-          await items.forEach(async(item: Item) => {
-            await api.createItem(item, path)
-          });
-  
-          // Loading終了
-          setStatus({...status, Loading: false})
-
-          setStatus({...status, Progress: 100})
-          
-      }catch(err){
-        console.log("error: ", err)
-        setStatus({...status, Error: err})
+      // ユーザー情報を作成
+      if (userCredit.user === null) {
+        throw console.error("can't find user...")
       }
-  
-    }, [status])
-    return { "signUp": signUp, "status": status}
-  }
+      const uid: User["ID"] = userCredit.user.uid
+      const userInfo: User = defaultUser()
+      userInfo.ID = uid
+      userInfo.Setting.Email = email
+      userInfo.Profile.Name = name
 
-  /////////////////////////////////////////////////
- //////////          Sign Out             ////////
+      // userInfoをstore
+      dispatch(userActions.updateUserInfo(userInfo))
+      // userInfoをfirestoreへ
+      await api.createUserInfo(userInfo)
+      setStatus({ ...status, Progress: 60 })
+
+      // itemsを取得
+      const items = defaultItems()
+
+      // itemsをstore
+      dispatch(itemActions.createItems(items))
+      // itemsをfirestoreへ
+      const path = "users/" + uid + "/items"
+      await items.forEach(async (item: Item) => {
+        await api.createItem(item, path)
+      });
+
+      // Loading終了
+      setStatus({ ...status, Loading: false })
+
+      setStatus({ ...status, Progress: 100 })
+
+    } catch (err) {
+      console.log("error: ", err)
+      setStatus({ ...status, Error: err })
+    }
+
+  }, [status])
+  return { "signUp": signUp, "status": status }
+}
+
+/////////////////////////////////////////////////
+//////////          Sign Out             ////////
 ////////////////////////////////////////////////
 
-  export const useSignOut = () => {
-    const [status, setStatus] = useState<Status>({Progress: 0, Log: "", Error: "", Loading: false})
-    const dispatch = useDispatch()
-    const api = new API()
-  
-    const signOut = useCallback(async () => {
-      try{
-          // Loading開始
-          setStatus({...status, Loading: true})
-          
-          // signout
-          await api.signOut()
-  
-          // StoreのItemsを初期化
-          dispatch(itemActions.initItems())
-  
-          // Storeのユーザ情報を初期化
-          dispatch(userActions.initUserInfo())
-  
-          // Loading終了
-          setStatus({...status, Loading: false})
-          
-      }catch(err){
-  
-      }
-  
-    }, [status])
-    return { "signOut": signOut, "status": status}
-  }
+export const useSignOut = () => {
+  const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
+  const dispatch = useDispatch()
+  const api = new API()
+
+  const signOut = useCallback(async () => {
+    try {
+      // Loading開始
+      setStatus({ ...status, Loading: true })
+
+      // signout
+      await api.signOut()
+
+      // StoreのItemsを初期化
+      dispatch(itemActions.initItems())
+
+      // Storeのユーザ情報を初期化
+      dispatch(userActions.initUserInfo())
+
+      // Loading終了
+      setStatus({ ...status, Loading: false, Progress: 100 })
+
+    } catch (err) {
+
+    }
+
+  }, [status])
+  return { "signOut": signOut, "status": status }
+}

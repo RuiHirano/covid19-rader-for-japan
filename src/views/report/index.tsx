@@ -8,9 +8,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { StatsResult, Item, YearStatsBuilder } from "../../types";
 import moment, { Moment } from "moment";
 import { ReduxState } from "../../redux/module";
+import { Main as MainLayout } from "../../layouts";
 
 // Container
-interface ContainerProps {}
+interface ContainerProps { }
 const ReportContainer: React.FC<ContainerProps> = props => {
     const dispatch = useDispatch();
     const items: Item[] = useSelector((state: ReduxState) => state.Items);
@@ -58,7 +59,8 @@ const ReportView: React.FC<Props> = props => {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+
+        <MainLayout title="Report">
             <Grid className={classes.root} container>
                 <Grid xs={12} sm={12} className={classes.date}>
                     <DateBar date={date} changeDate={changeDate} />
@@ -68,7 +70,7 @@ const ReportView: React.FC<Props> = props => {
                     <Graphs statsValues={statsValues} />
                 </Grid>
             </Grid>
-        </div>
+        </MainLayout>
     );
 };
 

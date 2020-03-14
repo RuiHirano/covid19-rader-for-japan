@@ -3,13 +3,14 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import Calendar from "react-calendar/dist/entry.nostyle";
 import { Grid, Typography } from "@material-ui/core";
 import { Details, Statistics } from "./components";
-import { Item,  StatsResult } from "../../types";
+import { Item, StatsResult } from "../../types";
 import moment, { Moment } from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import { ReduxState } from "../../redux/module";
+import { Main as MainLayout } from "../../layouts";
 
 // Container
-interface ContainerProps {}
+interface ContainerProps { }
 const CalendarContainer: React.FC<ContainerProps> = props => {
     const dispatch = useDispatch();
     const items: Item[] = useSelector((state: ReduxState) => state.Items);
@@ -85,7 +86,7 @@ const CalendarView: React.FC<Props> = props => {
     };
 
     return (
-        <div className={classes.root}>
+        <MainLayout title="Calendar">
             <Grid className={classes.root} container>
                 <Grid item xs={12} sm={9}>
                     <Calendar
@@ -112,7 +113,8 @@ const CalendarView: React.FC<Props> = props => {
                     </Grid>
                 </Grid>
             </Grid>
-        </div>
+
+        </MainLayout>
     );
 };
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMediaQuery } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
-import { Footer, Header, Sidebar } from "../components";
+import { Footer, HomeHeader, HomeSidebar } from "../components";
 import theme from "../../styles/theme";
 import imgPath from "../../app/assets/app_icon.png";
 
@@ -34,8 +34,8 @@ const Home: React.FC<Props> = props => {
 
     return (
         <div>
-            <Header isHome={true} onSidebarOpen={handleSidebarOpen} />
-            <Sidebar
+            <HomeHeader isHome={true} onSidebarOpen={handleSidebarOpen} />
+            <HomeSidebar
                 isHome={true}
                 onClose={handleSidebarClose}
                 open={shouldOpenSidebar}

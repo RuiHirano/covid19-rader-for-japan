@@ -16,7 +16,7 @@ import Profile from "../profile";
 import { makeStyles } from "@material-ui/styles";
 import { useSignOut } from "../../../redux/hooks/useAuth";
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -112,18 +112,18 @@ const Sidebar: React.FC<Props> = props => {
     ];
 
     const dispatch = useDispatch();
-    const {signOut, status} = useSignOut()
+    const { signOut, status } = useSignOut()
 
     const handleSignOut = () => {
         signOut();
     };
 
-    useEffect(()=>{
+    useEffect(() => {
         console.log("signIn status change", status.Progress)
-        if(status.Progress === 100){
+        if (status.Progress === 100) {
             history.push("/")
         }
-        if(status.Error !== ""){
+        if (status.Error !== "") {
             console.log("error occer: ", status.Error)
         }
 
@@ -137,28 +137,16 @@ const Sidebar: React.FC<Props> = props => {
 
     return (
         <Drawer anchor="left" onClose={onClose} open={open} variant={variant}>
-            {isHome ? (
-                <DrawerContainer isHome={isHome}>
-                    <Divider />
-                    <SidebarNav
-                        pages={homePages}
-                        isHome={true}
-                        signout={signout}
-                        onClose={onClose}
-                    />
-                </DrawerContainer>
-            ) : (
-                <DrawerContainer isHome={isHome}>
-                    <Profile />
-                    <Divider />
-                    <SidebarNav
-                        isHome={false}
-                        pages={mainPages}
-                        signout={signout}
-                        onClose={onClose}
-                    />
-                </DrawerContainer>
-            )}
+            <DrawerContainer isHome={isHome}>
+                <Divider />
+                <SidebarNav
+                    pages={homePages}
+                    isHome={true}
+                    signout={signout}
+                    onClose={onClose}
+                />
+            </DrawerContainer>
+
         </Drawer>
     );
 };

@@ -1,7 +1,6 @@
 
 import firebaseApp from '.'
-import { Item, Loading, State, User, Error, Setting, Image, ImageStatus } from '../../types'
-import uuid from 'uuid'
+import { Item, User, Image, ImageStatus } from '../../types'
 import firebase from 'firebase'
 
 
@@ -10,6 +9,11 @@ export class API {
 
 	constructor() {
         this.fbApp = firebaseApp;
+	}
+
+	async getUserAuth() {
+		const user = await this.fbApp.auth().currentUser
+		return user
 	}
 
 	async createItem(item: Item, path: string) {

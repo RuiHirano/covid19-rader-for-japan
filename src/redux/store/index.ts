@@ -16,9 +16,9 @@ export default function configureStore() {
 	// localstorageのstateに型付けする
 	const dateTransform = createTransform(null, (outboundState: any) => {
 		console.log("out: ", outboundState)
-		if (outboundState.items !== undefined) {
+		if (outboundState instanceof Array) {
 			var items: Item[] = []
-			const preItems = outboundState.items
+			const preItems = outboundState
 			preItems.forEach((item: any) => {
 				const preItem: Item = new Item()
 				preItem.ID = item.ID

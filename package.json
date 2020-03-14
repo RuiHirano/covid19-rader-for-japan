@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^4.5.1",
     "@material-ui/icons": "^4.5.1",
+    "@material-ui/lab": "^4.0.0-alpha.45",
     "@material-ui/styles": "^4.5.0",
     "@types/chart.js": "^2.8.9",
     "@types/history": "^4.7.3",
@@ -84,6 +85,7 @@
     "enzyme-to-json": "^3.4.3",
     "jest": "^24.9.0",
     "jest-dom": "^4.0.0",
+    "prettier": "^1.19.1",
     "react-test-renderer": "^16.11.0",
     "ts-jest": "^24.1.0"
   }

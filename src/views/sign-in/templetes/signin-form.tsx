@@ -16,7 +16,6 @@ const SignInForm: React.FC<Props> = props => {
             <Container>
                 <TitleText variant="h2">Sign in</TitleText>
                 
-
                 <SocialSignIn/>
 
                 <EmailSignIn/>

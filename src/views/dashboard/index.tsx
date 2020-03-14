@@ -13,11 +13,11 @@ import {
 } from "./components";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../redux/module";
-import {  StatsResult, Item, YearStatsBuilder } from "../../types";
+import { StatsResult, Item, YearStatsBuilder } from "../../types";
 import moment from "moment";
-
+import { Main as MainLayout } from "../../layouts";
 // Container
-interface ContainerProps {}
+interface ContainerProps { }
 const DashboardContainer: React.FC<ContainerProps> = props => {
     const dispatch = useDispatch();
     const items: Item[] = useSelector((state: ReduxState) => state.Items);
@@ -47,7 +47,7 @@ const DashboardView: React.FC<Props> = props => {
     const { statsValues, items } = props;
 
     return (
-        <div>
+        <MainLayout title="Dashboard">
             <Grid container spacing={2}>
                 <Grid item xl={3} lg={3} md={6} sm={6} xs={12}>
                     <TotalAssets
@@ -82,7 +82,8 @@ const DashboardView: React.FC<Props> = props => {
                     <LatestOrders items={items} />
                 </Grid>
             </Grid>
-        </div>
+
+        </MainLayout>
     );
 };
 

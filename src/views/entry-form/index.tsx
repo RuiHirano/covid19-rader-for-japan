@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { Grid} from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import * as H from "history";
 import { withRouter, match } from "react-router";
 import { BackButton, Form } from "./components";
-import {  FormikValues } from "formik";
+import { FormikValues } from "formik";
 import { Item } from "../../types";
 import { useDispatch, useSelector } from "react-redux";
 import { useCreateItem, useUpdateItem } from "../../redux/hooks/useItem";
 import { ReduxState } from "../../redux/module";
+import { Main as MainLayout } from "../../layouts";
 
 // Container
 interface ContainerProps {
@@ -19,8 +20,8 @@ interface ContainerProps {
 const EntryFormContainer: React.FC<ContainerProps> = props => {
     const { history, match } = props;
     const dispatch = useDispatch();
-    const {createItem, status} = useCreateItem()
-    const {updateItem} = useUpdateItem()
+    const { createItem, status } = useCreateItem()
+    const { updateItem } = useUpdateItem()
     const items = useSelector((state: ReduxState) => state.Items);
     const handleRegistItem = (values: FormikValues) => {
         console.log("debug value", values);
@@ -100,7 +101,7 @@ const EntryFormView: React.FC<Props> = props => {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+        <MainLayout title="Entry Form">
             <Grid className={classes.grid} container>
                 <Grid className={classes.content} item lg={12} xs={12}>
                     <div className={classes.contentHeader}>
@@ -111,7 +112,8 @@ const EntryFormView: React.FC<Props> = props => {
                     </div>
                 </Grid>
             </Grid>
-        </div>
+
+        </MainLayout>
     );
 };
 

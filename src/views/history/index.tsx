@@ -5,9 +5,10 @@ import { HistoryToolbar, HistoryTable } from "./components";
 import { useSelector } from "react-redux";
 import { LoadingState, Item } from "../../types";
 import { ReduxState } from "../../redux/module";
+import { Main as MainLayout } from "../../layouts";
 
 // Container
-interface ContainerProps {}
+interface ContainerProps { }
 const HistoryContainer: React.FC<ContainerProps> = props => {
     /*const dispatch = useDispatch();
     const handleUpdateHisyory = (values: FormikValues) => {
@@ -34,12 +35,14 @@ const HistoryView: React.FC<Props> = props => {
     //const items = useSelector((state: ReduxState) => state.Items);
 
     return (
-        <div className={classes.root}>
+
+        <MainLayout title="History">
             <HistoryToolbar />
             <div className={classes.content}>
                 <HistoryTable items={items} />
             </div>
-        </div>
+
+        </MainLayout>
     );
 };
 

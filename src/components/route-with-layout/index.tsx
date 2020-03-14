@@ -20,16 +20,12 @@ const RouteWithLayout: React.FC<Props> = props => {
                 if (auth) {
                     return (
                         <Auth>
-                            <Layout>
-                                <Component {...matchProps} />
-                            </Layout>
+                            <Component {...matchProps} />
                         </Auth>
                     );
                 } else {
                     return (
-                        <Layout>
-                            <Component {...matchProps} />
-                        </Layout>
+                        <Component {...matchProps} />
                     );
                 }
             }}

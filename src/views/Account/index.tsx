@@ -3,6 +3,7 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 
 import { AccountProfile, AccountDetails, AccountDelete } from "./components";
+import { Main as MainLayout } from "../../layouts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -14,7 +15,7 @@ const Account: React.FC = () => {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+        <MainLayout title="Account">
             <Grid container spacing={4}>
                 <Grid item lg={4} md={6} xl={4} xs={12}>
                     <AccountProfile />
@@ -27,7 +28,8 @@ const Account: React.FC = () => {
                     <AccountDelete />
                 </Grid>
             </Grid>
-        </div>
+
+        </MainLayout>
     );
 };
 

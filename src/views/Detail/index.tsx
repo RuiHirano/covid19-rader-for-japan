@@ -8,6 +8,7 @@ import { Item } from "../../types";
 import { useSelector } from "react-redux";
 import moment, { Moment } from "moment";
 import { ReduxState } from "../../redux/module";
+import { Main as MainLayout } from "../../layouts";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -80,7 +81,7 @@ const DetailContainer: React.FC<ContainerProps> = props => {
                 dates.push(moment(item.StartDate));
             }
         });
-        dates.sort(function(date1, date2) {
+        dates.sort(function (date1, date2) {
             if (moment(date1).isAfter(moment(date2))) {
                 return 1;
             } else {
@@ -165,7 +166,7 @@ const DetailView: React.FC<Props> = props => {
     const classes = useStyles();
 
     return (
-        <div className={classes.root}>
+        <MainLayout title="Detail">
             <Grid className={classes.root} container>
                 <Grid xs={12} sm={12} className={classes.date}>
                     <DateBar date={date} toPrev={toPrev} toNext={toNext} />
@@ -174,6 +175,7 @@ const DetailView: React.FC<Props> = props => {
                     <Content items={targetItems} toEdit={toEdit} />
                 </Grid>
             </Grid>
-        </div>
+
+        </MainLayout>
     );
 };
