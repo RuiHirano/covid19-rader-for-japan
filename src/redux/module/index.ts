@@ -1,19 +1,19 @@
 import { combineReducers } from 'redux'
 import itemModule from './item'
 import userModule from './user'
-import appModule from './app'
-import { App, Item, User } from '../../types'
+import statsModule from './statistics'
+import { App, Item, User, Statistics, StatsResult } from '../../types'
 
 export interface ReduxState {
-	App: App,
+	Statistics: StatsResult,
 	Items: Item[],
 	User: User
 }
 
 const rootModule = combineReducers<ReduxState>({
+	Statistics: statsModule,
 	Items: itemModule,
 	User: userModule,
-	App: appModule,
 })
 
 export default rootModule

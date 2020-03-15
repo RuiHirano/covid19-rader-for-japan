@@ -7,7 +7,7 @@ import ProfitByDate from "./profit-by-date";
 import ProfitByPair from "./profit-by-pair";
 import TradeNumByPair from "./trade-num-by-pair";
 import TradeNumByClass from "./trade-num-by-class";
-import { StatsResult } from "../../../../types";
+import { StatsResult } from "../../../../redux/hooks/useStatistics";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -33,30 +33,30 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    statsValues: StatsResult;
+    statsResult: StatsResult;
 }
 
 const Graphs: React.FC<Props> = props => {
-    const { statsValues } = props;
+    const { statsResult } = props;
 
     const classes = useStyles();
     const theme = useTheme();
 
     return (
         <div >
-            <Typography style={{}} variant={"subtitle1"}>{"Graph"}</Typography>
-            <Paper style={{ padding: 10 }}>
+            <Typography style={{ margin: 5 }} variant={"h6"}>{"Graph"}</Typography>
+            <Paper style={{ padding: 10 }} elevation={0}>
                 <Grid container spacing={2}>
                     <Grid item lg={6} sm={6} xl={3} xs={12}>
                         <TotalAssets
                             totalAssetsData={
-                                statsValues.Graphs.TotalAssetsTransition
+                                statsResult.Graphs.TotalAssetsTransition
                             }
                         />
                     </Grid>
                     <Grid item lg={6} sm={6} xl={3} xs={12}>
                         <ProfitTransition
-                            profitData={statsValues.Graphs.ProfitTransition}
+                            profitData={statsResult.Graphs.ProfitTransition}
                         />
                     </Grid>
                     {/*<Grid item lg={6} sm={6} xl={3} xs={12}>
@@ -64,17 +64,17 @@ const Graphs: React.FC<Props> = props => {
 					</Grid>*/}
                     <Grid item lg={6} sm={6} xl={3} xs={12}>
                         <ProfitByPair
-                            profitByPairData={statsValues.Graphs.PairRatio}
+                            profitByPairData={statsResult.Graphs.PairRatio}
                         />
                     </Grid>
                     <Grid item lg={6} md={6} xl={3} xs={12}>
                         <TradeNumByPair
-                            tradeNumByPairData={statsValues.Graphs.PairRatio}
+                            tradeNumByPairData={statsResult.Graphs.PairRatio}
                         />
                     </Grid>
                     <Grid item lg={6} md={6} xl={3} xs={12}>
                         <TradeNumByClass
-                            tradeNumByClassData={statsValues.Graphs.TradeTypeRatio}
+                            tradeNumByClassData={statsResult.Graphs.TradeTypeRatio}
                         />
                     </Grid>
                 </Grid>

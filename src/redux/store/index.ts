@@ -7,7 +7,6 @@ import {
 	createTransform,
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import { AppActions } from '../module/app'
 import { App, Item, User, Profile, Setting, BankAccount, Content, Notification, Loading, Error, State } from '../../types'
 import { ItemActions } from '../module/item'
 import { UserActions } from '../module/user'
@@ -127,7 +126,6 @@ export default function configureStore() {
 }
 
 export interface ActionTypes {
-	AppActions: AppActions,
 	ItemActions: ItemActions,
 	UserActions: UserActions
 }

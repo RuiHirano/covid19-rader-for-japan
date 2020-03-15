@@ -14,12 +14,12 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const GridContainer = styled(Grid)({
     [theme.breakpoints.down("xl")]: {
-        paddingRight: 300,
-        paddingLeft: 300
+        paddingRight: 350,
+        paddingLeft: 350
     },
     [theme.breakpoints.down("lg")]: {
-        paddingRight: 200,
-        paddingLeft: 200
+        paddingRight: 250,
+        paddingLeft: 250
     },
     [theme.breakpoints.down("md")]: {
         paddingRight: 100,

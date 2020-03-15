@@ -8,8 +8,10 @@ import moment, { Moment } from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import { ReduxState } from "../../redux/module";
 import { Main as MainLayout } from "../../layouts";
+import { useStatistics } from "../../redux/hooks/useStatistics";
+import { PeriodType } from "../../types/statistics2";
 
-// Container
+/*// Container
 interface ContainerProps { }
 const CalendarContainer: React.FC<ContainerProps> = props => {
     const dispatch = useDispatch();
@@ -41,9 +43,9 @@ const CalendarContainer: React.FC<ContainerProps> = props => {
             changeDate={changeDate}
         />
     );
-};
+};*/
 
-export default CalendarContainer;
+
 
 //Presentational
 interface tileContentProps {
@@ -52,15 +54,30 @@ interface tileContentProps {
 }
 
 interface Props {
-    items: Item[];
-    statsValues: StatsResult;
-    date: Moment;
-    changeDate: (date: Moment) => void;
 }
 
 const CalendarView: React.FC<Props> = props => {
-    const { items, statsValues, date, changeDate } = props;
     const classes = useStyles();
+
+    const dispatch = useDispatch();
+    const items: Item[] = useSelector((state: ReduxState) => state.Items);
+
+    const [date, setDate] = useState<Moment>(moment());
+    const [periodType, setPriodType] = useState<PeriodType>(PeriodType.MONTH);
+
+    const [statsValues, setStatsValues] = useState(
+        //items.calculator(moment(), PeriodType.ALL, content)
+    );
+
+    const { calcStats, status, statsResult } = useStatistics()
+
+    useEffect(() => {
+        calcStats(date, periodType)
+    }, [date])
+
+    const changeDate = (nextDate: Moment) => {
+        setDate(nextDate);
+    };
 
     const getTileContent = ({ date, view }: tileContentProps) => {
         // 月表示のときのみ
@@ -106,7 +123,7 @@ const CalendarView: React.FC<Props> = props => {
                 </Grid>
                 <Grid item xs={12} sm={3}>
                     <Grid item className={classes.statistics} xs={12} sm={12}>
-                        <Statistics date={date} stats={statsValues} />
+                        <Statistics date={date} stats={statsResult} />
                     </Grid>
                     <Grid item className={classes.detail} xs={12} sm={12}>
                         <Details date={date} items={items} />
@@ -117,6 +134,8 @@ const CalendarView: React.FC<Props> = props => {
         </MainLayout>
     );
 };
+
+export default CalendarView;
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {

@@ -9,93 +9,121 @@ import { StatsResult, Item, YearStatsBuilder } from "../../types";
 import moment, { Moment } from "moment";
 import { ReduxState } from "../../redux/module";
 import { Main as MainLayout } from "../../layouts";
+import { StatsCalculator, PeriodType } from "../../types/statistics2";
+import { useStatistics } from "../../redux/hooks/useStatistics"
 
-// Container
-interface ContainerProps { }
-const ReportContainer: React.FC<ContainerProps> = props => {
-    const dispatch = useDispatch();
+interface Props {
+}
+
+
+const ReportView: React.FC<Props> = props => {
+    const classes = useStyles();
     const items: Item[] = useSelector((state: ReduxState) => state.Items);
     console.log("items: ", items);
 
-    const content = useSelector(
-        (state: ReduxState) => state.User.Setting.Content
-    );
-
     const [date, setDate] = useState<Moment>(moment());
+    const [periodType, setPriodType] = useState<PeriodType>(PeriodType.MONTH);
     // FIX
-    const [statsValues, setStatsValues] = useState<StatsResult>(
+    /*const [statsValues, setStatsValues] = useState<StatsResult>(
         //items.calculator(date, PeriodType.DAY, content)
         new YearStatsBuilder(items, moment(), content).getResult()
-    );
+    );*/
+
+    const { calcStats, status, statsResult } = useStatistics()
 
     useEffect(() => {
-        // FIX
-        //setStatsValues(items.calculator(date, PeriodType.DAY, content));
-    }, [date]);
+        calcStats(date, periodType)
+    }, [date])
 
-    const changeDate = (nextDate: Moment) => {
-        setDate(nextDate);
+
+    const createDateFormat = () => {
+        switch (periodType) {
+            case PeriodType.YEAR:
+                return date.format("YYYY")
+            case PeriodType.MONTH:
+                return date.format("YYYY/MM")
+            case PeriodType.DAY:
+                return date.format("YYYY/MM/DD")
+        }
+    }
+
+
+    const handleForwardDate = () => {
+        console.log("forward", date)
+        const datecp = date.clone()
+        switch (periodType) {
+            case PeriodType.YEAR:
+                setDate(datecp.add(1, "year"));
+                break
+            case PeriodType.MONTH:
+                setDate(datecp.add(1, "month"));
+                break
+            case PeriodType.DAY:
+                setDate(datecp.add(1, "days"));
+                break
+        }
     };
 
-    return (
-        <ReportView
-            statsValues={statsValues}
-            date={date}
-            changeDate={changeDate}
-        />
-    );
-};
+    const handleBackDate = () => {
+        const datecp = date.clone()
+        switch (periodType) {
+            case PeriodType.YEAR:
+                setDate(datecp.subtract(1, "year"));
+                break
+            case PeriodType.MONTH:
+                setDate(datecp.subtract(1, "month"));
+                break
+            case PeriodType.DAY:
+                setDate(datecp.subtract(1, "days"));
+                break
+        }
+    };
+    const handleInitDate = () => {
+        setDate(moment())
+    };
 
-export default ReportContainer;
-
-interface Props {
-    statsValues: StatsResult;
-    date: Moment;
-    changeDate: (date: Moment) => void;
-}
-
-const ReportView: React.FC<Props> = props => {
-    const { statsValues, date, changeDate } = props;
-    const classes = useStyles();
+    const handleChangePeriod = (period: PeriodType) => {
+        setPriodType(period)
+    };
 
     return (
 
         <MainLayout title="Report">
             <Grid className={classes.root} container>
                 <Grid xs={12} sm={12} className={classes.date}>
-                    <DateBar date={date} changeDate={changeDate} />
+                    <DateBar date={createDateFormat()} period={periodType} changePeriod={handleChangePeriod} initDate={handleInitDate} forwardDate={handleForwardDate} backDate={handleBackDate} />
                 </Grid>
-                <Grid xs={12} sm={12} className={classes.content}>
-                    <Statistics statsValues={statsValues} />
+                <Grid xs={12} sm={12} className={classes.statistics}>
+                    <Statistics statsResult={statsResult} />
                 </Grid>
-                <Grid xs={12} sm={12} className={classes.content}>
-                    <Graphs statsValues={statsValues} />
+                <Grid xs={12} sm={12} className={classes.graph}>
+                    <Graphs statsResult={statsResult} />
                 </Grid>
             </Grid>
         </MainLayout>
     );
 };
 
+
+export default ReportView;
+
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
         backgroundColor: theme.palette.grey[100],
         height: "100%"
     },
-    tile: {
-        backgroundColor: theme.palette.common.white,
-        height: 125
-    },
-    detail: {
-        height: "100%",
-        display: "flex",
-        backgroundColor: theme.palette.common.white
-    },
     date: {
         backgroundColor: theme.palette.grey[100],
         height: "7%"
     },
-    content: {
+    statistics: {
         backgroundColor: theme.palette.grey[100],
-        height: "100%"
+        height: "100%",
+        marginTop: 20
+    },
+    graph: {
+        backgroundColor: theme.palette.grey[100],
+        height: "100%",
+        marginTop: 20
     }
 }));

@@ -9,7 +9,7 @@ import WinRate from "./win-rate";
 import ProfitRatio from "./profit-ratio";
 import ExpectedValue from "./expected-value";
 import BankruptRate from "./bankrupt-rate";
-import { StatsResult } from "../../../../types";
+import { StatsResult } from "../../../../redux/hooks/useStatistics";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {
@@ -48,41 +48,41 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    statsValues: StatsResult;
+    statsResult: StatsResult;
 }
 
 const Statistics: React.FC<Props> = props => {
-    const { statsValues } = props;
-    console.log("statistics: ", statsValues);
+    const { statsResult } = props;
+    console.log("statistics: ", statsResult);
     //const { className, ...rest } = props;
 
     const classes = useStyles();
 
     return (
         <div >
-            <Typography style={{}} variant={"subtitle1"}>{"Statistics"}</Typography>
-            <Paper style={{ padding: 10 }}>
+            <Typography style={{ margin: 5 }} variant={"h6"}>{"Statistics"}</Typography>
+            <Paper style={{ padding: 10 }} elevation={0}>
                 <Grid container spacing={2}>
                     <Grid item lg={3} sm={6} xl={3} xs={12}>
-                        <TotalAssets totalAssets={statsValues.Statistics.TotalAssets} />
+                        <TotalAssets totalAssets={statsResult.Statistics.TotalAssets} />
                     </Grid>
                     <Grid item lg={3} sm={6} xl={3} xs={12}>
-                        <TotalProfit totalProfit={statsValues.Statistics.TotalProfit} />
+                        <TotalProfit totalProfit={statsResult.Statistics.TotalProfit} />
                     </Grid>
                     <Grid item lg={3} sm={6} xl={3} xs={12}>
-                        <WinRate winRate={statsValues.Statistics.WinRate} />
+                        <WinRate winRate={statsResult.Statistics.WinRate} />
                     </Grid>
                     <Grid item lg={3} sm={6} xl={3} xs={12}>
-                        <ProfitRatio profitRatio={statsValues.Statistics.ProfitRatio} />
+                        <ProfitRatio profitRatio={statsResult.Statistics.ProfitRatio} />
                     </Grid>
                     <Grid item lg={3} md={6} xl={3} xs={12}>
                         <ExpectedValue
-                            expectedValue={statsValues.Statistics.ProfitAve}
+                            expectedValue={statsResult.Statistics.ProfitAve}
                         />
                     </Grid>
                     <Grid item lg={3} md={6} xl={3} xs={12}>
                         <BankruptRate
-                            bankruptRate={statsValues.Statistics.ProfitBefore}
+                            bankruptRate={statsResult.Statistics.ProfitBefore}
                         />
                     </Grid>
                 </Grid>

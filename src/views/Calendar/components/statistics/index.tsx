@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import { Grid, Card, CardContent, Typography } from "@material-ui/core";
 import { Moment } from "moment";
-import { Item, StatsResult } from "../../../../types";
 import { styled } from "@material-ui/core/styles";
+import { StatsResult } from "../../../../redux/hooks/useStatistics";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {

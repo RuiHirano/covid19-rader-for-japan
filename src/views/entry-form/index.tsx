@@ -104,9 +104,6 @@ const EntryFormView: React.FC<Props> = props => {
         <MainLayout title="Entry Form">
             <Grid className={classes.grid} container>
                 <Grid className={classes.content} item lg={12} xs={12}>
-                    <div className={classes.contentHeader}>
-                        <BackButton handleBack={handleBack} />
-                    </div>
                     <div className={classes.contentBody}>
                         <Form item={item} handleRegistItem={handleRegistItem} />
                     </div>

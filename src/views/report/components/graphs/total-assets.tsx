@@ -30,15 +30,15 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 interface Props {
-    totalAssetsData: TransitionPoint[];
+    totalAssetsData: number[];
 }
 
-const createData = (totalAssetsData: TransitionPoint[]) => {
+const createData = (totalAssetsData: number[]) => {
     const labels: string[] = [];
     const values: number[] = [];
     totalAssetsData.forEach((value, index) => {
         labels.push((index + 1).toString());
-        values.push(value.Value);
+        values.push(value);
     });
     const data: ChartData = {
         labels: labels,

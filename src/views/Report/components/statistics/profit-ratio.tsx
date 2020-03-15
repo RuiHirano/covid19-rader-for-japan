@@ -64,7 +64,7 @@ const ProfitRatio: React.FC<Props> = props => {
                         >
                             ProfitRatio
                         </Typography>
-                        <Typography variant="h3">{profitRatio}</Typography>
+                        <Typography variant="h3">{profitRatio === Infinity ? "∞" : profitRatio}</Typography>
                     </Grid>
                     {/*<Grid item>
                         <Avatar className={classes.avatar}>
