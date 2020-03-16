@@ -9,15 +9,27 @@ import {
     Select,
     MenuItem,
     Paper,
-    Grid
+    Grid,
+    RadioGroup,
+    FormControlLabel,
+    Radio,
+    Chip,
+    colors,
+    styled
 } from "@material-ui/core";
 import { Formik, FormikValues } from "formik";
 import * as Yup from "yup";
 import { Item, ImageStatus, MarketType, TradeType } from "../../../../types";
-import Dropzone from "react-dropzone";
-import uuid from "uuid";
 import { useForm, Controller } from 'react-hook-form'
 import BackButton from "../back-button";
+import {
+    KeyboardDatePicker,
+} from '@material-ui/pickers';
+import { withRouter, match } from "react-router-dom";
+import * as H from "history";
+import imgPath from "../../../../app/assets/app_icon.png";
+import AlertComponent, { useAlert } from "../../../../components/alert";
+import DialogComponent, { useDialog } from "../../../../components/dialog";
 
 const useStyles = makeStyles((theme: Theme) => ({
     textField: {
@@ -42,7 +54,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
+const Image = styled("img")({
+    width: 150,
+    height: 150
+});
+
 interface Props {
+    history: H.History;
+    location: H.Location;
+    match: match;
     item: Item;
     handleRegistItem: (values: FormikValues) => void;
 }
@@ -50,33 +70,14 @@ interface Props {
 const validationSchema = {};
 
 const Form: React.FC<Props> = props => {
-    const { item, handleRegistItem } = props;
+    const { item, handleRegistItem, history } = props;
 
     const classes = useStyles();
 
-    const initialValues = {
-        ID: item.ID,
-        MarketType: item.MarketType,
-        StartDate: item.StartDate,
-        EndDate: item.EndDate,
-        TradeType: item.TradeType,
-        Pair: item.Pair,
-        Lot: item.Lot,
-        EntryRate: item.EntryRate,
-        LossCutRate: item.LossCutRate,
-        SettleRate: item.SettleRate,
-        Profit: item.Profit,
-        BeforeComment: item.BeforeComment,
-        AfterComment: item.AfterComment,
-        Tags: item.Tags,
-        Images: item.Images,
-        UpdatedAt: item.UpdatedAt,
-        CreatedAt: item.CreatedAt
-    };
-
-    useEffect(() => {
-        console.log("initial", initialValues);
-    });
+    // alert
+    const { openAlert, closeAlert, alertStatus } = useAlert()
+    // dialog
+    const { open, openDialog, closeDialog } = useDialog()
 
     console.log("render");
 
@@ -103,11 +104,58 @@ const Form: React.FC<Props> = props => {
 
     const handleBack = () => {
         console.log("back")
+        history.goBack();
     }
+
+    const [selectedDate, setSelectedDate] = React.useState<Date | null>(
+        new Date('2014-08-18T21:11:54'),
+    );
+
+    const handleDateChange = (date: Date | null) => {
+        setSelectedDate(date);
+    };
+
+    interface ChipData {
+        key: number;
+        label: string;
+    }
+
+    const [chipData, setChipData] = React.useState<ChipData[]>([
+        { key: 0, label: 'Angular' },
+        { key: 1, label: 'jQuery' },
+        { key: 2, label: 'Polymer' },
+        { key: 3, label: 'React' },
+        { key: 4, label: 'Vue.js' },
+    ]);
+
+
+    const [imageData, setImageData] = React.useState<string[]>([
+        imgPath,
+        imgPath,
+        imgPath,
+        imgPath,
+        imgPath,
+    ]);
+
+    const [pairData, setPairData] = React.useState<string[]>([
+        "USD/JPY",
+        "EUD/USD",
+        "EUD/JPY",
+    ]);
+
+    const handleDeleteImage = () => {
+        let newImageData: string[] = []
+        imageData.forEach((data, index) => {
+            if (index !== imageData.length - 1) {
+                newImageData.push(data)
+            }
+        })
+        setImageData(newImageData)
+    };
 
     return (
         <div>
-            <Paper style={{ width: "100%" }}>
+            <Paper style={{ width: "100%", padding: 20 }}>
 
                 <Grid container>
                     <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
@@ -121,130 +169,93 @@ const Form: React.FC<Props> = props => {
                 <form onSubmit={onSubmit}>
                     <Grid container>
                         <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="StartDate"
-                                        name="StartDate"
-                                        type="text"
-                                        variant="outlined"
-                                    />
-                                }
-                                name="email"
-                                control={control}
-                                defaultValue=""
+                            <RadioGroup aria-label="position" name="position" value={"buysell"} onChange={(e) => console.log("radio: ", e.target.value)} row>
+                                <FormControlLabel
+                                    value="buysell"
+                                    control={<Radio color="primary" />}
+                                    label="Buy or Sell"
+                                    labelPlacement="end"
+                                />
+                                <FormControlLabel
+                                    value="record"
+                                    control={<Radio color="primary" />}
+                                    label="Record"
+                                    labelPlacement="end"
+                                />
+                                <FormControlLabel
+                                    value="depowith"
+                                    control={<Radio color="primary" />}
+                                    label="Depo and With"
+                                    labelPlacement="end"
+                                />
+                            </RadioGroup>
+                        </Grid>
+                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+                            <RadioGroup aria-label="position" name="position" value={"fx"} onChange={(e) => console.log("radio: ", e.target.value)} row>
+                                <FormControlLabel
+                                    value="fx"
+                                    control={<Radio color="primary" />}
+                                    label="Forex"
+                                    labelPlacement="end"
+                                />
+                                <FormControlLabel
+                                    value="stock"
+                                    control={<Radio color="primary" />}
+                                    label="Stock"
+                                    labelPlacement="end"
+                                />
+                            </RadioGroup>
+                        </Grid>
+                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+                            <KeyboardDatePicker
+                                disableToolbar
+                                variant="inline"
+                                format="MM/dd/yyyy"
+                                margin="normal"
+                                id="date-picker-inline"
+                                label="Start Date"
+                                value={selectedDate}
+                                onChange={handleDateChange}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
                             />
                         </Grid>
                         <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="EndDate"
-                                        name="EndDate"
-                                        type="text"
-                                        variant="outlined"
-                                    />
-                                }
-                                name="email"
-                                control={control}
-                                defaultValue=""
+                            <KeyboardDatePicker
+                                disableToolbar
+                                variant="inline"
+                                format="MM/dd/yyyy"
+                                margin="normal"
+                                id="date-picker-inline"
+                                label="End Date"
+                                value={selectedDate}
+                                onChange={handleDateChange}
+                                KeyboardButtonProps={{
+                                    'aria-label': 'change date',
+                                }}
                             />
                         </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="MarketType"
-                                        name="MarketType"
-                                        type="text"
-                                        variant="outlined"
-                                    />
-                                }
-                                name="email"
-                                control={control}
-                                defaultValue=""
-                            />
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="TradeType"
-                                        name="TradeType"
-                                        type="text"
-                                        variant="outlined"
-                                    />
-                                }
-                                name="email"
-                                control={control}
-                                defaultValue=""
-                            />
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="MarketType"
-                                        name="MarketType"
-                                        type="text"
-                                        variant="outlined"
-                                    />
-                                }
-                                name="email"
-                                control={control}
-                                defaultValue=""
-                            />
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="TradeType"
-                                        name="TradeType"
-                                        type="text"
-                                        variant="outlined"
-                                    />
-                                }
-                                name="email"
-                                control={control}
-                                defaultValue=""
-                            />
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="Pair"
-                                        name="Pair"
-                                        type="text"
-                                        variant="outlined"
-                                    />
-                                }
-                                name="email"
-                                control={control}
-                                defaultValue=""
-                            />
+
+
+                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12} >
+                            <FormControl variant="outlined" className={classes.formControl}>
+                                <InputLabel id="demo-simple-select-outlined-label">
+                                    Pair
+                                </InputLabel>
+                                <Select
+                                    labelId="demo-simple-select-outlined-label"
+                                    id="demo-simple-select-outlined"
+                                    value={pairData[0]}
+                                    onChange={(e) => console.log("select: ", e)}
+                                >
+                                    {pairData.map((pair) => {
+                                        return (
+                                            <MenuItem value={pair}>{pair}</MenuItem>
+                                        )
+                                    })}
+                                </Select>
+                            </FormControl>
                         </Grid>
                         <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
                             <Controller
@@ -372,357 +383,39 @@ const Form: React.FC<Props> = props => {
                                 defaultValue=""
                             />
                         </Grid>
+                        <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                            {chipData.map(data => {
+
+                                return (
+                                    <Chip
+                                        key={data.key}
+                                        label={data.label}
+                                        style={{ margin: 3 }}
+                                        onDelete={() => console.log("delete: ", data.label)}
+                                    />
+                                );
+                            })}
+                        </Grid>
+                        <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                            <Paper style={{ height: 200, backgroundColor: colors.grey[300], marginTop: 20 }} elevation={0}>
+                                {imageData.map(data => {
+                                    return (
+                                        <Button onClick={() => openDialog()}>
+                                            <Image alt="image" src={data} />
+                                        </Button>
+                                    );
+                                })}
+                            </Paper>
+                        </Grid>
+
                     </Grid>
                 </form>
             </Paper>
             <Button variant={"contained"} color="secondary" style={{ width: 100, margin: 20 }}>Save</Button>
+            <DialogComponent open={open} closeDialog={closeDialog} runFunc={handleDeleteImage} />
+            <AlertComponent closeAlert={closeAlert} alertStatus={alertStatus} />
         </div>
     )
-    return (
-        <Formik
-            initialValues={initialValues}
-            enableReinitialize
-            onSubmit={values => handleRegistItem(values)}
-            validationSchema={Yup.object().shape(validationSchema)}
-        >
-            {({
-                handleChange,
-                handleSubmit,
-                values,
-                errors,
-                touched,
-                handleBlur,
-                setFieldValue
-            }) => (
-                    <div className={classes.form}>
-                        <Typography variant={"h3"}>取引登録画面</Typography>
-                        <FormControl
-                            variant="outlined"
-                            className={classes.formControl}
-                        >
-                            <InputLabel id="demo-simple-select-outlined-label">
-                                MarketType
-                        </InputLabel>
-                            <Select
-                                id="demo-simple-select-outlined"
-                                value={values.MarketType}
-                                onChange={handleChange("MarketType")}
-                                labelWidth={100}
-                            >
-                                <MenuItem value={0}>FX</MenuItem>
-                                <MenuItem value={1}>STOCK</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <TextField
-                            className={classes.textField}
-                            //error={errors.email && touched.email ? true : false}
-                            fullWidth
-                            /*helperText={
-                                errors.email && touched.email ? errors.email : null
-                            }*/
-                            label="StartDate"
-                            name="StartDate"
-                            onChange={handleChange("StartDate")}
-                            type="text"
-                            value={values.StartDate}
-                            variant="outlined"
-                            onBlur={handleBlur("StartDate")}
-                        />
-                        <TextField
-                            className={classes.textField}
-                            //error={errors.email && touched.email ? true : false}
-                            fullWidth
-                            /*helperText={
-                                errors.email && touched.email ? errors.email : null
-                            }*/
-                            label="EndDate"
-                            name="EndDate"
-                            onChange={handleChange("EndDate")}
-                            type="text"
-                            value={values.EndDate}
-                            variant="outlined"
-                            onBlur={handleBlur("EndDate")}
-                        />
-                        <FormControl
-                            variant="outlined"
-                            className={classes.formControl}
-                        >
-                            <InputLabel id="demo-simple-select-outlined-label">
-                                TradeType
-                        </InputLabel>
-                            <Select
-                                id="demo-simple-select-outlined"
-                                value={values.TradeType}
-                                onChange={handleChange("TradeType")}
-                                labelWidth={100}
-                            >
-                                <MenuItem value={0}>Buy</MenuItem>
-                                <MenuItem value={1}>Sell</MenuItem>
-                                <MenuItem value={2}>Record</MenuItem>
-                                <MenuItem value={3}>Withdrawal</MenuItem>
-                                <MenuItem value={4}>Deposit</MenuItem>
-                            </Select>
-                        </FormControl>
-
-                        <FormControl
-                            variant="outlined"
-                            className={classes.formControl}
-                        >
-                            <InputLabel id="demo-simple-select-outlined-label">
-                                Pair
-                        </InputLabel>
-                            <Select
-                                id="demo-simple-select-outlined"
-                                value={values.Pair}
-                                onChange={handleChange("Pair")}
-                                labelWidth={100}
-                            >
-                                <MenuItem value={values.Pair}>
-                                    <em>{values.Pair}</em>
-                                </MenuItem>
-                                <MenuItem value={"GBP/USD"}>GBP/USD</MenuItem>
-                                <MenuItem value={"USD/JPY"}>USD/JPY</MenuItem>
-                            </Select>
-                        </FormControl>
-                        <TextField
-                            className={classes.textField}
-                            //error={errors.email && touched.email ? true : false}
-                            fullWidth
-                            /*helperText={
-                                errors.email && touched.email ? errors.email : null
-                            }*/
-                            label="Lot"
-                            name="Lot"
-                            onChange={handleChange("Lot")}
-                            type="text"
-                            value={values.Lot}
-                            variant="outlined"
-                            onBlur={handleBlur("Lot")}
-                        />
-                        <TextField
-                            className={classes.textField}
-                            //error={errors.email && touched.email ? true : false}
-                            fullWidth
-                            /*helperText={
-                                errors.email && touched.email ? errors.email : null
-                            }*/
-                            label="Order"
-                            name="Order"
-                            onChange={handleChange("EntryRate")}
-                            type="text"
-                            value={values.EntryRate}
-                            variant="outlined"
-                            onBlur={handleBlur("EntryRate")}
-                        />
-                        <TextField
-                            className={classes.textField}
-                            //error={errors.email && touched.email ? true : false}
-                            fullWidth
-                            /*helperText={
-                                errors.email && touched.email ? errors.email : null
-                            }*/
-                            label="LossCut"
-                            name="LossCut"
-                            onChange={handleChange("LossCutRate")}
-                            type="text"
-                            value={values.LossCutRate}
-                            variant="outlined"
-                            onBlur={handleBlur("LossCutRate")}
-                        />
-                        <TextField
-                            className={classes.textField}
-                            //error={errors.email && touched.email ? true : false}
-                            fullWidth
-                            /*helperText={
-                                errors.email && touched.email ? errors.email : null
-                            }*/
-                            label="Settle"
-                            name="Settle"
-                            onChange={handleChange("SettleRate")}
-                            type="text"
-                            value={values.SettleRate}
-                            variant="outlined"
-                            onBlur={handleBlur("SettleRate")}
-                        />
-                        <TextField
-                            className={classes.textField}
-                            //error={errors.email && touched.email ? true : false}
-                            fullWidth
-                            /*helperText={
-                                errors.email && touched.email ? errors.email : null
-                            }*/
-                            label="Profit"
-                            name="Profit"
-                            onChange={handleChange("Profit")}
-                            type="text"
-                            value={values.Profit}
-                            variant="outlined"
-                            onBlur={handleBlur("Profit")}
-                        />
-                        <TextField
-                            className={classes.textField}
-                            //error={errors.email && touched.email ? true : false}
-                            fullWidth
-                            /*helperText={
-                                errors.email && touched.email ? errors.email : null
-                            }*/
-                            label="BeforeMemo"
-                            name="BeforeMemo"
-                            onChange={handleChange("BeforeComment")}
-                            type="text"
-                            value={values.BeforeComment}
-                            variant="outlined"
-                            onBlur={handleBlur("BeforeComment")}
-                        />
-                        <TextField
-                            className={classes.textField}
-                            //error={errors.email && touched.email ? true : false}
-                            fullWidth
-                            /*helperText={
-                                errors.email && touched.email ? errors.email : null
-                            }*/
-                            label="AfterMemo"
-                            name="AfterMemo"
-                            onChange={handleChange("AfterComment")}
-                            type="text"
-                            value={values.AfterComment}
-                            variant="outlined"
-                            onBlur={handleBlur("AfterComment")}
-                        />
-                        <FormControl
-                            variant="outlined"
-                            className={classes.formControl}
-                        >
-                            <InputLabel id="demo-simple-select-outlined-label">
-                                Tags
-                        </InputLabel>
-                            <Select
-                                id="demo-simple-select-outlined"
-                                value={"20"}
-                                onChange={handleChange}
-                                labelWidth={100}
-                            >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value={10}>Ten</MenuItem>
-                                <MenuItem value={20}>Twenty</MenuItem>
-                                <MenuItem value={30}>Thirty</MenuItem>
-                            </Select>
-                        </FormControl>
-
-                        <Dropzone
-                            onDrop={(acceptedFiles: File[]) => {
-                                const fileData = acceptedFiles[0];
-                                var reader = new FileReader();
-                                // ファイル読み込みに成功したときの処理
-                                reader.onload = function () {
-                                    const url = reader.result;
-                                    if (
-                                        !(url instanceof ArrayBuffer) &&
-                                        url !== null
-                                    ) {
-                                        let imgs = values.Images.concat();
-                                        // FIX
-                                        imgs.push({
-                                            ID: uuid(),
-                                            Path: "",
-                                            Url: url,
-                                            Size: fileData.size,
-                                            Status: ImageStatus.UPDATE
-                                        });
-                                        setFieldValue("Images", imgs);
-                                    }
-                                };
-                                // ファイル読み込みを実行
-                                reader.readAsDataURL(fileData);
-                            }}
-                            accept="image/jpeg,image/png,image/jpg"
-                        >
-                            {({ getRootProps, getInputProps }) => (
-                                <section>
-                                    <div {...getRootProps()}>
-                                        <input {...getInputProps()} />
-                                        <Button variant="contained">Upload</Button>
-                                    </div>
-                                </section>
-                            )}
-                        </Dropzone>
-                        <div style={{ height: 300, width: "100%" }}>
-                            <Typography>preview</Typography>
-                            {values.Images.map((image, index) => {
-                                if (image.Status !== ImageStatus.DELETE) {
-                                    return (
-                                        <li
-                                            key={index}
-                                            style={{
-                                                display: "inline-block",
-                                                listStyleType: "none",
-                                                width: "200px",
-                                                objectFit: "fill",
-                                                marginRight: "10px",
-                                                position: "relative"
-                                            }}
-                                        >
-                                            <img
-                                                src={image.Url}
-                                                width={200}
-                                                height={200}
-                                            />
-
-                                            <div
-                                                style={{
-                                                    position: "absolute",
-                                                    backgroundColor: "#fff",
-                                                    border: "solid 1px #000",
-                                                    top: 0,
-                                                    right: 0,
-                                                    padding: "5px",
-                                                    opacity: 0.5,
-                                                    cursor: "pointer"
-                                                }}
-                                                onClick={e => {
-                                                    let imgs = values.Images.concat();
-                                                    if (
-                                                        imgs[index].Status ===
-                                                        ImageStatus.UPDATE
-                                                    ) {
-                                                        // Updateのままだったら単純に削除する
-                                                        imgs.splice(index, 1);
-                                                    } else if (
-                                                        imgs[index].Status ===
-                                                        ImageStatus.NONE
-                                                    ) {
-                                                        // すでにFirestoreに保存されている画像の場合、削除のためDELETEにする
-                                                        imgs[index].Status =
-                                                            ImageStatus.DELETE;
-                                                    }
-                                                    setFieldValue("Images", imgs);
-                                                }}
-                                            >
-                                                Cancel
-                                        </div>
-                                        </li>
-                                    );
-                                }
-                            })}
-                        </div>
-
-                        <Button
-                            className={classes.signInButton}
-                            color="primary"
-                            disabled={false}
-                            fullWidth
-                            size="large"
-                            variant="contained"
-                            onClick={() => handleSubmit()}
-                        >
-                            Regist
-                    </Button>
-                    </div>
-                )}
-        </Formik>
-    );
 };
 
-export default Form;
+export default withRouter(Form);
