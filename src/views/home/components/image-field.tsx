@@ -5,7 +5,7 @@ import theme from "../../../styles/theme";
 
 const ImageFieldContainer = styled("div")({
     backgroundColor: theme.palette.primary.dark,
-    height: 500,
+    height: 400,
     width: "100%",
     [theme.breakpoints.down("sm")]: {
         height: 300

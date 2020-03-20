@@ -3,6 +3,7 @@ import { Button, Divider, Typography, CardMedia, colors, Paper } from "@material
 import { styled } from "@material-ui/core/styles";
 import theme from "../../../styles/theme";
 import imgPath from "../../../app/assets/office.jpg"
+import HeaderPaper from "./header-paper";
 
 const Title = styled(Typography)({
     fontSize: 100,
@@ -45,14 +46,16 @@ console.log("screenheight: ", window.innerHeight)
 const HeaderTitle: React.FC = () => {
     return (
         <HeaderTitleContainer>
-            <CardMedia image={imgPath} style={{ height: "100%" }}>
-                <Title >Trading Manager</Title>
-                <Description style={{ fontSize: 50 }}>
-                    上達したいあなたへ最大限のサポート
-            </Description>
-                <div style={{ display: "flex", }}>
-                    <Paper style={{ width: 300, height: 300, margin: 50 }}>{"TradingManagerにアクセス"}</Paper>
-                    <Paper style={{ width: 300, height: 300, margin: 50 }}>{"初めて使用する"}</Paper>
+            <CardMedia image={imgPath} style={{ height: "100%", }}>
+                <div style={{ paddingTop: 200 }}>
+                    <Title >Trading Manager</Title>
+                    <Description style={{ fontSize: 50, marginBottom: 30 }}>
+                        上達したいあなたへ最大限のサポート
+                    </Description>
+                    <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
+                        <HeaderPaper title={"ログインする"} description={"あらゆるデバイスで取引を一括管理、統計分析、可視化、振り返りができます。"} buttonText={"TradingManagerへアクセス"} />
+                        <HeaderPaper title={"まずは使ってみる"} description={"取引管理、統計分析、可視化などあらゆる機能を無料で体験できます。"} buttonText={"新規登録"} />
+                    </div>
                 </div>
             </CardMedia>
         </HeaderTitleContainer>

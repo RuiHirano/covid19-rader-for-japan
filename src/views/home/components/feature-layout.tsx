@@ -10,10 +10,11 @@ interface Props {
     imgPath: string;
 }
 
-const FeatureGrid = styled(Grid)({});
+const FeatureGrid = styled(Grid)({
+    height: 600,
+});
 
 const DescriptionGrid = styled(Grid)({
-    textAlign: "left",
 
     [theme.breakpoints.down("sm")]: {
         textAlign: "center"
@@ -36,10 +37,11 @@ const Image = styled("img")({
 
 const Title = styled(Typography)({
     fontSize: 50,
-    margin: 30,
+    paddingTop: 100,
     color: colors.grey[800],
     textAlign: "center",
-    width: 500,
+    whiteSpace: 'pre-line',
+    width: "100%",
 
     [theme.breakpoints.down("sm")]: {
         fontSize: 17,
@@ -49,10 +51,10 @@ const Title = styled(Typography)({
 
 const Description = styled(Typography)({
     fontSize: 25,
-    margin: 30,
     color: colors.grey[800],
     textAlign: "center",
-    width: 500,
+    width: "100%",
+    padding: 50,
 
     [theme.breakpoints.down("sm")]: {
         fontSize: 13,
