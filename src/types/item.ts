@@ -14,6 +14,14 @@ export enum TradeType {
 	DEPOSIT,
 }
 
+export enum TradeType2 {
+	BUY = "BUY",
+	SELL = "SELL",
+	RECORD = "RECORD",
+	WITHDRAWAL = "WITHDRAWAL",
+	DEPOSIT = "DEPOSIT",
+}
+
 export enum ImageStatus {
 	DELETE,
 	UPDATE,
@@ -22,7 +30,7 @@ export enum ImageStatus {
 
 export interface Image {
 	ID: string,
-	Path: string,
+	Base64: string,
 	Url: string,
 	Size: number,
 	Status: ImageStatus
@@ -67,7 +75,7 @@ export class Item {
 		this.CreatedAt = moment().toISOString()
 	}
 
-	getJson(){
+	getJson() {
 		return {
 			id: this.ID,
 			marketType: this.MarketType,

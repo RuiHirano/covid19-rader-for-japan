@@ -77,7 +77,7 @@ export class User {
 			Sex: Sex.MALE,
 			Thumbnail: <Image>{
 				ID: "thumbnail",
-				Path: "",
+				Base64: "",
 				Status: ImageStatus.NONE,
 				Url: "",
 				Size: 0
@@ -106,7 +106,7 @@ export class User {
 		}
 	}
 
-	setJson(userData: User){
+	setJson(userData: User) {
 		//const user_: User = JSON.parse(userData)
 		this.ID = userData.ID
 		this.Profile = <Profile>{
@@ -116,7 +116,7 @@ export class User {
 			Sex: userData.Profile.Sex,
 			Thumbnail: <Image>{
 				ID: userData.Profile.Thumbnail.ID,
-				Path: userData.Profile.Thumbnail.Path,
+				Base64: userData.Profile.Thumbnail.Base64,
 				Status: userData.Profile.Thumbnail.Status,
 				Url: userData.Profile.Thumbnail.Url,
 				Size: userData.Profile.Thumbnail.Size
@@ -136,16 +136,16 @@ export class User {
 				InitialInvestment: userData.Setting.Content.InitialInvestment,
 				AllowableLossRate: userData.Setting.Content.AllowableLossRate,
 				BankruptcyReductionRate: userData.Setting.Content.BankruptcyReductionRate,
-				Currencies:  userData.Setting.Content.Currencies,
-				Stocks:  userData.Setting.Content.Stocks,
-				SearchTags:  userData.Setting.Content.SearchTags,
+				Currencies: userData.Setting.Content.Currencies,
+				Stocks: userData.Setting.Content.Stocks,
+				SearchTags: userData.Setting.Content.SearchTags,
 			},
 			Plan: userData.Setting.Plan,
 			Device: userData.Setting.Device,
 		}
 	}
 
-	
+
 
 	setID(id: User["ID"]) {
 		this.ID = id

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Typography, Grid, useMediaQuery } from "@material-ui/core";
+import { Typography, Grid, useMediaQuery, colors } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import theme from "../../../styles/theme";
 
@@ -35,10 +35,11 @@ const Image = styled("img")({
 });
 
 const Title = styled(Typography)({
-    fontSize: 30,
+    fontSize: 50,
     margin: 30,
-    color: theme.palette.text.primary,
-    height: 30,
+    color: colors.grey[800],
+    textAlign: "center",
+    width: 500,
 
     [theme.breakpoints.down("sm")]: {
         fontSize: 17,
@@ -49,8 +50,9 @@ const Title = styled(Typography)({
 const Description = styled(Typography)({
     fontSize: 25,
     margin: 30,
-    color: theme.palette.text.primary,
-    height: 30,
+    color: colors.grey[800],
+    textAlign: "center",
+    width: 500,
 
     [theme.breakpoints.down("sm")]: {
         fontSize: 13,
@@ -73,9 +75,9 @@ const FeatureLayout: React.FC<Props> = props => {
     });
     if (isRight || isXS) {
         return (
-            <FeatureGrid container>
+            <FeatureGrid container spacing={3}>
                 <DescriptionGrid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                    <Title variant="h5">{title}</Title>
+                    <Title >{title}</Title>
                     <Description variant="subtitle1">{text}</Description>
                 </DescriptionGrid>
                 <ImageGrid item xl={6} lg={6} md={6} sm={6} xs={12}>
@@ -90,7 +92,7 @@ const FeatureLayout: React.FC<Props> = props => {
                     <Image alt="image" src={imgPath} />
                 </ImageGrid>
                 <DescriptionGrid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                    <Title variant="h5">{title}</Title>
+                    <Title >{title}</Title>
                     <Description variant="subtitle1">{text}</Description>
                 </DescriptionGrid>
             </FeatureGrid>

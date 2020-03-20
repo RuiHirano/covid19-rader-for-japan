@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Button, 
+import React, { useState, useCallback } from "react";
+import {
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -9,58 +10,71 @@ import { Button,
 
 export const useDialog = () => {
 
-    const [open, setOpen] = useState(false);
-
-    const openDialog = () => {
-        console.log("open")
-        setOpen(true);
-    };
 
     const closeDialog = () => {
         console.log("close")
-        setOpen(false);
+        setController({ ...controller, open: false })
     };
-  
-    return { "open": open, "openDialog": openDialog, "closeDialog": closeDialog}
+
+    const [controller, setController] = useState<ControlProps>({ open: false, closeDialog: closeDialog, dialogStatus: { title: "", description: "", "runFunc": () => { } } });
+
+    const openDialog = (func: () => void, title: string, description: string) => {
+        console.log("open")
+        setController({ ...controller, open: true, dialogStatus: { title: title, description: description, runFunc: func } })
+
+    };
+
+    return { "openDialog": openDialog, "dialogController": controller }
 }
 
-interface Props{
+interface DialogStatus {
+    runFunc: () => void
+    title: string
+    description: string
+}
+
+interface ControlProps {
     open: boolean
-    closeDialog: ()=>void
-    runFunc: ()=>void
+    closeDialog: () => void
+    dialogStatus: DialogStatus
+}
+
+interface Props {
+    controller: ControlProps
 }
 
 const DialogComponent: React.FC<Props> = props => {
-    const {open, closeDialog, runFunc} = props
+    const { open, closeDialog, dialogStatus } = props.controller
+    const { runFunc, title, description } = dialogStatus
 
     return (
         <Dialog
             open={open}
-            onClose={()=>{
+            onClose={() => {
                 closeDialog()
             }}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
         >
-            <DialogTitle id="alert-dialog-title">{"Run your command?"}</DialogTitle>
+            <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
             <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-                {"content"}
-            </DialogContentText>
+                <DialogContentText id="alert-dialog-description">
+                    {description}
+                </DialogContentText>
             </DialogContent>
             <DialogActions>
-            <Button onClick={()=>{
-                closeDialog()
-            }} color="primary">
-                Cancel
+                <Button onClick={() => {
+                    closeDialog()
+                }} color="primary">
+                    Cancel
             </Button>
-            <Button onClick={()=>{
-                runFunc()
-                closeDialog()
-            }} 
-                color="primary" autoFocus>
-                {"runtext"}
-            </Button>
+                <Button onClick={() => {
+                    runFunc()
+                    closeDialog()
+                }}
+                    color="primary" autoFocus>
+                    OK
+                </Button>
             </DialogActions>
         </Dialog>
     )

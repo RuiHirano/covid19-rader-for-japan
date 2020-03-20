@@ -16,17 +16,17 @@ import {
     Image,
     ImageStatus,
 } from "../../../../types";
-import myAvatar from "../../../../app/assets/app_icon.png";
+import myAvatar from "../../../../app/assets/user-icon.png";
 import Dropzone from "react-dropzone";
 import { useUpdateUserInfo } from "../../../../redux/hooks/useUser";
 import { ReduxState } from "../../../../redux/module";
 
 // Container
-interface ContainerProps {}
+interface ContainerProps { }
 const AccountProfileContainer: React.FC<ContainerProps> = props => {
-    const {} = props;
+    const { } = props;
     const dispatch = useDispatch();
-    const {updateUserInfo, status} = useUpdateUserInfo()
+    const { updateUserInfo, status } = useUpdateUserInfo()
 
     const user: User = useSelector((state: ReduxState) => state.User);
 
@@ -97,13 +97,13 @@ export const AccountProfile: React.FC<Props> = props => {
                         const fileData = acceptedFiles[0];
                         var reader = new FileReader();
                         // ファイル読み込みに成功したときの処理
-                        reader.onload = function() {
+                        reader.onload = function () {
                             const url = reader.result;
                             if (!(url instanceof ArrayBuffer) && url !== null) {
                                 // 同じIDで上書きする
                                 const img: Image = {
                                     ID: user.Profile.Thumbnail.ID,
-                                    Path: "",
+                                    Base64: "",
                                     Url: url,
                                     Size: fileData.size,
                                     Status: ImageStatus.UPDATE
@@ -148,7 +148,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     avatar: {
         marginLeft: "auto",
         height: 110,
-        width: 100,
+        width: 110,
         flexShrink: 0,
         flexGrow: 0
     },

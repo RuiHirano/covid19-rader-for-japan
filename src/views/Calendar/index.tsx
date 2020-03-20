@@ -10,6 +10,7 @@ import { ReduxState } from "../../redux/module";
 import { Main as MainLayout } from "../../layouts";
 import { useStatistics } from "../../redux/hooks/useStatistics";
 import { PeriodType } from "../../types/statistics2";
+import DateBar from "./components/date-bar";
 
 /*// Container
 interface ContainerProps { }
@@ -102,14 +103,66 @@ const CalendarView: React.FC<Props> = props => {
         return <div>{content}</div>;
     };
 
+    const createDateFormat = () => {
+        switch (periodType) {
+            case PeriodType.YEAR:
+                return date.format("YYYY")
+            case PeriodType.MONTH:
+                return date.format("YYYY/MM")
+            case PeriodType.DAY:
+                return date.format("YYYY/MM/DD")
+        }
+    }
+
+    const handleChangePeriod = (period: PeriodType) => {
+        setPriodType(period)
+    };
+
+
+    const handleForwardDate = () => {
+        console.log("forward", date)
+        const datecp = date.clone()
+        switch (periodType) {
+            case PeriodType.YEAR:
+                setDate(datecp.add(1, "year"));
+                break
+            case PeriodType.MONTH:
+                setDate(datecp.add(1, "month"));
+                break
+            case PeriodType.DAY:
+                setDate(datecp.add(1, "days"));
+                break
+        }
+    };
+
+    const handleBackDate = () => {
+        const datecp = date.clone()
+        switch (periodType) {
+            case PeriodType.YEAR:
+                setDate(datecp.subtract(1, "year"));
+                break
+            case PeriodType.MONTH:
+                setDate(datecp.subtract(1, "month"));
+                break
+            case PeriodType.DAY:
+                setDate(datecp.subtract(1, "days"));
+                break
+        }
+    };
+    const handleInitDate = () => {
+        setDate(moment())
+    };
+
     return (
         <MainLayout title="Calendar">
             <Grid className={classes.root} container>
                 <Grid item xs={12} sm={9}>
+                    <DateBar date={createDateFormat()} period={periodType} changePeriod={handleChangePeriod} initDate={handleInitDate} forwardDate={handleForwardDate} backDate={handleBackDate} />
                     <Calendar
                         className={classes.calendar}
                         tileClassName={classes.tile}
                         value={date.toDate()}
+                        showNavigation={false}
                         onClickDay={value => {
                             changeDate(moment(value));
                         }}
@@ -144,7 +197,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     tile: {
         backgroundColor: theme.palette.common.white,
-        height: 125
+        height: 150
     },
     detail: {
         height: "100%",
@@ -158,7 +211,11 @@ const useStyles = makeStyles((theme: Theme) => ({
         backgroundColor: theme.palette.common.white,
         height: "100%",
         width: "100%"
-    }
+    },
+    date: {
+        backgroundColor: theme.palette.grey[100],
+        height: "7%"
+    },
 }));
 
 //export default CalendarView;

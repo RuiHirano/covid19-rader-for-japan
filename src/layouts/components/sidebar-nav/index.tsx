@@ -69,10 +69,10 @@ const SidebarNav: React.FC<Props> = props => {
 
     const { signOut, status } = useSignOut()
     // alert
-    const { openAlert, closeAlert, alertStatus } = useAlert()
+    const { openAlert, alertController } = useAlert()
 
     // dialog
-    const { open, openDialog, closeDialog } = useDialog()
+    const { openDialog, dialogController } = useDialog()
 
     const classes = useStyles();
 
@@ -126,7 +126,7 @@ const SidebarNav: React.FC<Props> = props => {
                                 //activeClassName={classes.active}
                                 className={classes.button}
                                 //component={CustomRouterLink}
-                                onClick={() => openDialog()}
+                                onClick={() => openDialog(handleSignOut, "Signout", "Are you sure signout?")}
                             >
                                 <div className={classes.icon}> {signout.icon} </div>
                                 {signout.title}
@@ -134,8 +134,8 @@ const SidebarNav: React.FC<Props> = props => {
                         </ListItem>
                     )}
             </List>
-            <DialogComponent open={open} closeDialog={closeDialog} runFunc={handleSignOut} />
-            <AlertComponent closeAlert={closeAlert} alertStatus={alertStatus} />
+            <DialogComponent controller={dialogController} />
+            <AlertComponent controller={alertController} />
         </SidebarContainer>
     );
 };

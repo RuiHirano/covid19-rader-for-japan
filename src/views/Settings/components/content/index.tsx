@@ -9,7 +9,9 @@ import {
     Divider,
     Grid,
     Button,
-    TextField
+    TextField,
+    Typography,
+    Chip
 } from "@material-ui/core";
 import { Formik, yupToFormErrors, FormikValues } from "formik";
 import * as Yup from "yup";
@@ -28,7 +30,7 @@ interface ContainerProps {
 const ContentContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
-    const {updateUserInfo, status} = useUpdateUserInfo()
+    const { updateUserInfo, status } = useUpdateUserInfo()
     const handleUpdateContent = (values: FormikValues) => {
         const content = values.content;
         user.Setting.Content = content;
@@ -71,6 +73,21 @@ export const Content: React.FC<Props> = props => {
         }
     ];
 
+
+    interface ChipData {
+        key: number;
+        label: string;
+    }
+
+    const [chipData, setChipData] = React.useState<ChipData[]>([
+        { key: 0, label: 'Angular' },
+        { key: 1, label: 'jQuery' },
+        { key: 2, label: 'Polymer' },
+        { key: 3, label: 'React' },
+        { key: 4, label: 'Vue.js' },
+    ]);
+
+
     const validationSchema = {
         initialInvestment: Yup.number().required("i18n.t('su_required_name')"),
         allowableLossRate: Yup.number().required("i18n.t('su_required_name')"),
@@ -104,111 +121,153 @@ export const Content: React.FC<Props> = props => {
                     isSubmitting,
                     setFieldValue
                 }) => (
-                    <div>
-                        <CardHeader
-                            subheader="The information can be edited"
-                            title="Content"
-                        />
-                        <Divider />
-                        <CardContent>
-                            <Grid container spacing={3}>
-                                <Grid item md={12} xs={12}>
-                                    <TextField
-                                        className={classes.textField}
-                                        error={
-                                            errors.initialInvestment &&
-                                            touched.initialInvestment
-                                                ? true
-                                                : false
-                                        }
-                                        fullWidth
-                                        helperText={
-                                            errors.initialInvestment &&
-                                            touched.initialInvestment
-                                                ? errors.initialInvestment
-                                                : null
-                                        }
-                                        label="initialInvestment"
-                                        name="initialInvestment"
-                                        onChange={handleChange(
-                                            "initialInvestment"
-                                        )}
-                                        type="text"
-                                        value={values.initialInvestment}
-                                        variant="outlined"
-                                        onBlur={handleBlur("initialInvestment")}
-                                    />
+                        <div>
+                            <CardHeader
+                                subheader="The information can be edited"
+                                title="Content"
+                            />
+                            <Divider />
+                            <CardContent>
+                                <Grid container spacing={3}>
+                                    <Grid item md={12} xs={12}>
+                                        <TextField
+                                            className={classes.textField}
+                                            error={
+                                                errors.initialInvestment &&
+                                                    touched.initialInvestment
+                                                    ? true
+                                                    : false
+                                            }
+                                            fullWidth
+                                            helperText={
+                                                errors.initialInvestment &&
+                                                    touched.initialInvestment
+                                                    ? errors.initialInvestment
+                                                    : null
+                                            }
+                                            label="initialInvestment"
+                                            name="initialInvestment"
+                                            onChange={handleChange(
+                                                "initialInvestment"
+                                            )}
+                                            type="text"
+                                            value={values.initialInvestment}
+                                            variant="outlined"
+                                            onBlur={handleBlur("initialInvestment")}
+                                        />
+                                    </Grid>
+                                    <Grid item md={12} xs={12}>
+                                        <TextField
+                                            className={classes.textField}
+                                            error={
+                                                errors.allowableLossRate &&
+                                                    touched.allowableLossRate
+                                                    ? true
+                                                    : false
+                                            }
+                                            fullWidth
+                                            helperText={
+                                                errors.allowableLossRate &&
+                                                    touched.allowableLossRate
+                                                    ? errors.allowableLossRate
+                                                    : null
+                                            }
+                                            label="allowableLossRate"
+                                            name="allowableLossRate"
+                                            onChange={handleChange(
+                                                "allowableLossRate"
+                                            )}
+                                            type="text"
+                                            value={values.allowableLossRate}
+                                            variant="outlined"
+                                            onBlur={handleBlur("allowableLossRate")}
+                                        />
+                                    </Grid>
+                                    <Grid item md={12} xs={12}>
+                                        <TextField
+                                            className={classes.textField}
+                                            error={
+                                                errors.bankruptReductionRate &&
+                                                    touched.bankruptReductionRate
+                                                    ? true
+                                                    : false
+                                            }
+                                            fullWidth
+                                            helperText={
+                                                errors.bankruptReductionRate &&
+                                                    touched.bankruptReductionRate
+                                                    ? errors.bankruptReductionRate
+                                                    : null
+                                            }
+                                            label="bankruptReductionRate"
+                                            name="bankruptReductionRate"
+                                            onChange={handleChange(
+                                                "bankruptReductionRate"
+                                            )}
+                                            type="text"
+                                            value={values.bankruptReductionRate}
+                                            variant="outlined"
+                                            onBlur={handleBlur(
+                                                "bankruptReductionRate"
+                                            )}
+                                        />
+                                    </Grid>
+                                    <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                                        <Typography>Currencies</Typography>
+                                        {chipData.map(data => {
+
+                                            return (
+                                                <Chip
+                                                    key={data.key}
+                                                    label={data.label}
+                                                    style={{ margin: 3 }}
+                                                    onDelete={() => console.log("delete: ", data.label)}
+                                                />
+                                            );
+                                        })}
+                                    </Grid>
+                                    <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                                        <Typography>Stocks</Typography>
+                                        {chipData.map(data => {
+
+                                            return (
+                                                <Chip
+                                                    key={data.key}
+                                                    label={data.label}
+                                                    style={{ margin: 3 }}
+                                                    onDelete={() => console.log("delete: ", data.label)}
+                                                />
+                                            );
+                                        })}
+                                    </Grid>
+                                    <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                                        <Typography>SearchTags</Typography>
+                                        {chipData.map(data => {
+
+                                            return (
+                                                <Chip
+                                                    key={data.key}
+                                                    label={data.label}
+                                                    style={{ margin: 3 }}
+                                                    onDelete={() => console.log("delete: ", data.label)}
+                                                />
+                                            );
+                                        })}
+                                    </Grid>
                                 </Grid>
-                                <Grid item md={12} xs={12}>
-                                    <TextField
-                                        className={classes.textField}
-                                        error={
-                                            errors.allowableLossRate &&
-                                            touched.allowableLossRate
-                                                ? true
-                                                : false
-                                        }
-                                        fullWidth
-                                        helperText={
-                                            errors.allowableLossRate &&
-                                            touched.allowableLossRate
-                                                ? errors.allowableLossRate
-                                                : null
-                                        }
-                                        label="allowableLossRate"
-                                        name="allowableLossRate"
-                                        onChange={handleChange(
-                                            "allowableLossRate"
-                                        )}
-                                        type="text"
-                                        value={values.allowableLossRate}
-                                        variant="outlined"
-                                        onBlur={handleBlur("allowableLossRate")}
-                                    />
-                                </Grid>
-                                <Grid item md={12} xs={12}>
-                                    <TextField
-                                        className={classes.textField}
-                                        error={
-                                            errors.bankruptReductionRate &&
-                                            touched.bankruptReductionRate
-                                                ? true
-                                                : false
-                                        }
-                                        fullWidth
-                                        helperText={
-                                            errors.bankruptReductionRate &&
-                                            touched.bankruptReductionRate
-                                                ? errors.bankruptReductionRate
-                                                : null
-                                        }
-                                        label="bankruptReductionRate"
-                                        name="bankruptReductionRate"
-                                        onChange={handleChange(
-                                            "bankruptReductionRate"
-                                        )}
-                                        type="text"
-                                        value={values.bankruptReductionRate}
-                                        variant="outlined"
-                                        onBlur={handleBlur(
-                                            "bankruptReductionRate"
-                                        )}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                        <Divider />
-                        <CardActions>
-                            <Button
-                                color="primary"
-                                variant="contained"
-                                onClick={() => handleSubmit()}
-                            >
-                                Save details
+                            </CardContent>
+                            <Divider />
+                            <CardActions>
+                                <Button
+                                    color="primary"
+                                    variant="contained"
+                                    onClick={() => handleSubmit()}
+                                >
+                                    Save details
                             </Button>
-                        </CardActions>
-                    </div>
-                )}
+                            </CardActions>
+                        </div>
+                    )}
             </Formik>
         </Card>
     );

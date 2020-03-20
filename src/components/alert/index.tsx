@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { 
-    Snackbar, 
+import {
+    Snackbar,
 } from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 
@@ -14,38 +14,45 @@ export enum AlertType {
     NONE
 }
 
-interface Props{
-    alertStatus: AlertStatus
-    closeAlert: ()=>void
-}
 
-interface AlertStatus{
-    AlertType: AlertType
-    Message: string
-}
+
 
 export const useAlert = () => {
 
     //const [alertType, setAlertType] = useState<AlertType>(AlertType.NONE);
-    const [alertStatus, setAlertStatus] = useState<AlertStatus>({AlertType: AlertType.NONE, Message: ""});
+    const [alertStatus, setAlertStatus] = useState<AlertStatus>({ AlertType: AlertType.NONE, Message: "" });
 
     const openAlert = (alertType: AlertType, message: string) => {
-        const newStatus: AlertStatus = {AlertType: alertType, Message: message}
-        setAlertStatus(newStatus)
-        //setAlertType(alertType)
+        setController({ ...controller, alertStatus: { AlertType: alertType, Message: message } })
     };
 
     const closeAlert = () => {
-        const newStatus: AlertStatus = {AlertType: AlertType.NONE, Message: ""}
-        setAlertStatus(newStatus)
-        //setAlertType(AlertType.NONE);
+        setController({ ...controller, alertStatus: { AlertType: AlertType.NONE, Message: "" } })
+
     };
-  
-    return { "openAlert": openAlert, "closeAlert": closeAlert, "alertStatus": alertStatus}
+    const [controller, setController] = useState<ControlProps>({ closeAlert: closeAlert, alertStatus: { AlertType: AlertType.NONE, Message: "" } });
+
+    return { "openAlert": openAlert, "alertController": controller }
+}
+
+
+interface AlertStatus {
+    AlertType: AlertType
+    Message: string
+    Duration?: number
+}
+
+interface ControlProps {
+    alertStatus: AlertStatus
+    closeAlert: () => void
+}
+
+interface Props {
+    controller: ControlProps
 }
 
 const AlertComponent: React.FC<Props> = (props) => {
-    const {closeAlert, alertStatus} = props
+    const { closeAlert, alertStatus } = props.controller
     //const [open, setOpen] = React.useState(props.open);
     console.log("alert: ")
 
@@ -73,8 +80,8 @@ const AlertComponent: React.FC<Props> = (props) => {
                 </Alert>
             </Snackbar>
         );
-    }else{
-        return <div/>
+    } else {
+        return <div />
     }
 }
 

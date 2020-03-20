@@ -152,8 +152,8 @@ const TradesByPair: React.FC<Props> = props => {
 
     return (
         <Card
-        //{...rest}
-        //className={clsx(classes.root, className)}
+            //{...rest}
+            className={classes.root}
         >
             <CardHeader
                 action={

@@ -8,7 +8,8 @@ import {
     IconButton,
     Button,
     createStyles,
-    Theme
+    Theme,
+    colors
 } from "@material-ui/core";
 import { useMediaQuery } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
@@ -23,10 +24,10 @@ const LogoImage = styled("img")({
 });
 
 const Title = styled(Button)({
-    background: theme.palette.primary.main,
+    backgroundColor: colors.grey[100],
     fontSize: 20,
     textAlign: "start",
-    color: "white",
+    color: "black",
     flexGrow: 1,
     display: 'block',
 });
@@ -37,14 +38,15 @@ const SignUpButton = styled(Button)({
     marginRight: 10,
     color: "white",
     height: 48,
+    width: 120
     //position: "relative"
 });
 
 const SignInButton = styled(Button)({
-    background: theme.palette.primary.main,
     marginLeft: 10,
     marginRight: 10,
-    color: "white",
+    color: "black",
+    borderWidth: 1,
     height: 48
 });
 
@@ -58,7 +60,7 @@ const HomeHeader: React.FC<Props> = props => {
 
     return (
         <div style={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="relative" style={{ backgroundColor: colors.grey[100] }}>
                 <Toolbar >
                     <Hidden smUp>
                         <IconButton
@@ -77,7 +79,7 @@ const HomeHeader: React.FC<Props> = props => {
                             <Link to="/sign-in">
                                 <SignInButton
                                     variant="outlined"
-                                    color="inherit"
+                                //color="inherit"
                                 >
                                     コンソールへ移動
                                 </SignInButton>

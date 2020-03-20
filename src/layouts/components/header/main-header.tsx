@@ -46,9 +46,9 @@ const MainHeader: React.FC<Props> = props => {
 
     const { signOut, status } = useSignOut()
     // alert
-    const { openAlert, closeAlert, alertStatus } = useAlert()
+    const { openAlert, alertController } = useAlert()
     // dialog
-    const { open, openDialog, closeDialog } = useDialog()
+    const { openDialog, dialogController } = useDialog()
 
     const handleSignOut = () => {
         signOut();
@@ -92,14 +92,14 @@ const MainHeader: React.FC<Props> = props => {
                             <NotificationsIcon />
                         </Badge>
                     </IconButton>
-                    <IconButton color="inherit" onClick={() => openDialog()}>
+                    <IconButton color="inherit" onClick={() => openDialog(handleSignOut, "Signout", "Are you sure signout?")}>
                         <InputIcon />
                     </IconButton>
                 </Hidden>
 
             </Toolbar>
-            <DialogComponent open={open} closeDialog={closeDialog} runFunc={handleSignOut} />
-            <AlertComponent closeAlert={closeAlert} alertStatus={alertStatus} />
+            <DialogComponent controller={dialogController} />
+            <AlertComponent controller={alertController} />
         </div>
     );
 };

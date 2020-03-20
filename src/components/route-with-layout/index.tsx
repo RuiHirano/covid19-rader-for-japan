@@ -1,6 +1,7 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import Auth from "../auth";
+import DialogComponent from "../dialog";
 
 interface Props {
     path: string;

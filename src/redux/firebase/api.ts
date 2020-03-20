@@ -8,7 +8,7 @@ export class API {
 	private fbApp: firebase.app.App
 
 	constructor() {
-        this.fbApp = firebaseApp;
+		this.fbApp = firebaseApp;
 	}
 
 	async getUserAuth() {
@@ -27,27 +27,27 @@ export class API {
 		//await this.fbApp.firestore().collection(path).doc(item.ID).update(item.getJson())
 		await this.fbApp.firestore().collection(path).doc(item.ID).update(jsonItem)
 	}
-	
+
 	async deleteItem(item: Item, path: string) {
 		await this.fbApp.firestore().collection(path).doc(item.ID).delete()
 	}
-	
+
 	async uploadImage(image: Image) {
-		await this.fbApp.storage().ref(image.Path).putString(image.Url, 'data_url', { contentType: 'image/jpeg' })
-		const url = await this.fbApp.storage().ref(image.Path).getDownloadURL()
-		const metadata = await this.fbApp.storage().ref(image.Path).getMetadata()
+		await this.fbApp.storage().ref(image.Url).putString(image.Url, 'data_url', { contentType: 'image/jpeg' })
+		const url = await this.fbApp.storage().ref(image.Url).getDownloadURL()
+		const metadata = await this.fbApp.storage().ref(image.Url).getMetadata()
 		const newImage: Image = {
 			ID: image.ID,
-			Path: image.Path,
+			Base64: "",
 			Url: url,
 			Size: metadata.size,
 			Status: ImageStatus.NONE
 		}
 		return newImage
 	}
-	
+
 	async deleteImage(image: Image) {
-		await this.fbApp.storage().ref(image.Path).delete()
+		await this.fbApp.storage().ref(image.Url).delete()
 	}
 
 	async createUserInfo(user: User) {
@@ -69,14 +69,14 @@ export class API {
 	}
 
 	async getUserInfo(uid: string) {
-        const path = 'users/' + uid + '/user'
+		const path = 'users/' + uid + '/user'
 		const userDoc: any = await this.fbApp.firestore().collection(path).doc(uid).get()
 		const userInfo: User = userDoc.data()
 		return userInfo
 	}
 
 	async getItems(uid: string) {
-        const path = 'users/' + uid + '/items/'
+		const path = 'users/' + uid + '/items/'
 		const itemsCollection = await this.fbApp.firestore().collection(path).get()
 		let items: Item[] = []
 		itemsCollection.docs.forEach((doc: any) => {
@@ -88,18 +88,18 @@ export class API {
 
 	async deleteAccount() {
 		const currentUser = this.fbApp.auth().currentUser
-		if(currentUser !== null){
+		if (currentUser !== null) {
 			await currentUser.delete()
-		} 
+		}
 	}
 
 	async changePassword(email: string) {
 		await this.fbApp.auth().sendPasswordResetEmail(email)
 	}
-	
+
 	async changeEmail(email: string) {
 		const currentUser = this.fbApp.auth().currentUser
-		if(currentUser !== null){
+		if (currentUser !== null) {
 			currentUser.updateEmail(email)
 		}
 	}

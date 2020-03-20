@@ -1,13 +1,14 @@
 import * as React from "react";
-import { Button, Divider, Typography } from "@material-ui/core";
+import { Button, Divider, Typography, CardMedia, colors, Paper } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import theme from "../../../styles/theme";
+import imgPath from "../../../app/assets/office.jpg"
 
 const Title = styled(Typography)({
-    fontSize: 50,
-    paddingTop: 250,
+    fontSize: 100,
+    display: "block",
     textAlign: "center",
-    color: theme.palette.background.default,
+    color: "white",
 
     [theme.breakpoints.down("sm")]: {
         fontSize: 30,
@@ -33,22 +34,27 @@ const Description = styled(Typography)({
 
 const HeaderTitleContainer = styled("div")({
     backgroundColor: theme.palette.primary.dark,
-    height: 500,
+    height: window.innerHeight,
     width: "100%",
     [theme.breakpoints.down("sm")]: {
         height: 300
     }
 });
+console.log("screenheight: ", window.innerHeight)
 
 const HeaderTitle: React.FC = () => {
     return (
         <HeaderTitleContainer>
-            <Title variant="h2">Trading Manager</Title>
-            <Description variant="h6">
-                あなたの日々のFXや株、仮想通貨取引を記録し、自動的に分析をします。
-                過去の取引を振り返ることで、効率よくトレードの質をあげることができます。
+            <CardMedia image={imgPath} style={{ height: "100%" }}>
+                <Title >Trading Manager</Title>
+                <Description style={{ fontSize: 50 }}>
+                    上達したいあなたへ最大限のサポート
             </Description>
-            <Divider />
+                <div style={{ display: "flex", }}>
+                    <Paper style={{ width: 300, height: 300, margin: 50 }}>{"TradingManagerにアクセス"}</Paper>
+                    <Paper style={{ width: 300, height: 300, margin: 50 }}>{"初めて使用する"}</Paper>
+                </div>
+            </CardMedia>
         </HeaderTitleContainer>
     );
 };

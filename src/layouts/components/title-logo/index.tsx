@@ -5,7 +5,7 @@ import { Avatar, Typography } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import { User } from "../../../types";
 import { useSelector } from "react-redux";
-import myAvatar from "../../../app/assets/app_icon.png";
+import imgPath from "../../../app/assets/app_icon.png";
 import { ReduxState } from "../../../redux/module";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -52,7 +52,7 @@ const TitleLogo: React.FC<Props> = () => {
                 alt="Person"
                 className={classes.avatar}
                 component={RouterLink}
-                src={"https://www.fillmurray.com/500/900"}
+                src={imgPath}
                 to="/account"
             />
             <Typography className={classes.name}>

@@ -74,9 +74,9 @@ const HistoryTable: React.FC<Props> = props => {
     const { history } = props;
     const items = useSelector((state: ReduxState) => state.Items)
     // alert
-    const { openAlert, closeAlert, alertStatus } = useAlert()
+    const { openAlert, alertController } = useAlert()
     // dialog
-    const { open, openDialog, closeDialog } = useDialog()
+    const { openDialog, dialogController } = useDialog()
 
     const [selectedItem, setSelectedItem] = useState<Item>(new Item)
     const { deleteItem, status } = useDeleteItem()
@@ -128,7 +128,7 @@ const HistoryTable: React.FC<Props> = props => {
                         const index: number = selectedRows.data[0].index
                         //handleDelete(items[index])
                         setSelectedItem(items[index])
-                        openDialog()
+                        openDialog(handleDelete, "Delete Item", "Are you sure delete?")
                     }}
                     edge="start"
                     color="inherit"
@@ -149,8 +149,8 @@ const HistoryTable: React.FC<Props> = props => {
                 columns={columns}
                 options={options}
             />
-            <DialogComponent open={open} closeDialog={closeDialog} runFunc={handleDelete} />
-            <AlertComponent closeAlert={closeAlert} alertStatus={alertStatus} />
+            <DialogComponent controller={dialogController} />
+            <AlertComponent controller={alertController} />
         </div>
     )
 };
