@@ -33,7 +33,7 @@ const DetailCard: React.FC<Props> = props => {
                     Detail
                 </Button>
                 <Typography variant="subtitle1">
-                    {item.TradeType === 0 ? "FX" : "STOCK"}
+                    {item.TradeType.toString() === "FX" ? "Forex" : "Stock"}
                 </Typography>
                 <Typography variant="subtitle1">
                     {"Time: " + moment(item.StartDate).format("hh:mm")}

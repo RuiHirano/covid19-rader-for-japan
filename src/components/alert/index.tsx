@@ -22,6 +22,7 @@ export const useAlert = () => {
     //const [alertType, setAlertType] = useState<AlertType>(AlertType.NONE);
     const [alertStatus, setAlertStatus] = useState<AlertStatus>({ AlertType: AlertType.NONE, Message: "" });
 
+
     const openAlert = (alertType: AlertType, message: string) => {
         setController({ ...controller, alertStatus: { AlertType: alertType, Message: message } })
     };
@@ -31,6 +32,7 @@ export const useAlert = () => {
 
     };
     const [controller, setController] = useState<ControlProps>({ closeAlert: closeAlert, alertStatus: { AlertType: AlertType.NONE, Message: "" } });
+
 
     return { "openAlert": openAlert, "alertController": controller }
 }
@@ -53,8 +55,6 @@ interface Props {
 
 const AlertComponent: React.FC<Props> = (props) => {
     const { closeAlert, alertStatus } = props.controller
-    //const [open, setOpen] = React.useState(props.open);
-    console.log("alert: ")
 
     if (alertStatus.AlertType === AlertType.SUCCESS) {
         return (

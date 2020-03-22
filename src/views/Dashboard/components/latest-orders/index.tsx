@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { makeStyles, Theme, useTheme } from "@material-ui/core/styles";
 import {
@@ -12,10 +12,19 @@ import {
     TableBody,
     TableCell,
     TableHead,
-    TableRow
+    TableRow,
+    IconButton
 } from "@material-ui/core";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import { Item } from "../../../../types";
+import MUIDataTable, { MUIDataTableOptions } from "mui-datatables";
+import AlertComponent, { AlertType, useAlert } from "../../../../components/alert";
+import { useDeleteItem } from "../../../../redux/hooks/useItem";
+import DialogComponent, { useDialog } from "../../../../components/dialog";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
+import { withRouter, match } from "react-router";
+import * as H from "history";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -39,77 +48,109 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 interface Props {
     items: Item[];
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
+
+const convertTableItems = (items: Item[]) => {
+    /* FileInfoをmaterial-table用に変換する */
+    let tableItems: any[] = []
+    items.forEach((item: Item) => {
+        tableItems.push([
+            item.StartDate, item.TradeType, item.Pair, item.Lot, item.Profit, item.BeforeComment, item.AfterComment
+        ])
+    })
+    console.log("tableItem: ", tableItems)
+    return tableItems
 }
 
 const LatestOrders: React.FC<Props> = props => {
     const { items } = props;
 
-    const classes = useStyles();
+    //const { className, users, ...rest } = props;
+    const { history } = props;
+    //const items = useSelector((state: ReduxState) => state.Items)
+    // alert
+    const { openAlert, alertController } = useAlert()
+    // dialog
+    const { openDialog, dialogController } = useDialog()
 
+    const [selectedItem, setSelectedItem] = useState<Item>(new Item)
+    const { deleteItem, status } = useDeleteItem()
+
+    const handleDelete = () => {
+        console.log("delete: ", selectedItem)
+        deleteItem(selectedItem)
+    };
+
+    useEffect(() => {
+        console.log("signIn status change", status.Progress)
+        if (status.Progress === 100) {
+            openAlert(AlertType.SUCCESS, "finish run command")
+        }
+        if (status.Error !== "") {
+            console.log("error occer: ", status.Error)
+            openAlert(AlertType.ERROR, "error occur while running command")
+        }
+
+    }, [status])
+
+    const handleEdit = (item: Item) => {
+        console.log("edit: ", item)
+        history.push("/entry/" + item.ID);
+    };
+
+
+    const columns = ["Date", "TradeType", "Pair", "Lot", "Profit", "BeforeComment", "AfterComment"];
+
+    const options: MUIDataTableOptions = {
+        filterType: 'checkbox',
+        selectableRows: 'single',
+        customToolbarSelect: (selectedRows: any) => (
+            <div>
+                <IconButton
+                    onClick={() => {
+                        const index: number = selectedRows.data[0].index
+                        console.log("edit", index, items)
+                        handleEdit(items[index])
+                    }}
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                >
+                    <EditIcon />
+                </IconButton>
+                <IconButton
+                    onClick={() => {
+                        const index: number = selectedRows.data[0].index
+                        //handleDelete(items[index])
+                        setSelectedItem(items[index])
+                        openDialog(handleDelete, "Delete Item", "Are you sure delete?")
+                    }}
+                    edge="start"
+                    color="inherit"
+                    aria-label="open drawer"
+                >
+                    <DeleteIcon />
+                </IconButton>
+            </div>
+        ),
+    };
 
     return (
-        <Card
-        >
-            <CardHeader
-                action={
-                    <Button color="primary" size="small" variant="outlined">
-                        New entry
-                    </Button>
-                }
-                title="Latest Orders"
+        <div>
+            <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons"></link>
+            <MUIDataTable
+                title={"Trade List"}
+                data={convertTableItems(items)}
+                columns={columns}
+                options={options}
             />
-            <Divider />
-            <CardContent className={classes.content}>
-                <PerfectScrollbar>
-                    <div className={classes.inner}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Pair</TableCell>
-                                    <TableCell>Class</TableCell>
-                                    <TableCell>Lot</TableCell>
-                                    <TableCell>Profit</TableCell>
-                                    <TableCell>StartDate</TableCell>
-                                    <TableCell>EndDate</TableCell>
-                                    <TableCell>BeforeComment</TableCell>
-                                    <TableCell>AfterComment</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {items.map((item: Item) => (
-                                    <TableRow
-                                        //className={classes.tableRow}
-                                        hover
-                                        key={item.ID}
-                                    >
-                                        <TableCell>{item.Pair}</TableCell>
-                                        <TableCell>{item.TradeType}</TableCell>
-                                        <TableCell>{item.Lot}</TableCell>
-                                        <TableCell>{item.Profit}</TableCell>
-                                        <TableCell>{item.StartDate}</TableCell>
-                                        <TableCell>{item.EndDate}</TableCell>
-                                        <TableCell>
-                                            {item.BeforeComment}
-                                        </TableCell>
-
-                                        <TableCell>
-                                            {item.AfterComment}
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
-                </PerfectScrollbar>
-            </CardContent>
-            <Divider />
-            <CardActions className={classes.actions}>
-                <Button color="primary" size="small" variant="text">
-                    View all <ArrowRightIcon />
-                </Button>
-            </CardActions>
-        </Card>
-    );
+            <DialogComponent controller={dialogController} />
+            <AlertComponent controller={alertController} />
+        </div>
+    )
 };
 
-export default LatestOrders;
+export default withRouter(LatestOrders);

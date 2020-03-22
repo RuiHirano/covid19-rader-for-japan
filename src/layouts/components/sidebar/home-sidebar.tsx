@@ -4,7 +4,6 @@ import DashboardIcon from "@material-ui/icons/Dashboard";
 import PeopleIcon from "@material-ui/icons/People";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import SettingsIcon from "@material-ui/icons/Settings";
-import { LoadingState } from "../../../types";
 import { useDispatch } from "react-redux";
 import { withRouter, RouteComponentProps, match } from "react-router";
 import * as H from "history";
@@ -13,38 +12,13 @@ import theme from "../../../styles/theme";
 
 import SidebarNav from "../sidebar-nav";
 import Profile from "../profile";
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@material-ui/core/styles";
 import { useSignOut } from "../../../redux/hooks/useAuth";
 
 const drawerWidth = 260;
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            display: "flex"
-        },
-        appBar: {
-            width: `calc(100% - ${drawerWidth}px)`,
-            marginLeft: drawerWidth
-        },
-        drawer: {
-            width: drawerWidth,
-            flexShrink: 0
-        },
-        drawerPaper: {
-            width: drawerWidth
-        },
-        toolbar: theme.mixins.toolbar,
-        content: {
-            flexGrow: 1,
-            backgroundColor: theme.palette.background.default,
-            padding: theme.spacing(3)
-        }
-    })
-);
-
-const DrawerContainer = styled(props => <div {...props} />)({
-    width: props => (props.isHome === true ? 0 : drawerWidth)
+const DrawerContainer = styled("div")({
+    width: 0
 });
 
 interface Props {
@@ -137,7 +111,7 @@ const Sidebar: React.FC<Props> = props => {
 
     return (
         <Drawer anchor="left" onClose={onClose} open={open} variant={variant}>
-            <DrawerContainer isHome={isHome}>
+            <DrawerContainer>
                 <Divider />
                 <SidebarNav
                     pages={homePages}

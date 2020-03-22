@@ -13,7 +13,7 @@ import {
 import moment, { Moment } from "moment";
 import LeftIcon from "@material-ui/icons/ChevronLeft";
 import RightIcon from "@material-ui/icons/ChevronRight";
-import { PeriodType } from "../../../../types/statistics2";
+import { PeriodType } from "../../../../redux/hooks/useStatistics";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {

@@ -1,20 +1,14 @@
 import uuid from "uuid"
 import moment from "moment"
 
+
+
 export enum MarketType {
-	FX,
-	STOCK,
+	FX = "FX",
+	STOCK = "STOCK",
 }
 
 export enum TradeType {
-	BUY,
-	SELL,
-	RECORD,
-	WITHDRAWAL,
-	DEPOSIT,
-}
-
-export enum TradeType2 {
 	BUY = "BUY",
 	SELL = "SELL",
 	RECORD = "RECORD",
@@ -23,9 +17,9 @@ export enum TradeType2 {
 }
 
 export enum ImageStatus {
-	DELETE,
-	UPDATE,
-	NONE,
+	DELETE = "DELETE",
+	UPDATE = "UPDATE",
+	NONE = "NONE",
 }
 
 export interface Image {

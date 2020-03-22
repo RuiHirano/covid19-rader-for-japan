@@ -15,7 +15,7 @@ import {
 } from "./components";
 import { useDispatch, useSelector } from "react-redux";
 import { ReduxState } from "../../redux/module";
-import { StatsResult, Item, YearStatsBuilder } from "../../types";
+import { Item } from "../../types";
 import moment, { Moment } from "moment";
 import { Main as MainLayout } from "../../layouts";
 import { PeriodType, useStatistics } from "../../redux/hooks/useStatistics";

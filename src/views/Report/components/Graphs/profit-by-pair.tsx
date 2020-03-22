@@ -16,7 +16,7 @@ import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 import { ChartData } from "chart.js";
 
 import { options } from "./chart";
-import { PairRatio } from "../../../../types";
+import { PairRatio } from "../../../../redux/hooks/useStatistics";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},

@@ -8,7 +8,7 @@ export interface Notification {
 
 export interface Profile {
 	Name: string,
-	Age: number,
+	Birthday: string,
 	Sex: Sex,
 	Message: string,
 	Thumbnail: Image
@@ -43,24 +43,24 @@ export interface Content {
 }
 
 export enum Sex {
-	MALE,
-	FEMALE,
+	MALE = "MALE",
+	FEMALE = "FEMALE",
 }
 
 export enum Device {
-	PC,
-	SMART_PHONE,
+	PC = "PC",
+	SMART_PHONE = "SMART_PHONE",
 }
 
 export enum Plan {
-	FREE,
-	STANDARD,
-	PREMIUM,
+	FREE = "FREE",
+	STANDARD = "STANDARD",
+	PREMIUM = "PREMIUM",
 }
 
 export enum Language {
-	ja,
-	en,
+	JAPANESE = "JAPANESE",
+	ENGLISH = "ENGLISH",
 }
 
 export class User {
@@ -72,7 +72,7 @@ export class User {
 		this.ID = uuid()
 		this.Profile = <Profile>{
 			Name: "",
-			Age: 0,
+			Birthday: "",
 			Message: "",
 			Sex: Sex.MALE,
 			Thumbnail: <Image>{
@@ -88,7 +88,7 @@ export class User {
 			BankAccount: <BankAccount>{
 				AccountNumber: "",
 			},
-			Language: Language.ja,
+			Language: Language.JAPANESE,
 			Notification: <Notification>{
 				Email: true,
 				Push: true,
@@ -111,7 +111,7 @@ export class User {
 		this.ID = userData.ID
 		this.Profile = <Profile>{
 			Name: userData.Profile.Name,
-			Age: userData.Profile.Age,
+			Birthday: userData.Profile.Birthday,
 			Message: userData.Profile.Message,
 			Sex: userData.Profile.Sex,
 			Thumbnail: <Image>{
@@ -127,7 +127,7 @@ export class User {
 			BankAccount: <BankAccount>{
 				AccountNumber: userData.Setting.BankAccount.AccountNumber,
 			},
-			Language: Language.ja,
+			Language: Language.JAPANESE,
 			Notification: <Notification>{
 				Email: userData.Setting.Notification.Email,
 				Push: userData.Setting.Notification.Push,

@@ -17,7 +17,14 @@ export class API {
 	}
 
 	async createItem(item: Item, path: string) {
+		const jsonImages: any = []
+		item.Images.map((img: Image) => {
+			console.log("img", JSON.parse(JSON.stringify(img)))
+			jsonImages.push(JSON.parse(JSON.stringify(img)))
+		})
+		console.log("jsonImages: ", jsonImages, item, item.Images)
 		const jsonItem = JSON.parse(JSON.stringify(item))
+		console.log("jsonItem: ", item, JSON.stringify(item), jsonItem)
 		await this.fbApp.firestore().collection(path).doc(item.ID).set(jsonItem)
 		//await this.fbApp.firestore().collection(path).doc(item.ID).update(item.getJson())
 	}
@@ -32,10 +39,10 @@ export class API {
 		await this.fbApp.firestore().collection(path).doc(item.ID).delete()
 	}
 
-	async uploadImage(image: Image) {
-		await this.fbApp.storage().ref(image.Url).putString(image.Url, 'data_url', { contentType: 'image/jpeg' })
-		const url = await this.fbApp.storage().ref(image.Url).getDownloadURL()
-		const metadata = await this.fbApp.storage().ref(image.Url).getMetadata()
+	async uploadImage(image: Image, path: string) {
+		await this.fbApp.storage().ref(path).putString(image.Base64, 'data_url', { contentType: 'image/jpeg' })
+		const url = await this.fbApp.storage().ref(path).getDownloadURL()
+		const metadata = await this.fbApp.storage().ref(path).getMetadata()
 		const newImage: Image = {
 			ID: image.ID,
 			Base64: "",
@@ -118,6 +125,19 @@ export class API {
 		await this.fbApp.auth().signOut()
 	}
 
+	async sendPasswordResetEmail(email: string) {
+		await this.fbApp.auth().sendPasswordResetEmail(email)
+	}
+
+	async existAccount(email: string) {
+		// 登録の確認
+		const providers = await firebase.auth().fetchSignInMethodsForEmail(email);
+
+		if (providers.findIndex(p => p === firebase.auth.EmailAuthProvider.EMAIL_PASSWORD_SIGN_IN_METHOD) !== -1) {
+			return true
+		}
+		return false
+	}
 }
 
 

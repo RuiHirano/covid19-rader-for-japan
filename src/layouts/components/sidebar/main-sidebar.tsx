@@ -9,7 +9,6 @@ import CalendarIcon from "@material-ui/icons/Today";
 import ReportIcon from "@material-ui/icons/Timeline";
 import HistoryIcon from "@material-ui/icons/History";
 import SignoutIcon from "@material-ui/icons/ExitToApp";
-import { LoadingState } from "../../../types";
 import { useDispatch } from "react-redux";
 import { withRouter, RouteComponentProps, match } from "react-router";
 import * as H from "history";

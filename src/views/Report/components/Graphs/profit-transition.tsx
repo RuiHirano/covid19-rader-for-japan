@@ -16,7 +16,6 @@ import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
 
 import { options } from "./chart";
-import { TransitionPoint } from "../../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},

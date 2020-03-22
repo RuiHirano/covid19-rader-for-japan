@@ -1,44 +1,51 @@
 import { useState, useCallback, Dispatch, SetStateAction } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {Status} from '../../types/app'
+import { Status } from '../../types/app'
 import { ReduxState } from '../module/index'
 import { Item, User, Notification, Image, Setting } from '../../types'
 import { userActions } from '../module/user'
 import { API } from '../firebase/api'
 import { itemActions } from '../module/item'
+import { checkErrorCode } from '../firebase/errors'
 
 /////////////////////////////////////////////////
 //////////          Item 作成            ////////
 ////////////////////////////////////////////////
 
 export const useUpdateUserInfo = () => {
-  const [status, setStatus] = useState<Status>({Progress: 0, Log: "", Error: "", Loading: false})
+  const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
   const dispatch = useDispatch()
   const api = new API()
 
   const updateUserInfo = useCallback(async (user: User) => {
-    try{
-        // Loading開始
-        setStatus({...status, Loading: true})
+    try {
+      // Loading開始
+      setStatus({ ...status, Loading: true })
 
-        const newImage = await api.uploadImage(user.Profile.Thumbnail)
-        user.Profile.Thumbnail = newImage
-        
-        // upload User to filestore
-        await api.updateUserInfo(user)
+      const imagePath = "users/" + user.ID + "/items/" + user.Profile.Thumbnail.ID
+      const newImage = await api.uploadImage(user.Profile.Thumbnail, imagePath)
+      user.Profile.Thumbnail = newImage
 
-        // store User
-        dispatch(userActions.updateUserInfo(user))
+      // upload User to filestore
+      await api.updateUserInfo(user)
 
-        // Loading終了
-        setStatus({...status, Loading: false})
+      // store User
+      dispatch(userActions.updateUserInfo(user))
 
-    }catch(err){
+      // Loading終了
+      setStatus({ ...status, Loading: false })
+
+    } catch (err) {
+      if (err.code !== undefined) {
+        err = checkErrorCode(err.code)
+      }
+      console.log("error: ", err)
+      setStatus({ ...status, Error: err })
 
     }
 
   }, [status])
-  return { "updateUserInfo": updateUserInfo, "status": status}
+  return { "updateUserInfo": updateUserInfo, "status": status }
 }
 
 /////////////////////////////////////////////////
@@ -46,107 +53,122 @@ export const useUpdateUserInfo = () => {
 ////////////////////////////////////////////////
 
 export const useDeleteAccount = () => {
-    const [status, setStatus] = useState<Status>({Progress: 0, Log: "", Error: "", Loading: false})
-    const dispatch = useDispatch()
-    const user = useSelector((state: ReduxState)=>state.User)
-    const items: Item[] = useSelector((state: ReduxState)=>state.Items)
-    const api = new API()
-  
-    const deleteAccount = useCallback(async () => {
-      try{
-          // Loading開始
-          setStatus({...status, Loading: true})
-          
-          // delete UserInfo
-          await api.deleteImage(user.Profile.Thumbnail)
-          await api.deleteUserInfo(user)
+  const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
+  const dispatch = useDispatch()
+  const user = useSelector((state: ReduxState) => state.User)
+  const items: Item[] = useSelector((state: ReduxState) => state.Items)
+  const api = new API()
 
-          // delete Items
-          await items.forEach(async(item: Item)=>{
-            // delete image
-            await item.Images.forEach(async(image: Image)=>{
-              await api.deleteImage(image)
-            })
-            // delete item
-            const path = "users/" + user.ID + "/items"
-            await api.deleteItem(item, path)
-          })
+  const deleteAccount = useCallback(async () => {
+    try {
+      // Loading開始
+      setStatus({ ...status, Loading: true })
 
-          // upload Images to Storage
-          await api.deleteAccount()
+      // delete UserInfo
+      await api.deleteImage(user.Profile.Thumbnail)
+      await api.deleteUserInfo(user)
 
-          // signout
-          await api.signOut()
+      // delete Items
+      await items.forEach(async (item: Item) => {
+        // delete image
+        await item.Images.forEach(async (image: Image) => {
+          await api.deleteImage(image)
+        })
+        // delete item
+        const path = "users/" + user.ID + "/items"
+        await api.deleteItem(item, path)
+      })
 
-          // StoreのItemsを初期化
-          dispatch(itemActions.createItems([]))
-  
-          // Storeのユーザ情報を初期化
-          dispatch(userActions.updateUserInfo(new User()))
-  
-          // Loading終了
-          setStatus({...status, Loading: false})
-          
-      }catch(err){
-  
+      // upload Images to Storage
+      await api.deleteAccount()
+
+      // signout
+      await api.signOut()
+
+      // StoreのItemsを初期化
+      dispatch(itemActions.createItems([]))
+
+      // Storeのユーザ情報を初期化
+      dispatch(userActions.updateUserInfo(new User()))
+
+      // Loading終了
+      setStatus({ ...status, Loading: false })
+
+    } catch (err) {
+      if (err.code !== undefined) {
+        err = checkErrorCode(err.code)
       }
-  
-    }, [status])
-    return { "deleteAccount": deleteAccount, "status": status}
-  }
+      console.log("error: ", err)
+      setStatus({ ...status, Error: err })
 
-  export const useChangePassword = () => {
-    const [status, setStatus] = useState<Status>({Progress: 0, Log: "", Error: "", Loading: false})
-    const dispatch = useDispatch()
-    const user = useSelector((state: ReduxState)=>state.User)
-    const api = new API()
-  
-    const changePassword = useCallback(async () => {
-      try{
-          // Loading開始
-          setStatus({...status, Loading: true})
-          
-          // change Password
-          await api.changePassword(user.Setting.Email)
-  
-          // Loading終了
-          setStatus({...status, Loading: false})
-          
-      }catch(err){
-  
+    }
+
+  }, [status])
+  return { "deleteAccount": deleteAccount, "status": status }
+}
+
+export const useChangePassword = () => {
+  const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
+  const dispatch = useDispatch()
+  const user = useSelector((state: ReduxState) => state.User)
+  const api = new API()
+
+  const changePassword = useCallback(async () => {
+    try {
+      // Loading開始
+      setStatus({ ...status, Loading: true })
+
+      // change Password
+      await api.changePassword(user.Setting.Email)
+
+      // Loading終了
+      setStatus({ ...status, Loading: false })
+
+    } catch (err) {
+
+      if (err.code !== undefined) {
+        err = checkErrorCode(err.code)
       }
-  
-    }, [status])
-    return { "changePassword": changePassword, "status": status}
-  }
+      console.log("error: ", err)
+      setStatus({ ...status, Error: err })
+    }
 
-  export const useChangeEmail = () => {
-    const [status, setStatus] = useState<Status>({Progress: 0, Log: "", Error: "", Loading: false})
-    const dispatch = useDispatch()
-    const user: User = useSelector((state: ReduxState)=> state.User)
-    const api = new API()
-  
-    const changeEmail = useCallback(async (email: Setting['Email']) => {
-      try{
-          // Loading開始
-          setStatus({...status, Loading: true})
-          
-          // create itemID
-          user.Setting.Email = email
+  }, [status])
+  return { "changePassword": changePassword, "status": status }
+}
 
-          // update userInfo to Storage
-          await api.changeEmail(email)
-  
-          // store User
-          dispatch(userActions.updateUserInfo(user))
-  
-          // Loading終了
-          setStatus({...status, Loading: false})
-          
-      }catch(err){
-  
+export const useChangeEmail = () => {
+  const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
+  const dispatch = useDispatch()
+  const user: User = useSelector((state: ReduxState) => state.User)
+  const api = new API()
+
+  const changeEmail = useCallback(async (email: Setting['Email']) => {
+    try {
+      // Loading開始
+      setStatus({ ...status, Loading: true })
+
+      // create itemID
+      user.Setting.Email = email
+
+      // update userInfo to Storage
+      await api.changeEmail(email)
+
+      // store User
+      dispatch(userActions.updateUserInfo(user))
+
+      // Loading終了
+      setStatus({ ...status, Loading: false })
+
+    } catch (err) {
+      if (err.code !== undefined) {
+        err = checkErrorCode(err.code)
       }
-  
-    }, [status])
-    return { "changeEmail": changeEmail, "status": status}
-  }
+      console.log("error: ", err)
+      setStatus({ ...status, Error: err })
+
+    }
+
+  }, [status])
+  return { "changeEmail": changeEmail, "status": status }
+}

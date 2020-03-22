@@ -16,8 +16,7 @@ import LaptopMacIcon from "@material-ui/icons/LaptopMac";
 import PhoneIphoneIcon from "@material-ui/icons/PhoneIphone";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import TabletMacIcon from "@material-ui/icons/TabletMac";
-import { PairRatio } from "../../../../types";
-import { useStatistics, PeriodType } from "../../../../redux/hooks/useStatistics";
+import { useStatistics, PeriodType, PairRatio } from "../../../../redux/hooks/useStatistics";
 import moment from "moment";
 
 const useStyles = makeStyles((theme: Theme) => ({

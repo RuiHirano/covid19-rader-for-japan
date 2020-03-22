@@ -3,10 +3,16 @@ import { Typography, Grid, useMediaQuery, colors, Button, CardMedia } from "@mat
 import { styled } from "@material-ui/core/styles";
 import theme from "../../../styles/theme";
 import iconImage from "../../../app/assets/app_icon_alpha.png"
+import { withRouter, RouteComponentProps, match } from "react-router";
+import * as H from "history";
+
 interface Props {
     title: string;
     text: string;
     imgPath: string;
+    history: H.History;
+    location: H.Location;
+    match: match;
 }
 
 const FeatureGrid = styled(Grid)({
@@ -35,9 +41,8 @@ const Title = styled(Typography)({
     }
 });
 
-
 const FeatureLayout: React.FC<Props> = props => {
-    const { title, text, imgPath } = props;
+    const { title, text, imgPath, history } = props;
 
     return (
         <FeatureGrid container>
@@ -47,11 +52,11 @@ const FeatureLayout: React.FC<Props> = props => {
     </div>*/}
                 <Title >{title}</Title>
                 <div style={{ width: "100%", textAlign: "center" }}>
-                    <Button style={{ backgroundColor: theme.palette.primary.main, color: "white", height: 60 }} variant={"contained"}>Trading Managerへアクセス</Button>
+                    <Button onClick={() => history.push("sign-up")} style={{ backgroundColor: theme.palette.primary.main, color: "white", height: 60 }} variant={"contained"}>Trading Managerへアクセス</Button>
                 </div>
             </DescriptionGrid>
         </FeatureGrid>
     );
 };
 
-export default FeatureLayout;
+export default withRouter(FeatureLayout);

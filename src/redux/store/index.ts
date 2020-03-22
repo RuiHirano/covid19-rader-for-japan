@@ -7,14 +7,13 @@ import {
 	createTransform,
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
-import { App, Item, User, Profile, Setting, BankAccount, Content, Notification, Loading, Error, State } from '../../types'
+import { Item, User, Profile, Setting, BankAccount, Content, Notification } from '../../types'
 import { ItemActions } from '../module/item'
 import { UserActions } from '../module/user'
 
 export default function configureStore() {
 	// localstorageのstateに型付けする
 	const dateTransform = createTransform(null, (outboundState: any) => {
-		console.log("out: ", outboundState)
 		if (outboundState instanceof Array) {
 			var items: Item[] = []
 			const preItems = outboundState
@@ -47,7 +46,7 @@ export default function configureStore() {
 			user.ID = preUser.ID
 			user.Profile = {
 				Name: preUser.Profile.Name,
-				Age: preUser.Profile.Age,
+				Birthday: preUser.Profile.Birthday,
 				Message: preUser.Profile.Message,
 				Sex: preUser.Profile.Sex,
 				Thumbnail: preUser.Profile.Thumbnail,
@@ -77,27 +76,7 @@ export default function configureStore() {
 				Plan: preUser.Setting.Plan,
 				Device: preUser.Setting.Device,
 			}
-			console.log("user: ", user)
 			return user
-		} else if (outboundState.Loading != undefined) {
-			const preApp = outboundState
-			var app: App = {
-				Loading: <Loading>{
-					IsLoading: preApp.Loading.IsLoading,
-					LoadingState: preApp.Loading.LoadingState,
-				},
-				Error: <Error>{
-					IsError: preApp.Error.IsError,
-					Status: preApp.Error.Status,
-				},
-				State: <State>{
-					IsSignIn: preApp.State.IsSignIn,
-					SearchTags: preApp.State.SearchTags,
-					IsMatchPassword: preApp.State.IsMatchPassword,
-				}
-			}
-			console.log("app: ", app)
-			return app
 		}
 	})
 

@@ -16,7 +16,7 @@ import PhoneIphoneIcon from "@material-ui/icons/PhoneIphone";
 import { ChartData } from "chart.js";
 import RefreshIcon from "@material-ui/icons/Refresh";
 import TabletMacIcon from "@material-ui/icons/TabletMac";
-import { PairRatio } from "../../../../types";
+import { PairRatio } from "../../../../redux/hooks/useStatistics";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {

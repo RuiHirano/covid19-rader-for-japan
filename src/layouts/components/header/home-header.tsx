@@ -15,6 +15,8 @@ import { useMediaQuery } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 import MenuIcon from "@material-ui/icons/Menu";
 import theme from "../../../styles/theme";
+import { withRouter, RouteComponentProps, match } from "react-router";
+import * as H from "history";
 
 const LogoImage = styled("img")({
     background: theme.palette.primary.main,
@@ -51,12 +53,16 @@ const SignInButton = styled(Button)({
 });
 
 interface Props {
+
+    history: H.History;
+    location: H.Location;
+    match: match;
     isHome: boolean;
     onSidebarOpen: () => void;
 }
 
 const HomeHeader: React.FC<Props> = props => {
-    const { isHome, onSidebarOpen } = props;
+    const { isHome, onSidebarOpen, history } = props;
 
     return (
         <div style={{ flexGrow: 1 }}>
@@ -71,8 +77,9 @@ const HomeHeader: React.FC<Props> = props => {
                         >
                             <MenuIcon />
                         </IconButton>
+
                     </Hidden>
-                    <Title>{"Trading Manager"}</Title>
+                    <Title onClick={() => history.push("/")}>{"Trading Manager"}</Title>
 
                     <Hidden smDown>
                         <div >
@@ -95,4 +102,4 @@ const HomeHeader: React.FC<Props> = props => {
     );
 };
 
-export default HomeHeader;
+export default withRouter(HomeHeader);

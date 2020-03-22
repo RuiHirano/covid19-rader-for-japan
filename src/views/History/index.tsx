@@ -3,7 +3,7 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 
 import { HistoryToolbar, HistoryTable } from "./components";
 import { useSelector } from "react-redux";
-import { LoadingState, Item } from "../../types";
+import { Item } from "../../types";
 import { ReduxState } from "../../redux/module";
 import { Main as MainLayout } from "../../layouts";
 

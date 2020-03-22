@@ -4,6 +4,8 @@ import { styled } from "@material-ui/core/styles";
 import theme from "../../../styles/theme";
 import imgPath from "../../../app/assets/office.jpg"
 import HeaderPaper from "./header-paper";
+import { withRouter, RouteComponentProps, match } from "react-router";
+import * as H from "history";
 
 const Title = styled(Typography)({
     fontSize: 100,
@@ -43,7 +45,14 @@ const HeaderTitleContainer = styled("div")({
 });
 console.log("screenheight: ", window.innerHeight)
 
-const HeaderTitle: React.FC = () => {
+interface Props {
+    history: H.History;
+    location: H.Location;
+    match: match;
+}
+
+const HeaderTitle: React.FC<Props> = (props) => {
+    const { history } = props;
     return (
         <HeaderTitleContainer>
             <CardMedia image={imgPath} style={{ height: "100%", }}>
@@ -53,8 +62,8 @@ const HeaderTitle: React.FC = () => {
                         上達したいあなたへ最大限のサポート
                     </Description>
                     <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
-                        <HeaderPaper title={"ログインする"} description={"あらゆるデバイスで取引を一括管理、統計分析、可視化、振り返りができます。"} buttonText={"TradingManagerへアクセス"} />
-                        <HeaderPaper title={"まずは使ってみる"} description={"取引管理、統計分析、可視化などあらゆる機能を無料で体験できます。"} buttonText={"新規登録"} />
+                        <HeaderPaper title={"ログインする"} description={"あらゆるデバイスで取引を一括管理、統計分析、可視化、振り返りができます。"} buttonText={"TradingManagerへアクセス"} handleClick={() => { history.push("/sign-in") }} />
+                        <HeaderPaper title={"まずは使ってみる"} description={"取引管理、統計分析、可視化などあらゆる機能を無料で体験できます。"} buttonText={"新規登録"} handleClick={() => { history.push("/sign-up") }} />
                     </div>
                 </div>
             </CardMedia>
@@ -62,4 +71,4 @@ const HeaderTitle: React.FC = () => {
     );
 };
 
-export default HeaderTitle;
+export default withRouter(HeaderTitle);

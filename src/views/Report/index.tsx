@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import Calendar from "react-calendar";
-import { width } from "@material-ui/system";
-import { Grid, Button, Typography } from "@material-ui/core";
+import { Grid, } from "@material-ui/core";
 import { Graphs, Statistics, DateBar } from "./components";
 import { useSelector, useDispatch } from "react-redux";
-import { StatsResult, Item, YearStatsBuilder } from "../../types";
 import moment, { Moment } from "moment";
 import { ReduxState } from "../../redux/module";
 import { Main as MainLayout } from "../../layouts";
-import { StatsCalculator, PeriodType } from "../../types/statistics2";
-import { useStatistics } from "../../redux/hooks/useStatistics"
+import { useStatistics, PeriodType } from "../../redux/hooks/useStatistics"
+import { Item } from "../../types";
 
 interface Props {
 }
@@ -23,11 +20,6 @@ const ReportView: React.FC<Props> = props => {
 
     const [date, setDate] = useState<Moment>(moment());
     const [periodType, setPriodType] = useState<PeriodType>(PeriodType.MONTH);
-    // FIX
-    /*const [statsValues, setStatsValues] = useState<StatsResult>(
-        //items.calculator(date, PeriodType.DAY, content)
-        new YearStatsBuilder(items, moment(), content).getResult()
-    );*/
 
     const { calcStats, status, statsResult } = useStatistics()
 

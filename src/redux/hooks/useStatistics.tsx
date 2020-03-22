@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Status, Item, Content, TradeType } from '../../types'
 import moment, { Moment } from 'moment'
 import { ReduxState } from '../module'
+import { checkErrorCode } from '../firebase/errors'
 
 /////////////////////////////////////////////////
 //////////          Sign In             ////////
@@ -32,6 +33,9 @@ export const useStatistics = () => {
             setStatus({ ...status, Loading: false, Progress: 100 })
 
         } catch (err) {
+            if (err.code !== undefined) {
+                err = checkErrorCode(err.code)
+            }
             console.log("error: ", err)
             setStatus({ ...status, Error: err })
         }
@@ -41,9 +45,9 @@ export const useStatistics = () => {
 }
 
 export enum PeriodType {
-    YEAR,
-    MONTH,
-    DAY,
+    YEAR = "YEAR",
+    MONTH = "MONTH",
+    DAY = "DAY",
 }
 
 export class StatsCalculator {

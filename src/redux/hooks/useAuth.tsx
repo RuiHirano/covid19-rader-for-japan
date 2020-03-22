@@ -6,6 +6,8 @@ import { itemActions } from '../module/item'
 import { userActions } from '../module/user'
 import { API } from '../firebase/api'
 import { defaultUser, defaultItems } from './data'
+import { checkErrorCode } from '../firebase/errors'
+import { ReduxState } from '../module'
 
 /////////////////////////////////////////////////
 //////////          Sign In             ////////
@@ -45,6 +47,10 @@ export const useSignIn = () => {
       setStatus({ ...status, Progress: 100 })
 
     } catch (err) {
+      console.log("error: ", err)
+      if (err.code !== undefined) {
+        err = checkErrorCode(err.code)
+      }
       console.log("error: ", err)
       setStatus({ ...status, Error: err })
     }
@@ -104,6 +110,9 @@ export const useSignUp = () => {
       setStatus({ ...status, Progress: 100 })
 
     } catch (err) {
+      if (err.code !== undefined) {
+        err = checkErrorCode(err.code)
+      }
       console.log("error: ", err)
       setStatus({ ...status, Error: err })
     }
@@ -139,9 +148,84 @@ export const useSignOut = () => {
       setStatus({ ...status, Loading: false, Progress: 100 })
 
     } catch (err) {
+      if (err.code !== undefined) {
+        err = checkErrorCode(err.code)
+      }
+      console.log("error: ", err)
+      setStatus({ ...status, Error: err })
 
     }
 
   }, [status])
   return { "signOut": signOut, "status": status }
+}
+
+/////////////////////////////////////////////////
+//////////       Password Reset          ////////
+////////////////////////////////////////////////
+
+export const usePasswordReset = () => {
+  const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
+  const dispatch = useDispatch()
+  const api = new API()
+  const user = useSelector((state: ReduxState) => state.User)
+
+  const sendPasswordResetEmail = useCallback(async () => {
+    try {
+      // Loading開始
+      setStatus({ ...status, Loading: true })
+
+      // signout
+      const email = user.Setting.Email
+      await api.sendPasswordResetEmail(email)
+
+      // Loading終了
+      setStatus({ ...status, Loading: false, Progress: 100 })
+
+    } catch (err) {
+      if (err.code !== undefined) {
+        err = checkErrorCode(err.code)
+      }
+      console.log("error: ", err)
+      setStatus({ ...status, Error: err })
+
+    }
+
+  }, [status])
+  return { "sendPasswordResetEmail": sendPasswordResetEmail, "status": status }
+}
+
+/////////////////////////////////////////////////
+//////////       Account Check          ////////
+////////////////////////////////////////////////
+
+export const useCheckAccount = () => {
+  const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
+  const dispatch = useDispatch()
+  const api = new API()
+  const user = useSelector((state: ReduxState) => state.User)
+
+  const checkAccount = useCallback(async () => {
+    try {
+      // Loading開始
+      setStatus({ ...status, Loading: true })
+
+      // signout
+      const email = user.Setting.Email
+      await api.existAccount(email)
+
+      // Loading終了
+      setStatus({ ...status, Loading: false, Progress: 100 })
+
+    } catch (err) {
+      if (err.code !== undefined) {
+        err = checkErrorCode(err.code)
+      }
+      console.log("error: ", err)
+      setStatus({ ...status, Error: err })
+
+    }
+
+  }, [status])
+  return { "checkAccount": checkAccount, "status": status }
 }

@@ -38,3 +38,11 @@ Todo: App->StateになぜかItemがはいっておりループしている
 
 /persistがうまく保存できていない
 /loadingがうまくいかない、storeが何回も描画されるため
+
+
+2020/3/22
+1. Signup周辺
+- validation, signup api
+
+2. create 画像 json化
+- imageだけ空のオブジェクトになる

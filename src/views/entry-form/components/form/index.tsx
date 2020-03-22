@@ -16,7 +16,8 @@ import {
     Chip,
     colors,
     styled,
-    Link
+    Link,
+    FormHelperText
 } from "@material-ui/core";
 import { Formik, FormikValues } from "formik";
 import * as Yup from "yup";
@@ -37,6 +38,10 @@ import uuid from "uuid";
 import { Moment } from "moment";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../../redux/module";
+import TextFieldComponent from "../text-field";
+import RadioButtonComponent from "../radio-button";
+import DatePickerComponent from "../date-picker";
+import FormLabel from "../form-label";
 
 const useStyles = makeStyles((theme: Theme) => ({
     textField: {
@@ -75,7 +80,6 @@ interface Props {
 }
 
 type FormData = {
-    id: string
     marketType: MarketType;
     startDate: string
     endDate: string
@@ -90,15 +94,17 @@ type FormData = {
     afterComment: string
     tags: string[]
     images: Image[]
-    updatedAt: string
-    createdAt: string
 };
 
 const validationSchema = Yup.object().shape({
-    lot: Yup.number().typeError("数字を入力してください")
-        .required("必須項目です"),
+    startDate: Yup.date().typeError("正しい日付を入力してください"),
+    endDate: Yup.date().typeError("正しい日付を入力してください"),
+    pair: Yup.string().min(1, "入力してください"),
+    lot: Yup.number().typeError("数字を入力してください"),
+    entryRate: Yup.number().typeError("数字を入力してください"),
+    losscutRate: Yup.number().typeError("数字を入力してください"),
+    settleRate: Yup.number().typeError("数字を入力してください"),
     profit: Yup.number().typeError("数字を入力してください")
-        .required("必須項目です"),
 });
 
 const Form: React.FC<Props> = props => {
@@ -106,51 +112,57 @@ const Form: React.FC<Props> = props => {
 
     const classes = useStyles();
 
-    const items = useSelector((state: ReduxState) => state.Items)
-    const [item, setItem] = useState<Item>(new Item())
-    useEffect(() => {
-        // init
-        // EditであればそのItemをdefaultにする
+    const checkdDefaultItem = () => {
         const itemId: string = match.params.itemId
+        let item = new Item()
         if (itemId !== "new") {
-            items.forEach((item: Item) => {
-                if (itemId === item.ID) {
-                    setItem(item)
+            items.forEach((_item: Item) => {
+                if (itemId === _item.ID) {
+                    console.log("update", _item)
+                    item = _item
                 }
             })
         }
-    }, [])
-    console.log("itemTest: ", item)
+        return item
+    }
+
+    const items = useSelector((state: ReduxState) => state.Items)
+    const item = checkdDefaultItem()
 
     // alert
     const { openAlert, alertController } = useAlert()
     // dialog
     const { openDialog, dialogController } = useDialog()
 
-    console.log("render");
 
-    const { handleSubmit, errors, control, getValues, setValue, register } = useForm<FormData>({
+    const { handleSubmit, errors, control, watch } = useForm<FormData>({
         defaultValues: itemToForm(item),
         validationSchema: validationSchema
     });
     const { createItem, status } = useCreateItem()
     const { updateItem } = useUpdateItem()
     const onSubmit = handleSubmit((formData: FormData) => {
-        formData["tags"] = searchTags
-        formData["images"] = imageData
 
-        const item = formToItem(formData)
-        console.log("item: ", item, formData)
+        console.log("submit!!")
+
+        const newItem = formToItem(formData)
 
         const itemId = match.params.itemId
+        newItem.UpdatedAt = new Date().toISOString()
         if (itemId === "new") {
-            console.log("new: ")
-            //createItem(item)
+            console.log("new: ", newItem)
+            newItem.ID = uuid()
+            newItem.CreatedAt = new Date().toISOString()
+            createItem(newItem)
         } else {
-            console.log("update: ")
-            //updateItem(item)
+            newItem.ID = item.ID
+            newItem.CreatedAt = item.CreatedAt
+            console.log("update: ", newItem)
+            updateItem(newItem)
         }
     });
+
+    console.log("item is ", item)
 
     const handleBack = () => {
         console.log("back")
@@ -168,7 +180,8 @@ const Form: React.FC<Props> = props => {
     const [searchTags, setSearchTags] = React.useState<string[]>([]);
 
 
-    const [imageData, setImageData] = React.useState<Image[]>([]);
+    const [images, setImages] = React.useState<Image[]>([]);
+    const [tagName, setTagName] = React.useState<string>("");
 
     const [pairData, setPairData] = React.useState<string[]>([
         "USD/JPY",
@@ -177,13 +190,13 @@ const Form: React.FC<Props> = props => {
     ]);
 
     const handleDeleteImage = () => {
-        let newImageData: Image[] = []
-        imageData.forEach((data, index) => {
-            if (index !== imageData.length - 1) {
-                newImageData.push(data)
+        let newImages: Image[] = []
+        images.forEach((data, index) => {
+            if (index !== images.length - 1) {
+                newImages.push(data)
             }
         })
-        setImageData(newImageData)
+        setImages(newImages)
     };
 
     const handleDeleteTag = (index: number) => {
@@ -196,7 +209,22 @@ const Form: React.FC<Props> = props => {
         setSearchTags(newTags)
     };
 
-    //console.log("tradetype: ", TradeType2.RECORD === "RECORD")
+    const { fields, append } = useFieldArray(
+        {
+            control,
+            name: "tags"
+        }
+    );
+
+    const { fields: imageFields, append: appendImage } = useFieldArray(
+        {
+            control,
+            name: "images"
+        }
+    );
+
+    //console.log("tradetype: ", TradeType.RECORD === "RECORD")
+    const watchTradeType = watch('tradeType');
     return (
         <div>
             <Paper style={{ width: "100%", padding: 20 }}>
@@ -205,254 +233,280 @@ const Form: React.FC<Props> = props => {
                     <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
                         <div style={{ display: "flex" }}>
                             <BackButton handleBack={() => openDialog(handleBack, "Back", "Are you sure delete content?")} />
-                            <Typography variant={"h5"} style={{ flexGrow: 1, textAlign: "center" }}>Entry Form</Typography>
+                            <Typography variant={"h5"} style={{ flexGrow: 1, textAlign: "center" }}>取引登録</Typography>
                         </div>
                     </Grid>
                 </Grid>
 
-                <form onSubmit={onSubmit}>
+                <div>
+
                     <Grid container spacing={3}>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <RadioGroup aria-label="position" name="position" value={TradeType.SELL.toString()} onChange={(e) => console.log("radio: ", e.target.value)} row>
-                                        <FormControlLabel
-                                            value={TradeType.BUY.toString()}
-                                            control={<Radio color="primary" />}
-                                            label="Buy"
-                                            labelPlacement="end"
-                                        />
-                                        <FormControlLabel
-                                            value={TradeType.SELL.toString()}
-                                            control={<Radio color="primary" />}
-                                            label="Sell"
-                                            labelPlacement="end"
-                                        />
-                                        <FormControlLabel
-                                            value={TradeType.RECORD.toString()}
-                                            control={<Radio color="primary" />}
-                                            label="Record"
-                                            labelPlacement="end"
-                                        />
-                                        <FormControlLabel
-                                            value={TradeType.DEPOSIT.toString()}
-                                            control={<Radio color="primary" />}
-                                            label="Deposit"
-                                            labelPlacement="end"
-                                        />
-                                        <FormControlLabel
-                                            value={TradeType.WITHDRAWAL.toString()}
-                                            control={<Radio color="primary" />}
-                                            label="Withdrawal"
-                                            labelPlacement="end"
-                                        />
-                                    </RadioGroup>
-                                }
-                                name="tradeType"
-                                control={control}
-                                defaultValue={TradeType.SELL.toString()}
-                            />
-
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <RadioGroup aria-label="position" name="position" value={"fx"} onChange={(e) => console.log("radio: ", e.target.value)} row>
-                                        <FormControlLabel
-                                            value="fx"
-                                            control={<Radio color="primary" />}
-                                            label="Forex"
-                                            labelPlacement="end"
-                                        />
-                                        <FormControlLabel
-                                            value="stock"
-                                            control={<Radio color="primary" />}
-                                            label="Stock"
-                                            labelPlacement="end"
-                                        />
-                                    </RadioGroup>
-                                }
-                                name="marketType"
-                                control={control}
-                                defaultValue={"fx"}
-                            />
-
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <KeyboardDatePicker
-                                        disableToolbar
-                                        variant="inline"
-                                        format="MM/dd/yyyy"
-                                        margin="normal"
-                                        id="date-picker-inline"
-                                        label="Start Date"
-                                        value={selectedDate}
-                                        onChange={handleDateChange}
-                                        KeyboardButtonProps={{
-                                            'aria-label': 'change date',
-                                        }}
-                                    />
-                                }
-                                name="startDate"
-                                control={control}
-                                defaultValue={new Date(item.StartDate)}
-                            />
-
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <KeyboardDatePicker
-                                        disableToolbar
-                                        variant="inline"
-                                        format="MM/dd/yyyy"
-                                        margin="normal"
-                                        id="date-picker-inline"
-                                        label="End Date"
-                                        value={selectedDate}
-                                        onChange={handleDateChange}
-                                        KeyboardButtonProps={{
-                                            'aria-label': 'change date',
-                                        }}
-                                    />
-                                }
-                                name="endDate"
-                                control={control}
-                                defaultValue={selectedDate}
-                            />
-
-                        </Grid>
-
-
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12} >
-                            <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel id="demo-simple-select-outlined-label">
-                                    Pair
-                                </InputLabel>
+                        <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                            <FormLabel title={"取引選択"} description={""}>
                                 <Controller
                                     as={
-                                        <Select
-                                            labelId="demo-simple-select-outlined-label"
-                                            id="demo-simple-select-outlined"
-                                            value={pairData[0]}
-                                            onChange={(e) => console.log("select: ", e)}
-                                        >
-                                            {pairData.map((pair) => {
-                                                return (
-                                                    <MenuItem value={pair}>{pair}</MenuItem>
-                                                )
-                                            })}
-                                        </Select>
+                                        <RadioGroup aria-label="position" name="position" value={TradeType.SELL.toString()} onChange={(e) => console.log("radio: ", e.target.value)} row>
+                                            <FormControlLabel
+                                                value={TradeType.BUY.toString()}
+                                                control={<Radio color="primary" />}
+                                                label="Buy"
+                                                labelPlacement="end"
+                                            />
+                                            <FormControlLabel
+                                                value={TradeType.SELL.toString()}
+                                                control={<Radio color="primary" />}
+                                                label="Sell"
+                                                labelPlacement="end"
+                                            />
+                                            <FormControlLabel
+                                                value={TradeType.RECORD.toString()}
+                                                control={<Radio color="primary" />}
+                                                label="Record"
+                                                labelPlacement="end"
+                                            />
+                                            <FormControlLabel
+                                                value={TradeType.DEPOSIT.toString()}
+                                                control={<Radio color="primary" />}
+                                                label="Deposit"
+                                                labelPlacement="end"
+                                            />
+                                            <FormControlLabel
+                                                value={TradeType.WITHDRAWAL.toString()}
+                                                control={<Radio color="primary" />}
+                                                label="Withdrawal"
+                                                labelPlacement="end"
+                                            />
+                                        </RadioGroup>
                                     }
-                                    name="pair"
+                                    name="tradeType"
                                     control={control}
-                                    defaultValue=""
+                                    defaultValue={item.TradeType.toString()}
                                 />
+                            </FormLabel>
+                        </Grid>
 
-                            </FormControl>
+                        <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                            <FormLabel title={"取引選択"} description={""}>
+                                <Controller
+                                    as={
+                                        <RadioGroup aria-label="position" name="position" value={MarketType.FX.toString()} onChange={(e) => console.log("radio: ", e.target.value)} row>
+                                            <FormControlLabel
+                                                value={MarketType.FX.toString()}
+                                                control={<Radio color="primary" />}
+                                                label="Forex"
+                                                labelPlacement="end"
+                                            />
+                                            <FormControlLabel
+                                                value={MarketType.STOCK.toString()}
+                                                control={<Radio color="primary" />}
+                                                label="株式"
+                                                labelPlacement="end"
+                                            />
+                                        </RadioGroup>
+                                    }
+                                    name="marketType"
+                                    control={control}
+                                    defaultValue={item.MarketType.toString()}
+                                />
+                            </FormLabel>
                         </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        error={errors.lot ? true : false}
-                                        fullWidth
-                                        helperText={errors.lot ? errors.lot.message : ""}
-                                        label="Lot"
+                        <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                            <FormLabel title={"取引開始日時"} description={""}>
+                                <Controller
+                                    as={
+                                        <KeyboardDatePicker
+                                            disableToolbar
+                                            variant="inline"
+                                            format="yyyy/MM/dd"
+                                            margin="normal"
+                                            id="date-picker-start-date"
+                                            error={errors.startDate ? true : false}
+                                            helperText={errors.startDate ? errors.startDate.message : ""}
+                                            label="Start Date"
+                                            value={selectedDate}
+                                            onChange={handleDateChange}
+                                            KeyboardButtonProps={{
+                                                'aria-label': 'change date',
+                                            }}
+                                        />
+                                    }
+                                    name="startDate"
+                                    control={control}
+                                    defaultValue={item.StartDate}
+                                />
+                            </FormLabel>
+                        </Grid>
+
+                        {watchTradeType === TradeType.DEPOSIT || watchTradeType === TradeType.WITHDRAWAL ? <div /> :
+                            <Grid container>
+                                <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                                    <FormLabel title={"取引終了日時"} description={""}>
+                                        <Controller
+                                            as={
+                                                <KeyboardDatePicker
+                                                    disableToolbar
+                                                    variant="inline"
+                                                    format="yyyy/MM/dd"
+                                                    margin="normal"
+                                                    id="date-picker-end-date"
+                                                    label="End Date"
+                                                    error={errors.endDate ? true : false}
+                                                    helperText={errors.endDate ? errors.endDate.message : ""}
+                                                    value={selectedDate}
+                                                    onChange={handleDateChange}
+                                                    KeyboardButtonProps={{
+                                                        'aria-label': 'change date',
+                                                    }}
+                                                />
+                                            }
+                                            name="endDate"
+                                            control={control}
+                                            defaultValue={item.EndDate}
+                                        />
+                                    </FormLabel>
+                                </Grid>
+                                <Grid item xl={12} lg={12} md={12} sm={12} xs={12} >
+
+                                    <FormLabel title={"取引通貨"} description={""}>
+                                        <Controller
+                                            as={
+                                                <Select
+                                                    style={{ width: 200 }}
+                                                    error={errors.pair ? true : false}
+                                                    labelId="demo-simple-select-outlined-label"
+                                                    id="demo-simple-select-outlined"
+                                                    onChange={(e) => console.log("select: ", e)}
+                                                >
+                                                    {pairData.map((pair) => {
+                                                        return (
+                                                            <MenuItem value={pair}>{pair}</MenuItem>
+                                                        )
+                                                    })}
+                                                </Select>
+                                            }
+                                            name="pair"
+                                            control={control}
+                                            defaultValue={item.Pair}
+                                        />
+                                        <FormHelperText style={{ color: "red" }}>{errors.pair ? errors.pair.message : ""}</FormHelperText>
+                                    </FormLabel>
+                                </Grid>
+                                <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                                    <Controller
+                                        as={
+                                            <TextFieldComponent
+                                                title="数量"
+                                                description=""
+                                                error={errors.lot ? true : false}
+                                                fullWidth
+                                                helperText={errors.lot ? errors.lot.message : ""}
+                                                label="数量"
+                                                name="lot"
+                                                type="text"
+                                                variant="outlined"
+                                            />
+                                        }
                                         name="lot"
-                                        type="text"
-                                        variant="outlined"
+                                        control={control}
+                                        defaultValue={item.Lot}
                                     />
-                                }
-                                name="lot"
-                                control={control}
-                                defaultValue={item.Lot}
-                            />
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        error={errors.entryRate ? true : false}
-                                        fullWidth
-                                        helperText={errors.entryRate ? errors.entryRate.message : ""}
-                                        label="Entry Rate"
-                                        name="Entry Rate"
-                                        type="text"
-                                        variant="outlined"
+                                </Grid>
+                                <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                                    <Controller
+                                        as={
+                                            <TextFieldComponent
+                                                title="注文価格"
+                                                description=""
+                                                error={errors.entryRate ? true : false}
+                                                fullWidth
+                                                helperText={errors.entryRate ? errors.entryRate.message : ""}
+                                                label="注文価格"
+                                                name="entryRate"
+                                                type="text"
+                                                variant="outlined"
+                                            />
+                                        }
+                                        name="entryRate"
+                                        control={control}
+                                        defaultValue={item.EntryRate}
                                     />
-                                }
-                                name="entryRate"
-                                control={control}
-                                defaultValue={item.EntryRate}
-                            />
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="Losscut Rate"
-                                        name="Losscut Rate"
-                                        type="text"
-                                        variant="outlined"
+                                </Grid>
+                                <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                                    <Controller
+                                        as={
+                                            <TextFieldComponent
+                                                title="損切価格"
+                                                description=""
+                                                error={errors.losscutRate ? true : false}
+                                                fullWidth
+                                                helperText={errors.losscutRate ? errors.losscutRate.message : ""}
+                                                label="損切価格"
+                                                name="losscutRate"
+                                                type="text"
+                                                variant="outlined"
+                                            />
+                                        }
+                                        name="losscutRate"
+                                        control={control}
+                                        defaultValue={item.LossCutRate}
                                     />
-                                }
-                                name="losscutRate"
-                                control={control}
-                                defaultValue={item.LossCutRate}
-                            />
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="Settle Rate"
-                                        name="Settle Rate"
-                                        type="text"
-                                        variant="outlined"
+                                </Grid>
+                                <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                                    <Controller
+                                        as={
+                                            <TextFieldComponent
+                                                title="決済価格"
+                                                description=""
+                                                error={errors.settleRate ? true : false}
+                                                fullWidth
+                                                helperText={errors.settleRate ? errors.settleRate.message : ""}
+                                                label="決済価格"
+                                                name="settleRate"
+                                                type="text"
+                                                variant="outlined"
+                                            />
+                                        }
+                                        name="settleRate"
+                                        control={control}
+                                        defaultValue={item.SettleRate}
                                     />
-                                }
-                                name="settleRate"
-                                control={control}
-                                defaultValue={item.SettleRate}
-                            />
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Controller
-                                as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="Profit"
-                                        name="Profit"
-                                        type="text"
-                                        variant="outlined"
-                                    />
-                                }
-                                name="profit"
-                                control={control}
-                                defaultValue={item.Profit}
-                            />
-                        </Grid>
+                                </Grid>
+                            </Grid>
+                        }
+                        {watchTradeType !== TradeType.RECORD ?
+                            <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                                <Controller
+                                    as={
+                                        <TextFieldComponent
+                                            title="損益"
+                                            description=""
+                                            error={errors.profit ? true : false}
+                                            fullWidth
+                                            helperText={errors.profit ? errors.profit.message : ""}
+                                            label="損益"
+                                            name="profit"
+                                            type="text"
+                                            variant="outlined"
+                                        />
+                                    }
+                                    name="profit"
+                                    control={control}
+                                    defaultValue={item.Profit}
+                                />
+                            </Grid>
+                            :
+                            <div />}
+
                         <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
                             <Controller
                                 as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
+                                    <TextFieldComponent
+                                        title="注文前メモ"
+                                        description=""
                                         multiline
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="Before Comment"
-                                        name="Before Comment"
+                                        fullWidth
+                                        label="注文前メモ"
+                                        name="beforeComment"
                                         type="text"
                                         variant="outlined"
                                     />
@@ -465,13 +519,13 @@ const Form: React.FC<Props> = props => {
                         <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
                             <Controller
                                 as={
-                                    <TextField
-                                        //error={errors.email ? true : false}
-                                        fullWidth
+                                    <TextFieldComponent
+                                        title="決済後メモ"
+                                        description=""
                                         multiline
-                                        //helperText={errors.email ? errors.email.message : ""}
-                                        label="After Comment"
-                                        name="After Comment"
+                                        fullWidth
+                                        label="決済後メモ"
+                                        name="afterComment"
                                         type="text"
                                         variant="outlined"
                                     />
@@ -482,89 +536,111 @@ const Form: React.FC<Props> = props => {
                             />
                         </Grid>
                         <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-                            {/*fields.map((item, index) => {
-                                const test = `searchTags[${index}]`
-                                const values = getValues()
-                                return (
-                                    <ul>
-                                        <li key={item.id}>
-                                            <input name={`searchTags[${index}]`} ref={register} defaultValue={values.searchTags[index]} />
-                                        </li>
-                                    </ul>
+                            <FormLabel title="タグ" description="">
+                                <TextField
+                                    label="タグ名"
+                                    name="tag"
+                                    variant={"outlined"}
+                                    value={tagName}
+                                    onChange={(e: any) => { setTagName(e.target.value) }}
+                                />
+                                <Button
+                                    onClick={() => {
 
-                                )
-                            })
+                                        console.log("click: ", tagName)
+                                        append([tagName]);
+                                        setSearchTags([...searchTags, tagName])
+                                        setTagName("")
+                                    }}
+                                    variant={"contained"}
+                                    style={{ margin: 5 }}
+                                >Add Tag</Button>
+                                <div style={{ width: "100%" }}>
+                                    {fields.map((item, index) => {
+                                        console.log("item: ", item)
+                                        return (
+                                            <Controller
+                                                as={
+                                                    <Chip
+                                                        style={{ margin: 10 }}
+                                                        key={index}
+                                                        label={item.value}
+                                                        onDelete={() => handleDeleteTag(index)}
+                                                    />
+                                                }
+                                                name={`tags[${index}]`}
+                                                control={control}
+                                                defaultValue={item.value}
+                                            />
 
-                        */}
-                            <Button
-                                onClick={() => {
+                                        );
+                                    })}
 
-                                    console.log("click: ")
-                                    //append({ name: "testttt" })
-                                    //append(["testttt"])
-                                    setSearchTags([...searchTags, "test"])
-                                    //setValue("searchTags", values)
-                                }}
-                                variant={"contained"}
-                                style={{ margin: 5 }}
-                            >Add Tag</Button>
-                            {searchTags.map((tag, index) => {
-                                return (
-                                    <Chip
-                                        style={{ margin: 10 }}
-                                        key={index}
-                                        label={tag}
-                                        onDelete={() => handleDeleteTag(index)}
-                                    />
-                                );
-                            })}
-
-
-
+                                </div>
+                            </FormLabel>
                         </Grid>
                         <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                            <FormLabel title="画像選択" description="">
+                                <Paper style={{ height: 200, backgroundColor: colors.grey[300], marginTop: 20 }} elevation={0}>
+                                    {imageFields.map((item, index) => {
+                                        console.log("item ", item)
+                                        return (
+                                            <Controller
+                                                as={
+                                                    <Button onClick={() => openDialog(handleDeleteImage, "Delete Image", "Are you sure delete image?")}>
+                                                        <ImageComponent alt="image" src={item.Base64} />
+                                                    </Button>
+                                                }
+                                                name={`images[${index}]`}   // images[index]にdefaultvalueを格納する
+                                                control={control}
+                                                defaultValue={item}
+                                            />
 
-                            <Paper style={{ height: 200, backgroundColor: colors.grey[300], marginTop: 20 }} elevation={0}>
-                                {imageData.map(data => {
-                                    return (
-                                        <Button onClick={() => openDialog(handleDeleteImage, "Delete Image", "Are you sure delete image?")}>
-                                            <ImageComponent alt="image" src={data.Base64} />
-                                        </Button>
-                                    );
-                                })}
-                            </Paper>
+                                        );
+                                    })}
+                                    {/*images.map(data => {
+                                        return (
+                                            <Button onClick={() => openDialog(handleDeleteImage, "Delete Image", "Are you sure delete image?")}>
+                                                <ImageComponent alt="image" src={data.Base64} />
+                                            </Button>
+                                        );
+                                    })*/}
+                                </Paper>
 
-                            <Dropzone
-                                onDrop={acceptedFiles => {
-                                    console.log(acceptedFiles)
-                                    const selectFile = acceptedFiles[0]
-                                    const reader = new FileReader();
-                                    reader.onload = (event: any) => {
-                                        const base64: string = event.target.result
-                                        console.log(base64);
-                                        const image: Image = { ID: uuid(), Base64: base64, Url: "", Size: 0, Status: ImageStatus.NONE }
-                                        setImageData([...imageData, image])
-                                    };
-                                    reader.readAsDataURL(selectFile);
-                                }}
-                                accept="image/jpeg,image/png,image/jpg">
-                                {({ getRootProps, getInputProps }) => (
+                                <Dropzone
+                                    onDrop={acceptedFiles => {
+                                        console.log(acceptedFiles)
+                                        const selectFile = acceptedFiles[0]
+                                        const reader = new FileReader();
+                                        reader.onload = (event: any) => {
+                                            const base64: string = event.target.result
+                                            console.log(base64);
+                                            const image: Image = { ID: uuid(), Base64: base64, Url: "", Size: 0, Status: ImageStatus.NONE }
+                                            setImages([...images, image])
+                                            appendImage([image]);
+                                        };
+                                        reader.readAsDataURL(selectFile);
+                                    }}
+                                    accept="image/jpeg,image/png,image/jpg">
+                                    {({ getRootProps, getInputProps }) => (
 
-                                    <section>
-                                        <div {...getRootProps()}>
-                                            <input {...getInputProps()} />
-                                            <Button style={{ margin: 10 }} variant={"contained"}>Add Image</Button>
-                                        </div>
-                                    </section>
-                                )}
-                            </Dropzone>
-
+                                        <section>
+                                            <div {...getRootProps()}>
+                                                <input {...getInputProps()} />
+                                                <Button style={{ margin: 10 }} variant={"contained"}>Add Image</Button>
+                                            </div>
+                                        </section>
+                                    )}
+                                </Dropzone>
+                            </FormLabel>
                         </Grid>
-
                     </Grid>
 
-                    <Button variant={"contained"} color="secondary" style={{ width: 100, margin: 20 }} type="button" onClick={() => openDialog(onSubmit, "Save", "Are you sure save?")}>Save</Button>
-                </form>
+
+                    <div style={{ width: "100%", textAlign: "center" }}>
+                        <Button variant={"contained"} color="primary" style={{ width: 200, margin: 20 }} onClick={() => onSubmit()}>Save</Button>
+                    </div>
+                </div>
             </Paper>
             <DialogComponent controller={dialogController} />
             <AlertComponent controller={alertController} />
@@ -581,30 +657,26 @@ export default withRouter(Form);
 
 const formToItem = (form: FormData) => {
     const item = new Item()
-    item.ID = form.id
     item.MarketType = form.marketType
     item.StartDate = form.startDate
-    item.EndDate = form.endDate
+    item.EndDate = form.endDate === undefined ? form.startDate : form.endDate
     item.TradeType = form.tradeType
-    item.Pair = form.pair
-    item.Lot = form.lot
-    item.EntryRate = form.entryRate
-    item.LossCutRate = form.losscutRate
-    item.SettleRate = form.settleRate
-    item.Profit = form.profit
+    item.Pair = form.pair === undefined ? "" : form.pair
+    item.Lot = form.lot === undefined ? 0 : form.lot
+    item.EntryRate = form.entryRate === undefined ? 0 : form.entryRate
+    item.LossCutRate = form.losscutRate === undefined ? 0 : form.losscutRate
+    item.SettleRate = form.settleRate === undefined ? 0 : form.settleRate
+    item.Profit = form.profit === undefined ? 0 : form.profit
     item.BeforeComment = form.beforeComment
     item.AfterComment = form.afterComment
-    item.Tags = form.tags
-    item.Images = form.images
-    item.UpdatedAt = form.updatedAt
-    item.CreatedAt = form.createdAt
+    item.Tags = form.tags === undefined ? [] : form.tags
+    item.Images = form.images === undefined ? [] : form.images
     return item
 }
 
 const itemToForm = (item: Item) => {
-    console.log("form debug: ", item)
+    console.log("itemDebug: ", item)
     const form: FormData = {
-        id: item.ID,
         marketType: item.MarketType,
         startDate: item.StartDate,
         endDate: item.EndDate,
@@ -619,8 +691,6 @@ const itemToForm = (item: Item) => {
         afterComment: item.AfterComment,
         tags: item.Tags,
         images: item.Images,
-        updatedAt: item.UpdatedAt,
-        createdAt: item.CreatedAt,
     }
     return form
 }

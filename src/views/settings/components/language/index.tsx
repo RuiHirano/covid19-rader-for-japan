@@ -43,7 +43,7 @@ interface ContainerProps {
 const LanguageContainer: React.FC<ContainerProps> = props => {
     const { history } = props;
     const dispatch = useDispatch();
-    const {updateUserInfo, status} = useUpdateUserInfo()
+    const { updateUserInfo, status } = useUpdateUserInfo()
     const handleUpdateLanguage = (values: FormikValues) => {
         const language = values.language;
         user.Setting.Language = language;
@@ -97,75 +97,75 @@ export const Language: React.FC<Props> = props => {
                     isSubmitting,
                     setFieldValue
                 }) => (
-                    <div>
-                        <CardHeader
-                            subheader="Manage the notifications"
-                            title="Language"
-                        />
-                        <Divider />
-                        <CardContent>
-                            <Grid container spacing={6} wrap="wrap">
-                                <Grid
-                                    className={classes.item}
-                                    item
-                                    md={4}
-                                    sm={6}
-                                    xs={12}
-                                >
-                                    <Typography gutterBottom variant="h6">
-                                        Language
+                        <div>
+                            <CardHeader
+                                subheader="Manage the notifications"
+                                title="Language"
+                            />
+                            <Divider />
+                            <CardContent>
+                                <Grid container spacing={6} wrap="wrap">
+                                    <Grid
+                                        className={classes.item}
+                                        item
+                                        md={4}
+                                        sm={6}
+                                        xs={12}
+                                    >
+                                        <Typography gutterBottom variant="h6">
+                                            Language
                                     </Typography>
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                color="primary"
-                                                checked={
-                                                    values.language ==
-                                                        LanguageType.en || false
-                                                }
-                                                onChange={() =>
-                                                    setFieldValue(
-                                                        "language",
-                                                        LanguageType.en
-                                                    )
-                                                }
-                                            />
-                                        }
-                                        label="English"
-                                    />
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                color="primary"
-                                                checked={
-                                                    values.language ==
-                                                        LanguageType.ja || false
-                                                }
-                                                onChange={() =>
-                                                    setFieldValue(
-                                                        "language",
-                                                        LanguageType.ja
-                                                    )
-                                                }
-                                            />
-                                        }
-                                        label="Japanese"
-                                    />
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={
+                                                        values.language ==
+                                                        LanguageType.ENGLISH || false
+                                                    }
+                                                    onChange={() =>
+                                                        setFieldValue(
+                                                            "language",
+                                                            LanguageType.ENGLISH
+                                                        )
+                                                    }
+                                                />
+                                            }
+                                            label="English"
+                                        />
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    color="primary"
+                                                    checked={
+                                                        values.language ==
+                                                        LanguageType.JAPANESE || false
+                                                    }
+                                                    onChange={() =>
+                                                        setFieldValue(
+                                                            "language",
+                                                            LanguageType.JAPANESE
+                                                        )
+                                                    }
+                                                />
+                                            }
+                                            label="Japanese"
+                                        />
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                        </CardContent>
-                        <Divider />
-                        <CardActions>
-                            <Button
-                                color="primary"
-                                variant="outlined"
-                                onClick={() => handleSubmit()}
-                            >
-                                Save
+                            </CardContent>
+                            <Divider />
+                            <CardActions>
+                                <Button
+                                    color="primary"
+                                    variant="outlined"
+                                    onClick={() => handleSubmit()}
+                                >
+                                    Save
                             </Button>
-                        </CardActions>
-                    </div>
-                )}
+                            </CardActions>
+                        </div>
+                    )}
             </Formik>
         </Card>
     );

@@ -3,48 +3,13 @@ import { makeStyles, Theme } from "@material-ui/core/styles";
 import Calendar from "react-calendar/dist/entry.nostyle";
 import { Grid, Typography } from "@material-ui/core";
 import { Details, Statistics } from "./components";
-import { Item, StatsResult } from "../../types";
+import { Item } from "../../types";
 import moment, { Moment } from "moment";
 import { useSelector, useDispatch } from "react-redux";
 import { ReduxState } from "../../redux/module";
 import { Main as MainLayout } from "../../layouts";
-import { useStatistics } from "../../redux/hooks/useStatistics";
-import { PeriodType } from "../../types/statistics2";
+import { useStatistics, PeriodType } from "../../redux/hooks/useStatistics";
 import DateBar from "./components/date-bar";
-
-/*// Container
-interface ContainerProps { }
-const CalendarContainer: React.FC<ContainerProps> = props => {
-    const dispatch = useDispatch();
-    const items: Item[] = useSelector((state: ReduxState) => state.Items);
-
-    const [date, setDate] = useState<Moment>(moment());
-
-    const content = useSelector(
-        (state: ReduxState) => state.User.Setting.Content
-    );
-
-    const [statsValues, setStatsValues] = useState(
-        //items.calculator(moment(), PeriodType.ALL, content)
-    );
-
-    useEffect(() => {
-        //setStatsValues(items.calculator(date, PeriodType.MONTH, content));
-    }, [date]);
-
-    const changeDate = (nextDate: Moment) => {
-        setDate(nextDate);
-    };
-
-    return (
-        <CalendarView
-            items={items}
-            statsValues={statsValues}
-            date={date}
-            changeDate={changeDate}
-        />
-    );
-};*/
 
 
 

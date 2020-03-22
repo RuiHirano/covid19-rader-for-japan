@@ -1,65 +1,67 @@
 import * as React from "react";
-/*import i18n from '../i18n/index'
+//import i18n from '../i18n/index'
 
-export function checkErrorCode(errorCode) {
+export const checkErrorCode = (errorCode: string) => {
 	switch (errorCode) {
 		// signInWithEmailAndPassword
 		case 'auth/invalid-email':
-			return i18n.t('er_invalid_email')
+			return "メールアドレスが間違っています"
 		case 'auth/user-disabled':
-			return i18n.t('er_user_disabled')
+			return "i18n.t('er_user_disabled')"
 		case 'auth/user-not-found':
-			return i18n.t('er_user_not_found')
+			return "アカウントが見つかりませんでした"
 		case 'auth/wrong-password':
-			return i18n.t('er_wrong_password')
+			return "パスワードが間違っています"
 		// createUserWithEmailAndPassword
 		case 'auth/email-already-in-use':
-			return i18n.t('er_email_already_in_use')
+			return "そのメールアドレスはすでに使われています"
 		case 'auth/operation-not-allowed':
-			return i18n.t('er_operation_not_allowed')
+			return "i18n.t('er_operation_not_allowed')"
 		case 'auth/weak-password':
-			return i18n.t('er_weak_password')
+			return "パスワードが脆弱です"
+		case 'auth/too-many-requests':
+			return "リクエスト上限を超えました。しばらく経ってからお試しください。"
 		// update email
 		case 'auth/requires-recent-login':
-			return i18n.t('er_requires_recent_login')
+			return "i18n.t('er_requires_recent_login')"
 
 		// storage
 
 		// fireStore
 		case 'cancelled':
-			return i18n.t('er_cancelled')
+			return "i18n.t('er_cancelled')"
 		case 'unknown':
-			return i18n.t('er_unknown')
+			return "i18n.t('er_unknown')"
 		case 'invalid-argument':
-			return i18n.t('er_invalid-argument')
+			return "i18n.t('er_invalid-argument')"
 		case 'deadline-exceeded':
-			return i18n.t('er_deadline_exceeded')
+			return "i18n.t('er_deadline_exceeded')"
 		case 'not-found':
-			return i18n.t('er_not_found')
+			return "i18n.t('er_not_found')"
 		case 'already-exists':
-			return i18n.t('er_already_exists')
+			return "i18n.t('er_already_exists')"
 		case 'permission-denied':
-			return i18n.t('er_permission_denied')
+			return "i18n.t('er_permission_denied')"
 		case 'resource-exhausted':
-			return i18n.t('er_resource_exhausted')
+			return "i18n.t('er_resource_exhausted')"
 		case 'failed-precondition':
-			return i18n.t('er_failed_precondition')
+			return "i18n.t('er_failed_precondition')"
 		case 'aborted':
-			return i18n.t('er_aborted')
+			return "i18n.t('er_aborted')"
 		case 'out-of-range':
-			return i18n.t('er_out_of_range')
+			return "i18n.t('er_out_of_range')"
 		case 'unimplemented':
-			return i18n.t('er_unimplemented')
+			return "i18n.t('er_unimplemented')"
 		case 'internal':
-			return i18n.t('er_internal')
+			return "i18n.t('er_internal')"
 		case 'unavailable':
-			return i18n.t('er_unavailable')
+			return "i18n.t('er_unavailable')"
 		case 'data-loss':
-			return i18n.t('er_data_loss')
+			return "i18n.t('er_data_loss')"
 		case 'unauthenticated':
-			return i18n.t('er_unauthenticated')
+			return "i18n.t('er_unauthenticated')"
 
 		default:
-			return i18n.t('er_unknown_error')
+			return "i18n.t('er_unknown_error')"
 	}
-}*/
+}
