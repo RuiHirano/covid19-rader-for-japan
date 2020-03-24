@@ -1,5 +1,3 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
 # Covid19 Rader for Japan
 
 ## Requirements
@@ -17,6 +15,7 @@ go build main.go
 2. run frontend
 ```
 cd frontend
+yarn install // or npm install
 yarn start  // or npm start
 ```
 
@@ -41,3 +40,5 @@ docker image build -t covid19-rader-for-japan/backend:latest .
 ```
 docker-compose up -d
 ```
+
+4. visit http://localhost:3000
