@@ -1,0 +1,14 @@
+version: '3'
+services:
+  frontend:
+    # covid19-rader-for-japan/frontend:latest
+    image: covid19-rader-for-japan/frontend:latest
+    depends_on: 
+        - backend
+    ports:
+      - "0.0.0.0:3000:3000"
+  backend:
+    # image: covid19-rader-for-japan/backend:latest
+    image: covid19-rader-for-japan/backend:latest
+    ports:
+      - "0.0.0.0:5000:5000"
