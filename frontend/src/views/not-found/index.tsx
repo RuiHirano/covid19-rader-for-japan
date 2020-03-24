@@ -1,0 +1,51 @@
+import React from "react";
+import { makeStyles, Theme } from "@material-ui/core/styles";
+import { Grid, Typography } from "@material-ui/core";
+import MainLayout from "../../layouts";
+
+const useStyles = makeStyles((theme: Theme) => ({
+    root: {
+        padding: theme.spacing(4)
+    },
+    content: {
+        paddingTop: 150,
+        textAlign: "center"
+    },
+    image: {
+        marginTop: 50,
+        display: "inline-block",
+        maxWidth: "100%",
+        width: 560
+    }
+}));
+
+const NotFound: React.FC = () => {
+    const classes = useStyles();
+
+    return (
+
+        <MainLayout title="Not Found">
+            <Grid container justify="center" spacing={4}>
+                <Grid item lg={6} xs={12}>
+                    <div className={classes.content}>
+                        <Typography variant="h1">
+                            404: The page you are looking for isn’t here
+                        </Typography>
+                        <Typography variant="subtitle2">
+                            You either tried some shady route or you came here
+                            by mistake. Whichever it is, try using the
+                            navigation
+                        </Typography>
+                        <img
+                            alt="Under development"
+                            className={classes.image}
+                            src="/images/undraw_page_not_found_su7k.svg"
+                        />
+                    </div>
+                </Grid>
+            </Grid>
+        </MainLayout>
+    );
+};
+
+export default NotFound;

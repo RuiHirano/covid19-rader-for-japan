@@ -1,7 +1,0 @@
-export { default as Footer } from "./footer"
-export { default as HomeHeader } from "./header/home-header"
-export { default as MainHeader } from "./header/main-header"
-export { default as HomeSidebar } from "./sidebar/home-sidebar"
-export { default as MainSidebar } from "./sidebar/main-sidebar"
-export { default as Navigation } from "./navigation"
-export { default as Logo } from "./logo"
