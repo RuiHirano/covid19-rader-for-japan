@@ -40,3 +40,5 @@ docker image build -t covid19-rader-for-japan/backend:latest .
 ```
 docker-compose up -d
 ```
+
+4. visit http://localhost:3000
