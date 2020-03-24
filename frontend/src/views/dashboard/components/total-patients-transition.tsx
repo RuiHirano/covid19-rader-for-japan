@@ -59,7 +59,7 @@ const createData = (patients: Patient[]) => {
 interface Props {
 }
 
-const PatientsTransition: React.FC<Props> = props => {
+const TotalPatientsTransition: React.FC<Props> = props => {
 
     const classes = useStyles();
 
@@ -74,7 +74,7 @@ const PatientsTransition: React.FC<Props> = props => {
                 //        Last 7 days <ArrowDropDownIcon />
                 //    </Button>
                 //}
-                title="Patients Transition"
+                title="Total Patients Transition"
             />
             <Divider />
             <CardContent>
@@ -97,6 +97,7 @@ const PatientsTransition: React.FC<Props> = props => {
                         type="monotone"  //グラフが曲線を描くように指定。default値は折れ線グラフ
                         dataKey="北海道" //Array型のデータの、Y軸に表示したい値のキーを指定
                         stroke="#00aced" ////グラフの線の色を指定
+                        stackId="a"
                         fillOpacity={1}  ////グラフの中身の薄さを指定
                         fill="rgba(0, 172, 237, 0.2)"  //グラフの色を指定
                     />
@@ -104,6 +105,7 @@ const PatientsTransition: React.FC<Props> = props => {
                         type="monotone"  //グラフが曲線を描くように指定。default値は折れ線グラフ
                         dataKey="東京都"　//Array型のデータの、Y軸に表示したい値のキーを指定
                         stroke="#2250A2" ////レーダーの線の色を指定 
+                        stackId="a"
                         fillOpacity={1}  //レーダーの中身の色の薄さを指定
                         fill="rgba(34, 80, 162, 0.2)" ////レーダーの中身の色を指定
                     />
@@ -111,6 +113,7 @@ const PatientsTransition: React.FC<Props> = props => {
                         type="monotone"  //グラフが曲線を描くように指定。default値は折れ線グラフ
                         dataKey="愛知県"　//Array型のデータの、Y軸に表示したい値のキーを指定
                         stroke="#22A0A2" ////レーダーの線の色を指定 
+                        stackId="a"
                         fillOpacity={1}  //レーダーの中身の色の薄さを指定
                         fill="rgba(34, 120, 120, 0.2)" ////レーダーの中身の色を指定
                     />
@@ -128,4 +131,4 @@ const PatientsTransition: React.FC<Props> = props => {
     );
 };
 
-export default PatientsTransition;
+export default TotalPatientsTransition;

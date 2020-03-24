@@ -5,6 +5,9 @@ import {
     PatientsTransition
 } from "./components";
 import MainLayout from "../../layouts";
+import TotalPatientsTransition from "./components/total-patients-transition";
+import PercentPatientsTransition from "./components/percent-patients-transition copy";
+import PatientsBarTransition from "./components/patient-bar-transition";
 
 
 interface Props {
@@ -19,21 +22,18 @@ const DashboardView: React.FC<Props> = props => {
                     <PatientsTransition />
                 </Grid>
                 <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+                    <TotalPatientsTransition />
+                </Grid>
+                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+                    <PercentPatientsTransition />
+                </Grid>
+                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+                    <PatientsBarTransition />
+                </Grid>
+                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
                     <PatientsTransition />
                 </Grid>
-                <Grid item xl={9} lg={8} md={12} sm={12} xs={12}>
-                    <PatientsTransition />
-                </Grid>
-                <Grid item xl={3} lg={4} md={6} sm={12} xs={12}>
-                    <PatientsTransition />
-                </Grid>
-                <Grid item xl={9} lg={8} md={12} sm={12} xs={12}>
-                    <PatientsTransition />
-                </Grid>
-                <Grid item xl={3} lg={4} md={6} sm={12} xs={12}>
-                    <PatientsTransition />
-                </Grid>
-                <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
                     <PatientsTransition />
                 </Grid>
             </Grid>

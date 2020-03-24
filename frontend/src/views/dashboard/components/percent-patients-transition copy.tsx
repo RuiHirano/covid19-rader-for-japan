@@ -45,11 +45,19 @@ const mockData = [
     { date: '3/13', '北海道': 12, '東京都': 8, '愛知県': 2 },
 ]
 
+const getPercent = (value: number, total: number) => {
+    const ratio = total > 0 ? value / total : 0;
+
+    return toPercent(ratio, 2);
+};
+const toPercent = (decimal: number, fixed = 0) => (decimal * 100).toFixed(fixed);
+
 const createData = (patients: Patient[]) => {
     const newData: any[] = []
     let totalData = { date: '3/1', '愛知県': 0, '東京都': 0, '北海道': 0 }
     mockData.forEach((data) => {
-        newData.push({ date: data.date, '愛知県': data.愛知県 + totalData.愛知県, '東京都': data.東京都 + totalData.東京都, '北海道': data.北海道 + totalData.北海道 })
+        const totalNum = data.愛知県 + totalData.愛知県 + data.東京都 + totalData.東京都 + data.北海道 + totalData.北海道
+        newData.push({ date: data.date, '愛知県': getPercent(data.愛知県 + totalData.愛知県, totalNum), '東京都': getPercent(data.愛知県 + totalData.愛知県, totalNum), '北海道': getPercent(data.愛知県 + totalData.愛知県, totalNum) })
         totalData = { date: data.date, '愛知県': data.愛知県 + totalData.愛知県, '東京都': data.東京都 + totalData.東京都, '北海道': data.北海道 + totalData.北海道 }
     })
     console.log("newdata: ", newData)
@@ -59,7 +67,7 @@ const createData = (patients: Patient[]) => {
 interface Props {
 }
 
-const PatientsTransition: React.FC<Props> = props => {
+const PercentPatientsTransition: React.FC<Props> = props => {
 
     const classes = useStyles();
 
@@ -74,7 +82,7 @@ const PatientsTransition: React.FC<Props> = props => {
                 //        Last 7 days <ArrowDropDownIcon />
                 //    </Button>
                 //}
-                title="Patients Transition"
+                title="Percent Patients Transition"
             />
             <Divider />
             <CardContent>
@@ -128,4 +136,4 @@ const PatientsTransition: React.FC<Props> = props => {
     );
 };
 
-export default PatientsTransition;
+export default PercentPatientsTransition;
