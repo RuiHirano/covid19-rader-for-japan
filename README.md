@@ -17,6 +17,7 @@ go build main.go
 2. run frontend
 ```
 cd frontend
+yarn install or npm install
 yarn start  // or npm start
 ```
 
