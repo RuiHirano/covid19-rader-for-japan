@@ -30,3 +30,9 @@ export interface Prefecture {
     Longitude: number,
     Latitude: number,
 }
+
+export interface DateData {
+    Patients: Patient[]
+    PatientsNum: number
+    TotalPatientsNum: number
+}
