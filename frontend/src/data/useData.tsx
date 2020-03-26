@@ -3,10 +3,69 @@ import { useState, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { patientActions } from "../redux/module/patient";
 import { Patient, Sex } from "../types";
-import { GoogleSheetsAPI } from "../api"
+import { API } from "../api"
 import { Status } from "../types/app";
 import moment from 'moment';
 import { prefectures } from './prefecture';
+
+
+const mockPatients: Patient[] = [
+    {
+        ID: "0",
+        Residence: "北海道",
+        Age: 20,
+        Sex: Sex.FEMALE,
+        Occupation: "医者",
+        Prefecture: prefectures[0],
+        ActionHistory: "", // 行動歴
+        SymptomHistory: "",	// 症状・経過
+        FeverDate: moment(),  // 発熱観察日 
+        ConsultationDate: moment(), // 受診日
+        PublicationDate: moment(), // 公表日
+        RecoveryDate: moment(),  // 回復日
+        OverseasTravelFlag: true, // 海外渡航フラグ
+        OverseasTravelName: "China",  // 渡航先
+        CloseContact: "", // 濃厚接触者情報
+        Source: "http://"  // 情報源
+    },
+    {
+        ID: "1",
+        Residence: "愛知県",
+        Age: 20,
+        Sex: Sex.FEMALE,
+        Occupation: "医者",
+        Prefecture: prefectures[0],
+        ActionHistory: "", // 行動歴
+        SymptomHistory: "",	// 症状・経過
+        FeverDate: moment(),  // 発熱観察日 
+        ConsultationDate: moment(), // 受診日
+        PublicationDate: moment(), // 公表日
+        RecoveryDate: moment(),  // 回復日
+        OverseasTravelFlag: true, // 海外渡航フラグ
+        OverseasTravelName: "China",  // 渡航先
+        CloseContact: "", // 濃厚接触者情報
+        Source: "http://"  // 情報源
+    },
+    {
+        ID: "2",
+        Residence: "東京都",
+        Age: 20,
+        Sex: Sex.FEMALE,
+        Occupation: "医者",
+        Prefecture: prefectures[0],
+        ActionHistory: "", // 行動歴
+        SymptomHistory: "",	// 症状・経過
+        FeverDate: moment(),  // 発熱観察日 
+        ConsultationDate: moment(), // 受診日
+        PublicationDate: moment(), // 公表日
+        RecoveryDate: moment(),  // 回復日
+        OverseasTravelFlag: true, // 海外渡航フラグ
+        OverseasTravelName: "China",  // 渡航先
+        CloseContact: "", // 濃厚接触者情報
+        Source: "http://"  // 情報源
+    },
+]
+
 
 /////////////////////////////////////////////////
 //////////          Get Patient             /////
@@ -15,7 +74,8 @@ import { prefectures } from './prefecture';
 export const useGetPatients = () => {
     const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
     const dispatch = useDispatch()
-    const api = new GoogleSheetsAPI()
+    const isProduct = false
+    const api = new API()
 
     const getPatients = useCallback(async () => {
         try {
@@ -23,9 +83,11 @@ export const useGetPatients = () => {
             setStatus({ ...status, Loading: true })
 
             // get patients
-            const patientsInfoJson = await api.getPatients()
-            let patientsInfo: Patient[] = convertJsonToPatients(patientsInfoJson)
+            //let patientsInfo: Patient[] = []
+            let patientsInfo = await api.getPatients()
+            console.log("patients2", patientsInfo)
 
+            //awsTest()
             patientsInfo = removeMissingValues(patientsInfo)
 
             // userInfoをstore
@@ -43,6 +105,7 @@ export const useGetPatients = () => {
     return { "getPatients": getPatients, "status": status }
 }
 
+
 /////////////////////////////////////////////////
 //////////              Util               /////
 ////////////////////////////////////////////////
@@ -55,7 +118,6 @@ const removeMissingValues = (patients: Patient[]) => {
         // 2019年以下を省く
         const prefName = patient.Prefecture.Name
         const date = patient.PublicationDate
-        console.log("debug", date, date.isSameOrAfter('2020-1-1', 'year'), prefName, isExistPref(prefName))
         if (date.isSameOrAfter('2020-1-1', 'year') && isExistPref(prefName)) {
             result.push(patient)
         } else {
