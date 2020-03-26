@@ -35,11 +35,11 @@ const Sidebar: React.FC<Props> = props => {
             href: "/dashboard",
             icon: <DashboardIcon />
         },
-        {
+        /*{
             title: "Covid19 Map",
             href: "/map",
             icon: <CreateIcon />
-        },
+        },*/
     ];
 
 

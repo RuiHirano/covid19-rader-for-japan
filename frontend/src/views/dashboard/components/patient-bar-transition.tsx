@@ -16,7 +16,8 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../redux/module";
 import { createDeflateRaw } from "zlib";
-import { Patient } from "../../../types";
+import { Patient, Period, } from "../../../types";
+import { createObjectArray, StatsCalculator } from "../../../utils/stats-calculator";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -45,12 +46,12 @@ const mockData = [
     { date: '3/13', '北海道': 12, '東京都': 8, '愛知県': 2 },
 ]
 
-const createData = (patients: Patient[]) => {
+const createData = (data: any[]) => {
     const newData: any[] = []
     let totalData = { date: '3/1', '愛知県': 0, '東京都': 0, '北海道': 0 }
-    mockData.forEach((data) => {
-        newData.push({ date: data.date, '愛知県': data.愛知県 + totalData.愛知県, '東京都': data.東京都 + totalData.東京都, '北海道': data.北海道 + totalData.北海道 })
-        totalData = { date: data.date, '愛知県': data.愛知県 + totalData.愛知県, '東京都': data.東京都 + totalData.東京都, '北海道': data.北海道 + totalData.北海道 }
+    data.forEach((subdata) => {
+        newData.push({ date: subdata.date, '愛知県': subdata.愛知県 + totalData.愛知県, '東京都': subdata.東京都 + totalData.東京都, '北海道': subdata.北海道 + totalData.北海道 })
+        totalData = { date: subdata.date, '愛知県': subdata.愛知県 + totalData.愛知県, '東京都': subdata.東京都 + totalData.東京都, '北海道': subdata.北海道 + totalData.北海道 }
     })
     console.log("newdata: ", newData)
     return newData
@@ -64,7 +65,12 @@ const PatientsBarTransition: React.FC<Props> = props => {
     const classes = useStyles();
 
     const patients = useSelector((state: ReduxState) => state.Patients)
-    const [data, setData] = useState(createData(patients))
+    const stats = new StatsCalculator()
+    //const [data, setData] = useState(createData(stats.calcPatientNumByPrefecture(patients, Period.DATE)))
+    //const [data, setData] = useState(stats.createPatientsNumData(patients, Period.DATE))
+    const [data, setData] = useState(mockData)
+
+    console.log("data", data)
 
     return (
         <Card>
@@ -74,7 +80,7 @@ const PatientsBarTransition: React.FC<Props> = props => {
                 //        Last 7 days <ArrowDropDownIcon />
                 //    </Button>
                 //}
-                title="Total Patients Transition(Bar)"
+                title="各都道府県における罹患者数の累計推移"
             />
             <Divider />
             <CardContent>
@@ -113,6 +119,13 @@ const PatientsBarTransition: React.FC<Props> = props => {
                         stackId="a"
                         fillOpacity={1}  //レーダーの中身の色の薄さを指定
                         fill="rgba(34, 120, 120, 0.2)" ////レーダーの中身の色を指定
+                    />
+                    <Bar //棒グラフ
+                        dataKey="大阪府"　//Array型のデータの、Y軸に表示したい値のキーを指定
+                        stroke="#12A0A2" ////レーダーの線の色を指定 
+                        stackId="a"
+                        fillOpacity={1}  //レーダーの中身の色の薄さを指定
+                        fill="rgba(134, 12, 220, 0.2)" ////レーダーの中身の色を指定
                     />
                 </ComposedChart>
 
