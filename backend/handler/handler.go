@@ -2,7 +2,7 @@ package handler
 
 import (
 	"encoding/json"
-	"fmt"
+	//"fmt"
 	"net/http"
 	"os"
 	"strconv"
@@ -32,12 +32,12 @@ func SendFile() echo.HandlerFunc {
 			if err != nil {
 				break
 			}
-			if count == 0 {
+			if count == 0 { // headerを除去
 				count += 1
 				continue
 			}
 
-			fmt.Println(len(line), line[0], line[1], line[2])
+			//fmt.Println(len(line), line[0], line[1], line[2])
 			patient := &types.Patient{
 				ID:               line[0],
 				PatientNo:        line[2],

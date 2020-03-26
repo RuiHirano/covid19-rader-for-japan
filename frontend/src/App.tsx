@@ -8,26 +8,22 @@ import "./assets/scss/index.scss";
 import Routes from "./Routes";
 import configureStore from "./redux/store";
 import { Provider as ReduxProvider } from "react-redux";
-import { PersistGate } from "redux-persist/integration/react";
 import InitProvider from "./components/init-provider";
-
 
 const browserHistory = createBrowserHistory();
 
-const { store, persistor } = configureStore();
+const { store } = configureStore();
 
 const App: React.FC = () => {
     return (
         <ReduxProvider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
-                <ThemeProvider theme={theme}>
-                    <InitProvider>
-                        <Router history={browserHistory}>
-                            <Routes />
-                        </Router>
-                    </InitProvider>
-                </ThemeProvider>
-            </PersistGate>
+            <ThemeProvider theme={theme}>
+                <InitProvider>
+                    <Router history={browserHistory}>
+                        <Routes />
+                    </Router>
+                </InitProvider>
+            </ThemeProvider>
         </ReduxProvider>
     );
 };

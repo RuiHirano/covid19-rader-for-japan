@@ -104,7 +104,7 @@ export class StatsCalculator {
 
 
     /* 都道府県別のある期間毎の感染者数を計算 */
-    calcPatientNumByPrefecture(patients: Patient[], period: Period) {
+    /*calcPatientNumByPrefecture(patients: Patient[], period: Period) {
         const resultObj: any = {}
         patients.forEach((patient) => {
             const dateStr = patient.PublicationDate.toISOString()
@@ -137,7 +137,7 @@ export class StatsCalculator {
         })
         console.log("newdata: ", newData)
         return newData
-    }
+    }*/
 }
 
 
