@@ -2,14 +2,14 @@ import { Patient, Sex } from "../types"
 import { prefectures } from "../data/prefecture"
 import moment from "moment"
 import axios from "axios"
-var aws = require('aws-sdk')
+/*var aws = require('aws-sdk')
 const accessKeyId = process.env.REACT_APP_AWS_ACCESS_KEY
 const secretAccessKey = process.env.REACT_APP_AWS_SECRET_ACCESS_KEY
 aws.config.update({
 	region: 'ap-northeast-1',
 	credentials: new aws.Credentials(accessKeyId, secretAccessKey)
 });
-var s3 = new aws.S3();
+var s3 = new aws.S3();*/
 
 export class API {
 	private baseURL: string
@@ -18,7 +18,37 @@ export class API {
 		this.baseURL = url;
 	}
 
+	getBaseURL() {
+		return this.baseURL;
+	}
+
+	setBaseURL(val: string) {
+		this.baseURL = val;
+	}
+
+	async get({
+		url = "",
+		params = {},
+	}) {
+		return axios(
+			{
+				url: url,
+				method: 'get',
+				baseURL: this.baseURL,
+				params: params,
+			}
+		);
+	}
+
 	async getPatients() {
+
+		return this.get({
+			url: '/file/patient',
+		});
+	}
+
+
+	/*async getPatients() {
 		var params = {
 			Bucket: "covid19.dataset",
 			Key: 'patient-dataset.csv'
@@ -57,11 +87,7 @@ export class API {
 			}
 		})
 		return patients
-	}
-
-
-
-
+	}*/
 
 }
 

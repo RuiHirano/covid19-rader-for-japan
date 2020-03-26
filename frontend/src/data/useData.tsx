@@ -74,7 +74,6 @@ const mockPatients: Patient[] = [
 export const useGetPatients = () => {
     const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
     const dispatch = useDispatch()
-    const isProduct = false
     const api = new API()
 
     const getPatients = useCallback(async () => {
@@ -83,9 +82,8 @@ export const useGetPatients = () => {
             setStatus({ ...status, Loading: true })
 
             // get patients
-            //let patientsInfo: Patient[] = []
-            let patientsInfo = await api.getPatients()
-            console.log("patients2", patientsInfo)
+            const patientsInfoJson = await api.getPatients()
+            let patientsInfo: Patient[] = convertJsonToPatients(patientsInfoJson)
 
             //awsTest()
             patientsInfo = removeMissingValues(patientsInfo)

@@ -5,12 +5,31 @@ import (
 
 	"handler"
 
+	"github.com/carlescere/scheduler"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
 
+var ()
+
+func init() {
+	fetchFile()
+}
+
+func fetchFileSceduler() {
+	scheduler.Every().Day().At("06:00").Run(fetchFile)
+}
+
+func fetchFile() {
+	// file取得
+	fmt.Printf("hello")
+	// csv
+}
+
 func main() {
 	fmt.Printf("Starting...")
+
+	go fetchFileSceduler()
 
 	e := echo.New()
 
