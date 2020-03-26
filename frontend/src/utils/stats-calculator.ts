@@ -36,7 +36,6 @@ export class StatsCalculator {
         patients.forEach((patient) => {
             const prefName = patient.Prefecture.Name
             if (prefName !== null && prefName !== "") {     // 欠損値を除去
-                console.log("prefName: ", prefName)
                 patientsObj[prefName].push(patient)
             }
 
@@ -53,7 +52,6 @@ export class StatsCalculator {
     // return: [{ pref: '北海道', 'value': 12 },{ pref: '東京都', 'value': 22 },{ pref: '愛知県', 'value': 2 },...]
     createPatientsNumByPref(patients: Patient[], top: number) {
         let result: PatientsNumByPref[] = []
-        console.log("result: ", result)
         const a = this.calcPatientsByPrefecture(patients)
 
         // 大きい順からtopまでを取得

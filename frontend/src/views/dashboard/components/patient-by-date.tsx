@@ -4,20 +4,13 @@ import {
     Card,
     CardHeader,
     CardContent,
-    CardActions,
     Divider,
-    Button,
-    Typography,
 } from "@material-ui/core";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import ArrowRightIcon from "@material-ui/icons/ArrowRight";
-import { LineChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Line, Tooltip, Legend, ComposedChart, Bar, Area } from "recharts";
-import moment from "moment";
+import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Bar } from "recharts";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../redux/module";
-import { createDeflateRaw } from "zlib";
 import { Patient, Period, PatientsByDate, PatientsNumByDate } from "../../../types";
-import { createObjectArray, StatsCalculator } from "../../../utils/stats-calculator";
+import { StatsCalculator } from "../../../utils/stats-calculator";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -35,7 +28,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 const createData = (patients: Patient[], period: Period) => {
     const stats = new StatsCalculator()
     let result: PatientsNumByDate[] = []
-    console.log("result: ", result)
     const a = stats.calcPatientsByDate(patients, period)
 
     // 日付ごとにソート
@@ -56,15 +48,10 @@ interface Props {
 
 const PatientsByDateView: React.FC<Props> = props => {
 
-    const classes = useStyles();
 
     const patients = useSelector((state: ReduxState) => state.Patients)
-    const stats = new StatsCalculator()
-    //const [data, setData] = useState(createData(stats.calcPatientNumByPrefecture(patients, Period.DATE)))
     const [data, setData] = useState(createData(patients, Period.DATE))
-    //const [data, setData] = useState(mockData)
 
-    console.log("data", data)
 
     return (
         <Card>
@@ -104,11 +91,11 @@ const PatientsByDateView: React.FC<Props> = props => {
 
             </CardContent>
             <Divider />
-            <CardActions className={classes.actions}>
+            {/*<CardActions className={classes.actions}>
                 <Button color="primary" size="small" variant="text">
                     Overview <ArrowRightIcon />
                 </Button>
-            </CardActions>
+            </CardActions>*/}
         </Card>
     );
 };

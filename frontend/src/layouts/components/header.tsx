@@ -53,7 +53,7 @@ const MainHeader: React.FC<Props> = props => {
                 </IconButton>
                 <Title style={{ color: "black" }}>{title}</Title>
 
-                <IconButton color="inherit">
+                {/*<IconButton color="inherit">
                     <Badge
                         //badgeContent={notifications.length}
                         color="primary"
@@ -61,7 +61,7 @@ const MainHeader: React.FC<Props> = props => {
                     >
                         <NotificationsIcon />
                     </Badge>
-                </IconButton>
+    </IconButton>*/}
 
             </Toolbar>
             <DialogComponent controller={dialogController} />

@@ -1,23 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles, Theme } from "@material-ui/core/styles";
 import {
     Card,
     CardHeader,
     CardContent,
-    CardActions,
     Divider,
-    Button,
-    Typography,
 } from "@material-ui/core";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import ArrowRightIcon from "@material-ui/icons/ArrowRight";
-import { LineChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Line, Tooltip, Legend, ComposedChart, Bar, Area } from "recharts";
-import moment from "moment";
+import { XAxis, YAxis, CartesianGrid, Line, Tooltip, Legend, ComposedChart, Bar, Area } from "recharts";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../redux/module";
-import { createDeflateRaw } from "zlib";
-import { Patient, Period, PatientsNumByPref, PatientsByPref } from "../../../types";
-import { createObjectArray, StatsCalculator } from "../../../utils/stats-calculator";
+import { Patient, PatientsNumByPref, PatientsByPref } from "../../../types";
+import { StatsCalculator } from "../../../utils/stats-calculator";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -36,7 +29,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 const createData = (patients: Patient[], top: number) => {
     const stats = new StatsCalculator()
     let result: PatientsNumByPref[] = []
-    console.log("result: ", result)
     const a = stats.calcPatientsByPrefecture(patients)
 
     // 大きい順からtopまでを取得
@@ -57,16 +49,11 @@ interface Props {
 
 const PatientsByPrefView: React.FC<Props> = props => {
 
-    const classes = useStyles();
 
     const patients = useSelector((state: ReduxState) => state.Patients)
-    const stats = new StatsCalculator()
-    //const [data, setData] = useState(createData(stats.calcPatientNumByPrefecture(patients, Period.DATE)))
     const top = 20 // 上位20個
     const [data, setData] = useState(createData(patients, top))
     //const [data, setData] = useState(mockData)
-
-    console.log("data", data)
 
     return (
         <Card>
@@ -107,11 +94,11 @@ const PatientsByPrefView: React.FC<Props> = props => {
 
             </CardContent>
             <Divider />
-            <CardActions className={classes.actions}>
+            {/*<CardActions className={classes.actions}>
                 <Button color="primary" size="small" variant="text">
                     Overview <ArrowRightIcon />
                 </Button>
-            </CardActions>
+            </CardActions>*/}
         </Card>
     );
 };
