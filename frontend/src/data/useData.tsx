@@ -74,7 +74,7 @@ const mockPatients: Patient[] = [
 export const useGetPatients = () => {
     const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
     const dispatch = useDispatch()
-    const api = new API("http://34.85.88.75:5000")
+    const api = new API("https://covid19-rader-for-japan.appspot.com")
 
     const getPatients = useCallback(async () => {
         try {

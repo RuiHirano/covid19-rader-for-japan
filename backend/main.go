@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"handler"
+	"log"
+	"os"
 
 	"github.com/carlescere/scheduler"
 	"github.com/labstack/echo"
@@ -39,6 +41,11 @@ func main() {
 
 	e.GET("/file/patient", handler.SendFile()) // notebookファイル取得
 
-	e.Start(":5000")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+		log.Printf("Defaulting to port %s", port)
+	}
+	e.Start(":" + port)
 
 }
