@@ -71,7 +71,7 @@ const mockPatients: Patient[] = [
 //////////          Get Patient             /////
 ////////////////////////////////////////////////
 
-const backendAddress = process.env.BACKEND_ADDRESS ? process.env.BACKEND_ADDRESS : 'http://localhost:8080'
+const backendAddress = process.env.REACT_APP_BACKEND_ADDRESS ? process.env.REACT_APP_BACKEND_ADDRESS : 'http://localhost:8080'
 
 export const useGetPatients = () => {
     const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
