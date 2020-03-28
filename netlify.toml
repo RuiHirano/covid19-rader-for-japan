@@ -1,4 +1,4 @@
 [[redirects]]
    from = "/*"
-   to = "/frontend/build/index.html"
+   to = "https://dev-covid19-rader-for-japan.netlify.com"
    status = 200
