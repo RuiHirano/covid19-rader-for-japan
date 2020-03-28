@@ -5,8 +5,7 @@ import {
 import MainLayout from '../../layouts';
 import { Typography } from '@material-ui/core';
 
-//const MAPBOX_TOKEN = process.env.MAPBOX_ACCESS_TOKEN
-const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVpaGlyYW5vIiwiYSI6ImNrODV5cWRrbDBiYmkzbW83MHB0OXR2YWsifQ.DsQnn_9ZQY8-wp0elf-Yhw'
+const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
 console.log("map: ", MAPBOX_TOKEN)
 
 const createMovesBase = (): Movesbase => {
