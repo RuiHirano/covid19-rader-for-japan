@@ -12,7 +12,7 @@ const Routes: React.FC = () => {
         <Switch>
             <Redirect exact from="/" to="/dashboard" />
             <Route path="/dashboard" component={DashboardView} />
-            {/*<Route path="/map" component={MapView} />*/}
+            <Route path="/map" component={MapView} />
             <Route path="/not-found" component={NotFoundView} />
             <Redirect to="/not-found" />
         </Switch>

@@ -51,6 +51,7 @@ const PatientsByPrefView: React.FC<Props> = props => {
 
 
     const patients = useSelector((state: ReduxState) => state.Patients)
+    console.log("data: ", patients)
     const top = 20 // 上位20個
     const [data, setData] = useState(createData(patients, top))
     //const [data, setData] = useState(mockData)

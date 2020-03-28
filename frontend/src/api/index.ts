@@ -14,7 +14,7 @@ var s3 = new aws.S3();*/
 export class API {
 	private baseURL: string
 
-	constructor(url: string = 'http://localhost:5000') {
+	constructor(url: string = 'http://localhost:8080') {
 		this.baseURL = url;
 	}
 

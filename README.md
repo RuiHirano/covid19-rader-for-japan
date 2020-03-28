@@ -42,3 +42,6 @@ docker-compose up -d
 ```
 
 4. visit http://localhost:3000
+
+
+## Contributers

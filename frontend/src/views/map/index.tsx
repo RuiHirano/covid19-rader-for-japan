@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import {
-    HarmoVisLayers, connectToHarmowareVis, LoadingIcon, MovesLayer, BasedProps, Viewport, Movesbase, MovesbaseOperation
+    HarmoVisLayers, connectToHarmowareVis, LoadingIcon, MovesLayer, BasedProps, Viewport, Movesbase, MovesbaseOperation, BasedState, MovedData
 } from 'harmoware-vis';
 import MainLayout from '../../layouts';
 import { Typography } from '@material-ui/core';
 
-const MAPBOX_TOKEN = process.env.MAPBOX_ACCESS_TOKEN
+//const MAPBOX_TOKEN = process.env.MAPBOX_ACCESS_TOKEN
+const MAPBOX_TOKEN = 'pk.eyJ1IjoicnVpaGlyYW5vIiwiYSI6ImNrODV5cWRrbDBiYmkzbW83MHB0OXR2YWsifQ.DsQnn_9ZQY8-wp0elf-Yhw'
+console.log("map: ", MAPBOX_TOKEN)
 
 const createMovesBase = (): Movesbase => {
     const interval = 1000;
@@ -33,11 +35,23 @@ const createMovesBaseList = (count: number): Movesbase[] => {
     return Array.from({ length: count }, (): Movesbase => createMovesBase())
 }
 
-const Map: React.FC<BasedProps> = (props) => {
-    const { viewport, actions, clickedObject, inputFileName, movesbase, movedData, routePaths } = props
+const Map: React.FC<BasedProps & BasedState> = (props) => {
+    const { viewport, actions, clickedObject, inputFileName, movesbase, movedData, routePaths }: any = props
     const optionVisible = false
 
     useEffect(() => {
+
+        const setMovesbase: Movesbase[] = [];
+        setMovesbase.push({
+            type: "",
+            departuretime: 0,
+            arrivaltime: 0,
+            operation: [{
+                elapsedtime: 0,
+                position: [135.23415, 35.363453, 0],
+            }]
+        });
+
         if (actions) {
             actions.setMovesBase(createMovesBaseList(10));
             actions.setViewport({
@@ -46,15 +60,26 @@ const Map: React.FC<BasedProps> = (props) => {
                 height: window.screen.height,
             })
             actions.setSecPerHour(100);
+
+            actions.updateMovesBase(setMovesbase);
+            console.log("test2", actions, movesbase, viewport, routePaths, movedData, clickedObject, clickedObject)
+
+            actions.setViewport({ longitude: 135.35463, latitude: 35.23452345 })
         }
+
     }, [])
+
+    useEffect(() => {
+        console.log("test3", actions, movesbase, viewport, routePaths, movedData, clickedObject, clickedObject)
+    }, [movesbase])
+    console.log("test", actions, movesbase, viewport, routePaths, movedData, clickedObject, clickedObject)
 
     return (
 
         <MainLayout title="Harmoware-Vis">
-            {actions !== undefined && movesbase !== undefined && viewport !== undefined && routePaths !== undefined && movedData !== undefined && clickedObject !== undefined && clickedObject !== null ?
+            {actions !== undefined ?
 
-                <div className="harmovis_area">
+                <div style={{ position: "fixed", paddingTop: 0, width: "100%", height: "100%" }}>
                     <HarmoVisLayers
                         viewport={viewport} actions={actions}
                         mapboxApiAccessToken={MAPBOX_TOKEN ? MAPBOX_TOKEN : ''}
@@ -66,7 +91,11 @@ const Map: React.FC<BasedProps> = (props) => {
                         ]}
                     />
                 </div> :
-                <LoadingIcon />
+                <div>
+
+                    <LoadingIcon />
+                    <Typography>loading</Typography>
+                </div>
             }
         </MainLayout>
     )

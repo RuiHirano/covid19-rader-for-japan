@@ -71,10 +71,13 @@ const mockPatients: Patient[] = [
 //////////          Get Patient             /////
 ////////////////////////////////////////////////
 
+const backendAddress = process.env.BACKEND_ADDRESS ? process.env.BACKEND_ADDRESS : 'http://localhost:8080'
+
 export const useGetPatients = () => {
     const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
     const dispatch = useDispatch()
-    const api = new API("https://covid19-rader-for-japan.appspot.com")
+    console.log("backend address: ", backendAddress)
+    const api = new API(backendAddress)
 
     const getPatients = useCallback(async () => {
         try {

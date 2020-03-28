@@ -64,16 +64,25 @@ func SendFile() echo.HandlerFunc {
 			}
 			patients = append(patients, patient)
 		}
+
+		// data整形
+		calcDataset(patients)
+
 		patientsjson, _ := json.Marshal(patients)
 		//fmt.Printf("data %v", string(patientsjson))
 		return c.String(http.StatusOK, string(patientsjson))
 	}
 }
 
+func calcDataset(patients []*types.Patient) {
+
+}
+
 func convertAge(age string) uint64 {
 	ageNum := uint64(999) // Unknown
 	if strings.Contains(age, "代") {
-		ageNum = 20
+		ageNum = numCheck(age)
+		//ageNum = 20
 	}
 	return ageNum
 }
@@ -102,4 +111,16 @@ func convertFlag(flag string) bool {
 		return true
 	}
 	return false
+}
+
+func numCheck(s string) uint64 {
+	n := 0
+	for _, r := range s {
+		if '0' <= r && r <= '9' {
+			n = n*10 + int(r-'0')
+		} else {
+			break
+		}
+	}
+	return uint64(n)
 }
