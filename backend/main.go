@@ -5,6 +5,7 @@ import (
 
 	"bytes"
 	"encoding/json"
+	//"encoding/json"
 	"fmt"
 
 	"io/ioutil"
@@ -21,11 +22,6 @@ import (
 	"github.com/carlescere/scheduler"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
-)
-
-var (
-//BUCKET_NAME = os.Getenv("BUCKET_NAME")
-//OBJECT_PATH = os.Getenv("OBJECT_PATH")
 )
 
 func init() {
@@ -48,30 +44,36 @@ func fetchData() {
 	patientsjson, _ := json.Marshal(patients)
 	// request作成
 	//var jsonStr = []byte(`{"title":"Buy cheese and bread for breakfast."}`)
-	request, error := http.NewRequest("GET", url, bytes.NewBuffer(patientsjson))
-	if error != nil {
-		log.Fatal(error)
+	request, err := http.NewRequest("GET", url, bytes.NewBuffer(patientsjson))
+	if err != nil {
+		log.Printf("Error occur..., backend-calucator startup?")
+		return
+		//log.Printf(err)
 	}
 	request.Header.Add("Content-Type", "application/json")
 	// 送信
-	response, error := http.DefaultClient.Do(request)
-	if error != nil {
-		log.Fatal(error)
+	response, err := http.DefaultClient.Do(request)
+	if err != nil {
+		log.Printf("Error occur..., backend-calucator startup?")
+		return
+		//log.Printf(err)
 	}
-	//defer response.Body.Close()
-
-	// response読み取り
-	//fmt.Printf("======Body (use json.Unmarshal)======\n")
+	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error occur..., backend-calucator startup?")
+		return
+		//log.Printf(err)
 	}
 
 	var resPatients []*types.Patient
 	err = json.Unmarshal(body, &resPatients)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error occur..., backend-calucator startup?")
+		return
+		//log.Printf(err)
 	}
+	handler.JsonData = body
 	//fmt.Printf("res %v\n", resPatients)
 
 	// csv

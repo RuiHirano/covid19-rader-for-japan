@@ -14,6 +14,10 @@ import (
 	"github.com/labstack/echo"
 )
 
+var (
+	JsonData []byte
+)
+
 // SendFile: ファイルを送信する
 func SendFile() echo.HandlerFunc {
 	return func(c echo.Context) error {
