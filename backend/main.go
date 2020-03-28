@@ -2,24 +2,30 @@ package main
 
 import (
 	//"context"
+
+	"bytes"
+	"encoding/json"
 	"fmt"
-	//"io/ioutil"
+
+	"io/ioutil"
 
 	"handler"
 	"log"
 	"os"
+	"types"
 
 	//"cloud.google.com/go/storage"
+
+	"net/http"
+
 	"github.com/carlescere/scheduler"
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 )
 
 var (
-	//BUCKET_NAME = os.Getenv("BUCKET_NAME")
-	//OBJECT_PATH = os.Getenv("OBJECT_PATH")
-	BUCKET_NAME = "covid19-rader-for-japan"
-	OBJECT_PATH = "patient_dateset.csv"
+//BUCKET_NAME = os.Getenv("BUCKET_NAME")
+//OBJECT_PATH = os.Getenv("OBJECT_PATH")
 )
 
 func init() {
@@ -27,12 +33,46 @@ func init() {
 }
 
 func fetchDataSceduler() {
-	scheduler.Every().Day().At("06:00").Run(fetchData)
+	scheduler.Every(10).Seconds().Run(fetchData)
 }
 
 func fetchData() {
 	// file取得
-	fmt.Printf("hello")
+	fmt.Printf("post to calculator server...\n")
+
+	// csv データ取得
+	patients := handler.ReadData("./dataset/patient-dataset.csv")
+
+	// pythonサーバへpost
+	url := "http://localhost:8888/"
+	patientsjson, _ := json.Marshal(patients)
+	// request作成
+	//var jsonStr = []byte(`{"title":"Buy cheese and bread for breakfast."}`)
+	request, error := http.NewRequest("GET", url, bytes.NewBuffer(patientsjson))
+	if error != nil {
+		log.Fatal(error)
+	}
+	request.Header.Add("Content-Type", "application/json")
+	// 送信
+	response, error := http.DefaultClient.Do(request)
+	if error != nil {
+		log.Fatal(error)
+	}
+	//defer response.Body.Close()
+
+	// response読み取り
+	//fmt.Printf("======Body (use json.Unmarshal)======\n")
+	body, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var resPatients []*types.Patient
+	err = json.Unmarshal(body, &resPatients)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//fmt.Printf("res %v\n", resPatients)
 
 	// csv
 	/*ctx := context.Background()
@@ -57,6 +97,7 @@ func fetchData() {
 	fmt.Printf("file: %v\n", string(b))
 
 	//return b, nil*/
+
 }
 
 func main() {
