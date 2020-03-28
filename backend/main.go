@@ -5,6 +5,7 @@ import (
 
 	"bytes"
 	"encoding/json"
+
 	//"encoding/json"
 	"fmt"
 
@@ -13,7 +14,8 @@ import (
 	"handler"
 	"log"
 	"os"
-	"types"
+
+	//"types"
 
 	//"cloud.google.com/go/storage"
 
@@ -44,9 +46,9 @@ func fetchData() {
 	patientsjson, _ := json.Marshal(patients)
 	// request作成
 	//var jsonStr = []byte(`{"title":"Buy cheese and bread for breakfast."}`)
-	request, err := http.NewRequest("GET", url, bytes.NewBuffer(patientsjson))
+	request, err := http.NewRequest("POST", url, bytes.NewBuffer(patientsjson))
 	if err != nil {
-		log.Printf("Error occur..., backend-calucator startup?")
+		log.Printf("Error1 occur..., backend-calucator startup?")
 		return
 		//log.Printf(err)
 	}
@@ -54,25 +56,25 @@ func fetchData() {
 	// 送信
 	response, err := http.DefaultClient.Do(request)
 	if err != nil {
-		log.Printf("Error occur..., backend-calucator startup?")
+		log.Printf("Error2 occur..., backend-calucator startup?")
 		return
 		//log.Printf(err)
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		log.Printf("Error occur..., backend-calucator startup?")
+		log.Printf("Error3 occur..., backend-calucator startup?")
 		return
 		//log.Printf(err)
 	}
 
-	var resPatients []*types.Patient
+	/*var resPatients []*types.Patient
 	err = json.Unmarshal(body, &resPatients)
 	if err != nil {
-		log.Printf("Error occur..., backend-calucator startup?")
+		log.Printf("Error4 occur..., backend-calucator startup?")
 		return
 		//log.Printf(err)
-	}
+	}*/
 	handler.JsonData = body
 	//fmt.Printf("res %v\n", resPatients)
 

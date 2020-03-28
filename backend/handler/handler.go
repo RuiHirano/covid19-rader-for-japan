@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"encoding/json"
+
 	//"fmt"
 	"net/http"
 	"os"
@@ -26,9 +26,10 @@ func SendFile() echo.HandlerFunc {
 		// data整形
 		calcDataset(patients)
 
-		patientsjson, _ := json.Marshal(patients)
-		//fmt.Printf("data %v", string(patientsjson))
-		return c.String(http.StatusOK, string(patientsjson))
+		//patientsjson, _ := json.Marshal(patients)
+		//return c.String(http.StatusOK, string(patientsjson))
+		//fmt.Printf("json: %v\n", string(JsonData))
+		return c.String(http.StatusOK, string(JsonData))
 	}
 }
 

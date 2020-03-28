@@ -85,8 +85,10 @@ export const useGetPatients = () => {
             setStatus({ ...status, Loading: true })
 
             // get patients
-            const patientsInfoJson = await api.getPatients()
-            let patientsInfo: Patient[] = convertJsonToPatients(patientsInfoJson)
+            const response = await api.getPatients()
+            const dataJson = response.data
+            console.log("get json: ", dataJson)
+            let patientsInfo: Patient[] = convertJsonToPatients(dataJson["raw_data"])
 
             //awsTest()
             patientsInfo = removeMissingValues(patientsInfo)
@@ -140,7 +142,7 @@ const isExistPref = (prefName: string) => {
 
 const convertJsonToPatients = (patientsJson: any) => {
     const patients: Patient[] = []
-    patientsJson.data.forEach((pjson: any, index: number) => {
+    patientsJson.forEach((pjson: any, index: number) => {
         const patient: Patient = {
             ID: pjson.ID,
             Residence: pjson.Residence,
