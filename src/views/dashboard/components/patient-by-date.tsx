@@ -9,6 +9,7 @@ import {
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Bar, ResponsiveContainer } from "recharts";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../redux/module";
+import { StatData } from "../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -21,25 +22,61 @@ const useStyles = makeStyles((theme: Theme) => ({
     }
 }));
 
-/* 日付別の感染者数合計を計算 */
-// return: [{ pref: '北海道', 'value': 12 },{ pref: '東京都', 'value': 22 },{ pref: '愛知県', 'value': 2 },...]
-/*const createData = (patients: Patient[], period: Period) => {
-    const stats = new StatsCalculator()
-    let result: PatientsNumByDate[] = []
-    const a = stats.calcPatientsByDate(patients, period)
+const calcTopPrefs = (statsData: StatData[], top: number) => {
+    // topを求める
+    let topPrefs: { [s: string]: number }[] = []
+    const lastDate = statsData[statsData.length - 1].Date
 
-    // 日付ごとにソート
-    const numResult = a.sort(function (pd1: PatientsByDate, pd2: PatientsByDate) {
-        if (pd1.date < pd2.date) return -1;
-        if (pd1.date > pd2.date) return 1;
-        return 0;
-    });
-    numResult.forEach((data) => {
-        result.push({ date: data.date, value: data.patients.length })
+    statsData.forEach((stat) => {
+        if (stat.Date === lastDate) {
+            topPrefs.push({ [stat.Prefecture]: stat.TotalCases })
+        }
     })
+    // 大きい順からtopまでを取得
+    topPrefs = topPrefs.sort(function (res1, res2) {
+        if (Object.values(res1)[0] < Object.values(res2)[0]) return 1;
+        if (Object.values(res1)[0] > Object.values(res2)[0]) return -1;
+        return 0;
+    }).slice(0, top);
+    console.log("topPrefs", topPrefs, Object.keys(topPrefs))
+    return topPrefs
+}
 
+/* 日付別の感染者数合計を計算 */
+type DateDataByPref = { "date": string, [s: string]: number | string }
+// return: [{ pref: '北海道', 'value': 12 },{ pref: '東京都', 'value': 22 },{ pref: '愛知県', 'value': 2 },...]
+const createData = (statsData: StatData[], topPrefs: { [s: string]: number }[]) => {
+    let result: DateDataByPref[] = []
+
+
+    if (statsData.length > 0) {
+        let date = statsData[0].Date
+        let dateData: DateDataByPref = { "date": date }
+        statsData.forEach((stat) => {
+            if (date === stat.Date) {
+                if (topPrefs.some(pref => Object.keys(pref)[0] === stat.Prefecture)) {
+                    dateData[stat.Prefecture] = stat.TotalCases
+                } else {
+                    dateData["その他"] = dateData["その他"] ? parseInt(dateData["その他"].toString()) + stat.TotalCases : stat.TotalCases
+                }
+
+            } else {
+                result.push(dateData)
+                date = stat.Date
+                dateData = { "date": date }
+                if (topPrefs.some(pref => Object.keys(pref)[0] === stat.Prefecture)) {
+                    dateData[stat.Prefecture] = stat.TotalCases
+                } else {
+                    dateData["その他"] = stat.TotalCases
+                }
+            }
+        })
+        //最後１日を加える
+        result.push(dateData)
+    }
+    console.log("result2 ", result)
     return result
-}*/
+}
 
 const mockItems: any[] = [
     { "date": "2/3", "愛知県": 4, "大阪府": 5, "東京都": 12, "北海道": 12 },
@@ -58,25 +95,33 @@ const mockItems: any[] = [
     { "date": "2/16", "愛知県": 38, "大阪府": 64, "東京都": 567, "北海道": 79 },
 ]
 
+function rand255() {
+    return Math.random() * 255;
+}
+
 interface Props {
 }
 
 const PatientsByDateView: React.FC<Props> = props => {
 
 
-    const patients = useSelector((state: ReduxState) => state.Data)
+    const statsData = useSelector((state: ReduxState) => state.Data.StatsData)
+    console.log("data: ", statsData)
+    const top = 5 // 上位20個
+    const topPrefs = calcTopPrefs(statsData, top)
+    const data = createData(statsData, topPrefs)
 
 
     return (
         <Card style={{ height: "100%", width: "100%" }}>
             <CardHeader
-                title="日別罹患者数推移"
+                title={`都道府県別の罹患者数の推移(上位 ${top})`}
             />
             <Divider />
             <CardContent style={{ height: 400, width: "100%" }}>
                 <ResponsiveContainer width="95%">
                     <ComposedChart //グラフ全体のサイズや位置、データを指定。場合によってmarginで上下左右の位置を指定する必要あり。
-                        data={mockItems} //ここにArray型のデータを指定
+                        data={data} //ここにArray型のデータを指定
                         margin={{ top: 0, right: 0, bottom: 0, left: 0 }}  //marginを指定
                     >
                         <XAxis dataKey="date" />
@@ -86,38 +131,19 @@ const PatientsByDateView: React.FC<Props> = props => {
                         <CartesianGrid //グラフのグリッドを指定
                             stroke="#f5f5f5" //グリッド線の色を指定
                         />
-                        <Bar //面積を表すグラフ
-                            dataKey="愛知県" //Array型のデータの、Y軸に表示したい値のキーを指定
-                            label={false}
-                            stroke="#00aced" ////グラフの線の色を指定
-                            stackId="a"
-                            fillOpacity={1}  ////グラフの中身の薄さを指定
-                            fill="rgba(0, 172, 237, 0.4)"  //グラフの色を指定
-                        />
-                        <Bar //面積を表すグラフ
-                            dataKey="東京都" //Array型のデータの、Y軸に表示したい値のキーを指定
-                            label={false}
-                            stroke="#00aced" ////グラフの線の色を指定
-                            stackId="a"
-                            fillOpacity={1}  ////グラフの中身の薄さを指定
-                            fill="rgba(150, 2, 237, 0.4)"  //グラフの色を指定
-                        />
-                        <Bar //面積を表すグラフ
-                            dataKey="大阪府" //Array型のデータの、Y軸に表示したい値のキーを指定
-                            label={false}
-                            stroke="#00aced" ////グラフの線の色を指定
-                            stackId="a"
-                            fillOpacity={1}  ////グラフの中身の薄さを指定
-                            fill="rgba(146, 72, 27, 0.4)"  //グラフの色を指定
-                        />
-                        <Bar //面積を表すグラフ
-                            dataKey="北海道" //Array型のデータの、Y軸に表示したい値のキーを指定
-                            label={false}
-                            stroke="#00aced" ////グラフの線の色を指定
-                            stackId="a"
-                            fillOpacity={1}  ////グラフの中身の薄さを指定
-                            fill="rgba(20, 2, 7, 0.4)"  //グラフの色を指定
-                        />
+
+                        {topPrefs.reverse().map((pref) => {
+                            return (<Bar //面積を表すグラフ
+                                dataKey={Object.keys(pref)[0]} //Array型のデータの、Y軸に表示したい値のキーを指定
+                                label={false}
+                                stroke="#00aced" ////グラフの線の色を指定
+                                stackId="a"
+                                fillOpacity={1}  ////グラフの中身の薄さを指定
+                                fill={`rgba(${rand255()}, ${rand255()}, 255, 0.4)`} //グラフの色を指定
+                            />)
+                        })}
+
+
                     </ComposedChart>
                 </ResponsiveContainer>
             </CardContent>
