@@ -5,8 +5,7 @@ import { useSelector, connect } from 'react-redux';
 import { ReduxState } from '../../redux/module';
 import { PrefData, Data, StatData } from '../../types';
 
-//const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
-const MAPBOX_TOKEN = "pk.eyJ1IjoicnVpaGlyYW5vIiwiYSI6ImNrODV5cWRrbDBiYmkzbW83MHB0OXR2YWsifQ.DsQnn_9ZQY8-wp0elf-Yhw"
+const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN ? process.env.REACT_APP_MAPBOX_TOKEN : "";
 
 const createDepotsData = (lngBase: number, latBase: number): DepotsData => {
     const lon = lngBase + (Math.floor(Math.random() * 299999) / 1000000);
