@@ -9,7 +9,6 @@ import {
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Bar, ResponsiveContainer } from "recharts";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../redux/module";
-import { useResize } from "../../../utils/useResize"
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
