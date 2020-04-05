@@ -13,15 +13,9 @@ import { date } from 'yup';
 
 const getBackendAddress = () => {
     let backendAddress = 'http://localhost:5000'
-    /*if (process.env.KUBE_BACKEND_HOST) {
-        backendAddress = process.env.KUBE_BACKEND_HOST
-
-    } else if (process.env.REACT_APP_KUBE_BACKEND_HOST) {
-        backendAddress = process.env.REACT_APP_KUBE_BACKEND_HOST
-
-    } else if (process.env.REACT_APP_BACKEND_ADDRESS) {
+    if (process.env.REACT_APP_BACKEND_ADDRESS) {
         backendAddress = process.env.REACT_APP_BACKEND_ADDRESS
-    }*/
+    }
     return backendAddress
 }
 
@@ -78,78 +72,6 @@ export const useGetData = () => {
     }, [status])
     return { "getData": getData, "status": status }
 }
-
-/////////////////////////////////////////////////
-//////////          Get Patient             /////
-////////////////////////////////////////////////
-
-/*export const useGetPatients = () => {
-    const [status, setStatus] = useState<Status>({ Progress: 0, Log: "", Error: "", Loading: false })
-    const dispatch = useDispatch()
-    const backendAddress = getBackendAddress()
-    console.log("backend address: ", backendAddress)
-    const api = new API(backendAddress)
-
-    const getPatients = useCallback(async () => {
-        try {
-            // Loading開始
-            setStatus({ ...status, Loading: true })
-
-            // get patients
-            const response = await api.getPatients()
-            const dataJson = response.data
-            console.log("get json: ", dataJson)
-            let patientsInfo: PatientData[] = convertJsonToPatients(dataJson["raw_data"])
-
-            //awsTest()
-            patientsInfo = removeMissingValues(patientsInfo)
-
-            // userInfoをstore
-            dispatch(patientActions.updatePatientInfo(patientsInfo))
-
-            // Loading終了
-            setStatus({ ...status, Loading: false, Progress: 100 })
-
-        } catch (err) {
-            console.log("error: ", err)
-            setStatus({ ...status, Error: err })
-        }
-
-    }, [status])
-    return { "getPatients": getPatients, "status": status }
-}*/
-
-
-/////////////////////////////////////////////////
-//////////              Util               /////
-////////////////////////////////////////////////
-
-/*const removeMissingValues = (patients: Patient[]) => {
-    const result: Patient[] = []
-    let removeCount = 0
-    patients.forEach((patient) => {
-        // 都道府県名が間違っているものを省く
-        // 2019年以下を省く
-        const prefName = patient.Prefecture.Name
-        const date = patient.PublicationDate
-        if (date.isSameOrAfter('2020-1-1', 'year') && isExistPref(prefName)) {
-            result.push(patient)
-        } else {
-            removeCount++
-        }
-    })
-    console.log("Missing Value Num: ", removeCount)
-
-    return result
-}
-
-const isExistPref = (prefName: string) => {
-    return prefectures.map((pref) => {
-        if (prefName === pref.Name) {
-            return true
-        }
-    })
-}*/
 
 const convertJsonToPatients = (patientsJson: any) => {
     const patients: PatientData[] = []
