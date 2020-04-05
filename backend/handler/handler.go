@@ -3,89 +3,155 @@ package handler
 import (
 
 	//"fmt"
+	"encoding/json"
 	"net/http"
-	"os"
+
+	//"os"
 	"strconv"
 	"strings"
 
-	"encoding/csv"
+	//"encoding/csv"
 	"types"
 
 	"github.com/labstack/echo"
 )
 
+type Data struct {
+	Prefectures           []types.Prefecture
+	Patients              []types.Patient
+	Stats                 []types.Stat
+	PrefsData             []*types.PrefData
+	TotalData             *types.TotalData
+	DailyData             []*types.DateData
+	DailyPrefData         []*types.DateData
+	PatientsData          []*types.Patient
+	DailyPatientsData     []*types.DatePatientsData
+	PrefsPatientsData     []*types.PrefPatientsData
+	DailyPrefPatientsData []*types.DatePrefPatientsData
+}
+
+func NewData() *Data {
+	d := &Data{
+		Prefectures:           []types.Prefecture{},
+		Patients:              []types.Patient{},
+		Stats:                 []types.Stat{},
+		PrefsData:             []*types.PrefData{},
+		TotalData:             &types.TotalData{},
+		DailyData:             []*types.DateData{},
+		DailyPrefData:         []*types.DateData{},
+		PatientsData:          []*types.Patient{},
+		DailyPatientsData:     []*types.DatePatientsData{},
+		PrefsPatientsData:     []*types.PrefPatientsData{},
+		DailyPrefPatientsData: []*types.DatePrefPatientsData{},
+	}
+	return d
+}
+
 var (
-	JsonData []byte
+	APIData *Data
 )
 
-// SendFile: ファイルを送信する
-func SendFile() echo.HandlerFunc {
+func init() {
+	APIData = NewData()
+}
+
+func SendPatients() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		patients := ReadData("./dataset/patient-dataset.csv")
-
-		// data整形
-		calcDataset(patients)
-
-		//patientsjson, _ := json.Marshal(patients)
-		//return c.String(http.StatusOK, string(patientsjson))
-		//fmt.Printf("json: %v\n", string(JsonData))
-		return c.String(http.StatusOK, string(JsonData))
+		patients := APIData.Patients
+		patientsjson, _ := json.Marshal(patients)
+		return c.String(http.StatusOK, string(patientsjson))
 	}
 }
 
-func ReadData(filepath string) []*types.Patient {
-	file, err := os.Open(filepath)
-	if err != nil {
-		panic(err)
+func SendPrefectures() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		prefectures := APIData.Prefectures
+		prefecturesjson, _ := json.Marshal(prefectures)
+		return c.String(http.StatusOK, string(prefecturesjson))
 	}
-	defer file.Close()
-
-	reader := csv.NewReader(file)
-	var line []string
-	patients := make([]*types.Patient, 0)
-	count := 0
-	for {
-		line, err = reader.Read()
-		if err != nil {
-			break
-		}
-		if count == 0 { // headerを除去
-			count += 1
-			continue
-		}
-
-		//fmt.Println(len(line), line[0], line[1], line[2])
-		patient := &types.Patient{
-			ID:               line[0],
-			PatientNo:        line[2],
-			ActionHistory:    line[4],
-			SymptomHistory:   line[3],
-			FeverDate:        line[5],
-			ConsultationDate: line[6],
-			PublicationDate:  line[7],
-			RecoveryDate:     line[8],
-			Prefecture: &types.Prefecture{
-				ID:        line[1],
-				Name:      line[10],
-				Latitude:  strToFloat64(line[11]),
-				Longitude: strToFloat64(line[12]),
-			},
-			Residence:          line[13],
-			Age:                convertAge(line[16]),
-			Sex:                convertSex(line[17]),
-			Occupation:         line[18],
-			OverseasTravelFlag: convertFlag(line[19]),
-			OverseasTravelName: line[20],
-			CloseContact:       line[23],
-			Source:             line[24],
-		}
-		patients = append(patients, patient)
-	}
-	return patients
 }
 
-func calcDataset(patients []*types.Patient) {
+func SendStats() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		stats := APIData.Stats
+		statsjson, _ := json.Marshal(stats)
+		return c.String(http.StatusOK, string(statsjson))
+	}
+}
 
+// Finish
+// SendPrefsData: 都道府県ごとのデータ
+func SendPrefsData() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		prefsData := APIData.PrefsData
+		prefsjson, _ := json.Marshal(prefsData)
+		return c.String(http.StatusOK, string(prefsjson))
+	}
+}
+
+// SendDailyData: 都道府県ごとのデータ
+func SendDailyData() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		dailyData := APIData.DailyData
+		dailyjson, _ := json.Marshal(dailyData)
+		return c.String(http.StatusOK, string(dailyjson))
+	}
+}
+
+// SendDailyPrefData: 都道府県ごとのデータ
+func SendDailyPrefData() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		dailyPrefData := APIData.DailyPrefData
+		dailyPrefjson, _ := json.Marshal(dailyPrefData)
+		return c.String(http.StatusOK, string(dailyPrefjson))
+	}
+}
+
+// Finish
+// SendTotalData: 都道府県ごとのデータ
+func SendTotalData() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		totalData := APIData.TotalData
+		patientsjson, _ := json.Marshal(totalData)
+		return c.String(http.StatusOK, string(patientsjson))
+	}
+}
+
+// Finish
+// SendPatientsData: 都道府県ごとのデータ
+func SendPatientsData() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		patientsData := APIData.PatientsData
+		patientsjson, _ := json.Marshal(patientsData)
+		return c.String(http.StatusOK, string(patientsjson))
+	}
+}
+
+// SendDailyPatientsData: 都道府県ごとのデータ
+func SendDailyPatientsData() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		dailyPatientsData := APIData.DailyPatientsData
+		dailyPatientsjson, _ := json.Marshal(dailyPatientsData)
+		return c.String(http.StatusOK, string(dailyPatientsjson))
+	}
+}
+
+// SendPrefPatientsData: 都道府県ごとのデータ
+func SendPrefPatientsData() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		prefPatientsData := APIData.PrefsPatientsData
+		prefPatientsjson, _ := json.Marshal(prefPatientsData)
+		return c.String(http.StatusOK, string(prefPatientsjson))
+	}
+}
+
+// SendDailyPrefPatientsData: 都道府県ごとのデータ
+func SendDailyPrefPatientsData() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		dailyPrefPatientsData := APIData.DailyPrefPatientsData
+		dailyPrefPatientsjson, _ := json.Marshal(dailyPrefPatientsData)
+		return c.String(http.StatusOK, string(dailyPrefPatientsjson))
+	}
 }
 
 func convertAge(age string) uint64 {

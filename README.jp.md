@@ -109,8 +109,8 @@ Pull Request を送る際の branch は、以下のネーミングルールで�
 #### 基本的なブランチ
 | 目的 | ブランチ | 確認URL | 備考 |
 | ---- | -------- | ---- | ---- |
-| 開発 | development | https://covid19-rader-for-japan.com/ | base branch。基本はこちらに Pull Requestを送ってください |
-| ステージング | staging | https://covid19-rader-for-japan.com/ | 本番前の最終確認用。管理者以外の Pull Request は禁止です |
+| 開発 | development | https://dev-covid19-rader-for-japan.netlify.com/ | base branch。基本はこちらに Pull Requestを送ってください |
+| ステージング | staging | https://stg-covid19-rader-for-japan.netlify.com/ | 本番前の最終確認用。管理者以外の Pull Request は禁止です |
 | 本番 | master | https://covid19-rader-for-japan.com/ | 管理者以外の Pull Request は禁止です |
 
 

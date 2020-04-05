@@ -1,4 +1,4 @@
-import { Patient, Sex } from "../types"
+import { Sex } from "../types"
 import { prefectures } from "../data/prefecture"
 import moment from "moment"
 import axios from "axios"
@@ -14,7 +14,7 @@ var s3 = new aws.S3();*/
 export class API {
 	private baseURL: string
 
-	constructor(url: string = 'http://localhost:8080') {
+	constructor(url: string = 'http://localhost:5000') {
 		this.baseURL = url;
 	}
 
@@ -41,10 +41,24 @@ export class API {
 		);
 	}
 
-	async getPatients() {
+	async getPatientsData() {
 
 		return this.get({
-			url: '/file/patient',
+			url: '/api/v1/patients',
+		});
+	}
+
+	async getStatsData() {
+
+		return this.get({
+			url: '/api/v1/stats',
+		});
+	}
+
+	async getPrefsData() {
+
+		return this.get({
+			url: '/api/v1/prefectures',
 		});
 	}
 

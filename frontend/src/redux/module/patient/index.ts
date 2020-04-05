@@ -1,17 +1,17 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
 import actionCreatorFactory from 'typescript-fsa';
-import { Patient } from '../../../types';
+import { PatientData } from '../../../types';
 
 const actionCreator = actionCreatorFactory();
 
-export const initialState: Patient[] = []
+export const initialState: PatientData[] = []
 
 export enum PatientActions {
 	UPDATE_PATIENT_INFO = "UPDATE_PATIENT_INFO",
 }
 
 export const patientActions = {
-	updatePatientInfo: actionCreator<Patient[]>(PatientActions.UPDATE_PATIENT_INFO),
+	updatePatientInfo: actionCreator<PatientData[]>(PatientActions.UPDATE_PATIENT_INFO),
 };
 
 const patientModule = reducerWithInitialState(initialState)

@@ -1,13 +1,12 @@
-import { combineReducers } from 'redux'
-import patientModule from './patient'
-import { Patient } from '../../types'
+import { combineReducers, CombinedState } from 'redux'
+import { Data } from '../../types'
+import dataModule from './data'
+import { getCombinedReducer, BasedState } from 'harmoware-vis';
 
 export interface ReduxState {
-	Patients: Patient[]
+	Data: Data
 }
 
-const rootModule = combineReducers<ReduxState>({
-	Patients: patientModule
-})
+const rootModule = getCombinedReducer({ Data: dataModule })
 
 export default rootModule

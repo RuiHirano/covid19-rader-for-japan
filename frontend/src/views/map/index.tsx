@@ -1,103 +1,144 @@
+
 import React, { useEffect } from 'react';
-import {
-    HarmoVisLayers, connectToHarmowareVis, LoadingIcon, MovesLayer, BasedProps, Viewport, Movesbase, MovesbaseOperation, BasedState, MovedData
-} from 'harmoware-vis';
-import MainLayout from '../../layouts';
-import { Typography } from '@material-ui/core';
+import { HarmoVisLayers, Container, BasedProps, BasedState, connectToHarmowareVis, MovesLayer, Movesbase, MovesbaseOperation, DepotsLayer, DepotsData } from 'harmoware-vis';
+import { useSelector, connect } from 'react-redux';
+import { ReduxState } from '../../redux/module';
+import { PrefData, Data, StatData } from '../../types';
 
-const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
-console.log("map: ", MAPBOX_TOKEN)
+//const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
+const MAPBOX_TOKEN = "pk.eyJ1IjoicnVpaGlyYW5vIiwiYSI6ImNrODV5cWRrbDBiYmkzbW83MHB0OXR2YWsifQ.DsQnn_9ZQY8-wp0elf-Yhw"
 
-const createMovesBase = (): Movesbase => {
-    const interval = 1000;
-    const repeat = 20;
-    const departuretime = 1551575400;
-    const arrivaltime = departuretime + interval * repeat;
-
-    const operation = Array.from({ length: repeat }, (_, i): MovesbaseOperation => {
-        const lon = 136.7 + (Math.floor(Math.random() * 299999) / 1000000);
-        const lat = 35.1 + (Math.floor(Math.random() * 199999) / 1000000);
-        return {
-            position: [lon, lat, 0],
-            elapsedtime: departuretime + (i * interval)
-        } as MovesbaseOperation;
-    });
+const createDepotsData = (lngBase: number, latBase: number): DepotsData => {
+    const lon = lngBase + (Math.floor(Math.random() * 299999) / 1000000);
+    const lat = latBase + (Math.floor(Math.random() * 199999) / 1000000);
     return {
-        departuretime,
-        arrivaltime,
-        operation
+        position: [lon, lat, 0],
     };
 }
 
+const createDepotsDataList = (statsData: StatData[], prefsData: PrefData[]): DepotsData[] => {
+    let dataList: DepotsData[] = []
+    const lastDate = statsData[statsData.length - 1].Date
 
-const createMovesBaseList = (count: number): Movesbase[] => {
-    return Array.from({ length: count }, (): Movesbase => createMovesBase())
+    statsData.forEach((statData) => {
+        let prefData: PrefData = { Longitude: 0, Latitude: 0, NameEn: "", NameJa: "", Id: 0, Regions: "" }
+        prefsData.forEach((pref) => {
+            if (pref.NameJa === statData.Prefecture) {
+                prefData = pref
+            }
+        })
+        if (statData.Date === lastDate) {
+            dataList = dataList.concat(Array.from({ length: statData.TotalCases }, (): DepotsData => createDepotsData(prefData.Longitude, prefData.Latitude)))
+        }
+    })
+
+    console.log("dataList", dataList, prefsData)
+    return dataList
 }
 
-const Map: React.FC<BasedProps & BasedState> = (props) => {
-    const { viewport, actions, clickedObject, inputFileName, movesbase, movedData, routePaths }: any = props
-    const optionVisible = false
+/*const Map: React.FC<BasedProps & BasedState> = (props) => {
+    const { actions, depotsData, viewport } = props
+    const prefsData = useSelector((state: ReduxState) => state.Data.PrefsData)
 
     useEffect(() => {
-
-        const setMovesbase: Movesbase[] = [];
-        setMovesbase.push({
-            type: "",
-            departuretime: 0,
-            arrivaltime: 0,
-            operation: [{
-                elapsedtime: 0,
-                position: [135.23415, 35.363453, 0],
-            }]
-        });
-
         if (actions) {
-            actions.setMovesBase(createMovesBaseList(10));
+            actions.setDepotsBase(createDepotsDataList(prefsData))
             actions.setViewport({
-                ...props.viewport,
+                ...viewport,
                 width: window.screen.width,
                 height: window.screen.height,
+                zoom: 3
             })
-            actions.setSecPerHour(100);
-
-            actions.updateMovesBase(setMovesbase);
-            console.log("test2", actions, movesbase, viewport, routePaths, movedData, clickedObject, clickedObject)
-
-            actions.setViewport({ longitude: 135.35463, latitude: 35.23452345 })
+            actions.setSecPerHour(1000);
         }
-
     }, [])
 
-    useEffect(() => {
-        console.log("test3", actions, movesbase, viewport, routePaths, movedData, clickedObject, clickedObject)
-    }, [movesbase])
-    console.log("test", actions, movesbase, viewport, routePaths, movedData, clickedObject, clickedObject)
+    if (actions === undefined || viewport === undefined
+        || depotsData === undefined) {
+        return <div />
+    }
 
     return (
+        <Container>
+            <div className="harmovis_area">
+                <HarmoVisLayers
+                    viewport={viewport} actions={actions}
+                    mapboxApiAccessToken={MAPBOX_TOKEN}
+                    layers={[
+                        new DepotsLayer({
+                            depotsData,
+                            iconChange: false,
+                            layerRadiusScale: 30
+                        }),
+                    ]}
+                />
+            </div>
+        </Container>
+    );
+}*/
 
-        <MainLayout title="Harmoware-Vis">
-            {actions !== undefined ?
+interface Props {
+    data: Data
+}
+class Map extends Container<BasedProps & BasedState & Props> {
+    constructor(props: BasedProps & BasedState & Props) {
+        super(props);
+        console.log("props ", props)
+    }
 
-                <div style={{ position: "fixed", paddingTop: 0, width: "100%", height: "100%" }}>
+    componentDidMount() {
+        const prefsData = this.props.data.PrefsData
+        const statsData = this.props.data.StatsData
+
+        console.log(process.env);
+        const { actions } = this.props;
+        if (actions) {
+            actions.setDepotsBase(createDepotsDataList(statsData, prefsData))
+            actions.setViewport({
+                ...this.props.viewport,
+                width: window.screen.width,
+                height: window.screen.height,
+                zoom: 3
+            })
+            actions.setSecPerHour(1000);
+        }
+    }
+
+    render() {
+        const { actions, depotsData, viewport } = this.props;
+        if (actions === undefined || viewport === undefined
+            || depotsData === undefined) {
+            return <div />
+        }
+        return (
+            <div>
+
+                <div className="harmovis_area">
                     <HarmoVisLayers
                         viewport={viewport} actions={actions}
-                        mapboxApiAccessToken={MAPBOX_TOKEN ? MAPBOX_TOKEN : ''}
+                        mapboxApiAccessToken={MAPBOX_TOKEN}
                         layers={[
-                            new MovesLayer({
-                                routePaths, movesbase, movedData,
-                                clickedObject, actions, optionVisible
+                            new DepotsLayer({
+                                depotsData,
+                                iconChange: false,
+                                layerRadiusScale: 20
                             }),
                         ]}
                     />
-                </div> :
-                <div>
-
-                    <LoadingIcon />
-                    <Typography>loading</Typography>
                 </div>
-            }
-        </MainLayout>
-    )
+            </div>
+        );
+    }
 }
 
-export default connectToHarmowareVis(Map);
+function mapStateToProps(state: any) {
+    console.log("state: ", state)
+    return {
+        data: { ...state.Data },
+    };
+}
+
+export default connectToHarmowareVis(connect(
+    mapStateToProps,
+    null
+)(Map));

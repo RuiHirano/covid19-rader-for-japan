@@ -9,8 +9,6 @@ import {
 import { XAxis, YAxis, CartesianGrid, Tooltip, Legend, ComposedChart, Bar } from "recharts";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../redux/module";
-import { Patient, Period, PatientsByDate, PatientsNumByDate } from "../../../types";
-import { StatsCalculator } from "../../../utils/stats-calculator";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -25,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 /* 日付別の感染者数合計を計算 */
 // return: [{ pref: '北海道', 'value': 12 },{ pref: '東京都', 'value': 22 },{ pref: '愛知県', 'value': 2 },...]
-const createData = (patients: Patient[], period: Period) => {
+/*const createData = (patients: Patient[], period: Period) => {
     const stats = new StatsCalculator()
     let result: PatientsNumByDate[] = []
     const a = stats.calcPatientsByDate(patients, period)
@@ -41,7 +39,7 @@ const createData = (patients: Patient[], period: Period) => {
     })
 
     return result
-}
+}*/
 
 interface Props {
 }
@@ -49,8 +47,8 @@ interface Props {
 const PatientsByDateView: React.FC<Props> = props => {
 
 
-    const patients = useSelector((state: ReduxState) => state.Patients)
-    const [data, setData] = useState(createData(patients, Period.DATE))
+    const patients = useSelector((state: ReduxState) => state.Data)
+    //const [data, setData] = useState(createData(patients, Period.DATE))
 
 
     return (
@@ -65,7 +63,7 @@ const PatientsByDateView: React.FC<Props> = props => {
             />
             <Divider />
             <CardContent>
-                <ComposedChart //グラフ全体のサイズや位置、データを指定。場合によってmarginで上下左右の位置を指定する必要あり。
+                {/*<ComposedChart //グラフ全体のサイズや位置、データを指定。場合によってmarginで上下左右の位置を指定する必要あり。
                     width={600}  //グラフ全体の幅を指定
                     height={280}  //グラフ全体の高さを指定
                     data={data} //ここにArray型のデータを指定
@@ -86,7 +84,7 @@ const PatientsByDateView: React.FC<Props> = props => {
                         fillOpacity={1}  ////グラフの中身の薄さを指定
                         fill="rgba(0, 172, 237, 0.2)"  //グラフの色を指定
                     />
-                </ComposedChart>
+                </ComposedChart>*/}
 
 
             </CardContent>

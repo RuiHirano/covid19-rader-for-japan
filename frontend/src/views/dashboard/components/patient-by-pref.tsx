@@ -9,8 +9,7 @@ import {
 import { XAxis, YAxis, CartesianGrid, Line, Tooltip, Legend, ComposedChart, Bar, Area } from "recharts";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../../redux/module";
-import { Patient, PatientsNumByPref, PatientsByPref } from "../../../types";
-import { StatsCalculator } from "../../../utils/stats-calculator";
+import { PatientsNumByPref, PatientsByPref, PrefData, StatData } from "../../../types";
 
 const useStyles = makeStyles((theme: Theme) => ({
     root: {},
@@ -24,24 +23,33 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 
+type DataByPref = { pref: string, deaths: number, cases: number }
 /* 都道府県別の感染者数合計を計算 */
 // return: [{ pref: '北海道', 'value': 12 },{ pref: '東京都', 'value': 22 },{ pref: '愛知県', 'value': 2 },...]
-const createData = (patients: Patient[], top: number) => {
-    const stats = new StatsCalculator()
-    let result: PatientsNumByPref[] = []
-    const a = stats.calcPatientsByPrefecture(patients)
+const createData = (statsData: StatData[], top: number) => {
+    let result: DataByPref[] = []
+    const lastDate = statsData[statsData.length - 1].Date
 
-    // 大きい順からtopまでを取得
-    const topResult = a.sort(function (pd1: PatientsByPref, pd2: PatientsByPref) {
-        if (pd1.patients.length < pd2.patients.length) return 1;
-        if (pd1.patients.length > pd2.patients.length) return -1;
-        return 0;
-    }).slice(0, top);
-    topResult.forEach((data) => {
-        result.push({ pref: data.pref, value: data.patients.length })
+    statsData.forEach((statData) => {
+        if (statData.Date === lastDate) {
+            const dateData: DataByPref = {
+                pref: statData.Prefecture,
+                deaths: statData.TotalDeaths,
+                cases: statData.TotalCases
+            }
+            result.push(dateData)
+        }
     })
 
-    return result
+    // 大きい順からtopまでを取得
+    const topResult = result.sort(function (res1: DataByPref, res2: DataByPref) {
+        if (res1.deaths + res1.cases < res2.deaths + res2.cases) return 1;
+        if (res1.deaths + res1.cases > res2.deaths + res2.cases) return -1;
+        return 0;
+    }).slice(0, top);
+
+    console.log("topResult", topResult)
+    return topResult
 }
 
 interface Props {
@@ -50,10 +58,10 @@ interface Props {
 const PatientsByPrefView: React.FC<Props> = props => {
 
 
-    const patients = useSelector((state: ReduxState) => state.Patients)
-    console.log("data: ", patients)
+    const statsData = useSelector((state: ReduxState) => state.Data.StatsData)
+    console.log("data: ", statsData)
     const top = 20 // 上位20個
-    const [data, setData] = useState(createData(patients, top))
+    const data = createData(statsData, top)
     //const [data, setData] = useState(mockData)
 
     return (
@@ -69,8 +77,8 @@ const PatientsByPrefView: React.FC<Props> = props => {
             <Divider />
             <CardContent>
                 <ComposedChart //グラフ全体のサイズや位置、データを指定。場合によってmarginで上下左右の位置を指定する必要あり。
-                    width={600}  //グラフ全体の幅を指定
-                    height={280}  //グラフ全体の高さを指定
+                    width={500}  //グラフ全体の幅を指定
+                    height={380}  //グラフ全体の高さを指定
                     data={data} //ここにArray型のデータを指定
                     layout="vertical"
                     margin={{ top: 20, right: 60, bottom: 0, left: 0 }}  //marginを指定
@@ -83,12 +91,20 @@ const PatientsByPrefView: React.FC<Props> = props => {
                         stroke="#f5f5f5" //グリッド線の色を指定
                     />
                     <Bar //面積を表すグラフ
-                        dataKey="value" //Array型のデータの、Y軸に表示したい値のキーを指定
+                        dataKey="cases" //Array型のデータの、Y軸に表示したい値のキーを指定
                         label={false}
                         stroke="#00aced" ////グラフの線の色を指定
                         stackId="a"
                         fillOpacity={1}  ////グラフの中身の薄さを指定
-                        fill="rgba(0, 172, 237, 0.2)"  //グラフの色を指定
+                        fill="rgba(0, 172, 237, 0.5)"  //グラフの色を指定
+                    />
+                    <Bar //面積を表すグラフ
+                        dataKey="deaths" //Array型のデータの、Y軸に表示したい値のキーを指定
+                        label={false}
+                        stroke="#00aced" ////グラフの線の色を指定
+                        stackId="a"
+                        fillOpacity={1}  ////グラフの中身の薄さを指定
+                        fill="rgba(253, 12, 7, 0.5)"  //グラフの色を指定
                     />
                 </ComposedChart>
 

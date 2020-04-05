@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { LinearProgress, Typography } from "@material-ui/core";
-import { useGetPatients } from "../data/useData";
+import { useGetData } from "../data/useData";
 
 interface Props {
     children?: any;
@@ -10,10 +10,10 @@ interface Props {
 const InitProvider: React.FC<Props> = props => {
     const { children } = props;
 
-    const { getPatients, status } = useGetPatients()
+    const { getData, status } = useGetData()
 
     useEffect(() => {
-        getPatients()
+        getData()
     }, []);
 
     return (

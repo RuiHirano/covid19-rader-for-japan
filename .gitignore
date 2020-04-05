@@ -24,3 +24,9 @@ yarn-error.log*
 
 # env
 secret.yaml
+.env
+
+# kubenetes
+frontend.yaml
+backend.yaml
+backend-calculator.yaml

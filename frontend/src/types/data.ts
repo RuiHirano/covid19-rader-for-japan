@@ -1,22 +1,93 @@
 import { Moment } from "moment"
+import { number } from "yup"
 
-export interface Patient {
+export interface Data {
+    StatsData: StatData[],
+    PrefsData: PrefData[],
+    PatientsData: PatientData[]
+}
+
+export interface PrefData {
+    Id: number,
+    NameJa: string,
+    NameEn: string,
+    Regions: string,
+    Latitude: number,
+    Longitude: number,
+}
+
+export interface TotalData {
+    Date: number,
+    Pcr: number,
+    Positive: number,
+    Symptom: number,
+    Symptomless: number,
+    SymtomConfirming: number,
+    Hospitalize: number,
+    Mild: number,
+    Severe: number,
+    Confirming: number,
+    Waiting: number,
+    Discharge: number,
+    Death: number,
+    Deaths: number
+}
+
+export interface StatData {
+    Date: string,
+    Prefecture: string,
+    Cases: number,
+    TotalCases: number,
+    Hospitals: number,
+    TotalHospitals: number,
+    Discharges: number,
+    TotalDischarges: number,
+    Deaths: number,
+    TotalDeaths: number,
+    SexData: SexData,
+    TotalSexData: SexData,
+    AgeData: AgeData,
+    TotalAgeData: AgeData,
+}
+
+export interface SexData {
+    Female: number,
+    Male: number,
+    Unknown: number,
+}
+
+export interface AgeData {
+    Age10: number,
+    Age20: number,
+    Age30: number,
+    Age40: number,
+    Age50: number,
+    Age60: number,
+    Age70: number,
+    Age80: number,
+    Age90: number,
+    Unknown: number,
+}
+
+export interface PatientData {
     ID: string,
+    Date: string,
+    Prefecture: string,
     Residence: string,
-    Age: number,
-    Sex: Sex,
-    Occupation: string,
-    Prefecture: Prefecture,
-    ActionHistory: string, // 行動歴
-    SymptomHistory: string,	// 症状・経過
-    FeverDate: Moment,  // 発熱観察日 
-    ConsultationDate: Moment, // 受診日
-    PublicationDate: Moment, // 公表日
-    RecoveryDate: Moment,  // 回復日
-    OverseasTravelFlag: boolean // 海外渡航フラグ
-    OverseasTravelName: string  // 渡航先
-    CloseContact: string, // 濃厚接触者情報
-    Source: string  // 情報源
+    Age: string,
+    Sex: string,
+    Attribute: string,
+    PrefectureNumber: string,
+    TravelOrContact: string,
+    Detail: string,
+    Src: string,
+    Onset: string,
+    Symptom: string,
+    DeathOrDischageDate: string,
+    Comment1: string,
+    Comment2: string,
+    Outcome: string,
+    OutcomeSrc: string,
 }
 
 export enum Sex {
@@ -32,7 +103,7 @@ export interface Prefecture {
 }
 
 export interface DateData {
-    Patients: Patient[]
+    Patients: PatientData[]
     PatientsNum: number
     TotalPatientsNum: number
 }
@@ -44,18 +115,18 @@ export enum Period {
     YEAR = "YEAR"
 }
 
-//export type PatientsByDate = { [date: string]: Patient[] }
-export type PatientsByDate = { date: string, patients: Patient[] }
+//export type PatientsByDate = { [date: string]: PatientData[] }
+export type PatientsByDate = { date: string, patients: PatientData[] }
 export type PatientsNumByDate = { date: string, value: number }
-export type PatientsByPref = { pref: string, patients: Patient[] }
+export type PatientsByPref = { pref: string, patients: PatientData[] }
 export type PatientsNumByPref = { pref: string, value: number }
 
 
 // {"3/1": {"愛知県": [Patient1, Patient2, ...], "東京都": [Patient1, Patient2, ...]}, "3/2": {}, ...}
-export type DatePatientsObjectByPref = { [s: string]: { [s: string]: Patient[] } }
+export type DatePatientsObjectByPref = { [s: string]: { [s: string]: PatientData[] } }
 
 // [{date: "3/1", "愛知県": [Patient1, Patient2, ...], "東京都": [Patient1, Patient2, ...]}, {date: "3/2", ...}]
-export type DatePatientsArrayByPref = { [a: string]: Patient[] }[]
+export type DatePatientsArrayByPref = { [a: string]: PatientData[] }[]
 
 export enum PrefName {
     北海道 = "北海道",

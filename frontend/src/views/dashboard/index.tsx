@@ -1,14 +1,9 @@
 import React from "react";
 import { Grid } from "@material-ui/core";
-
-import {
-    PatientsTransition
-} from "./components";
 import MainLayout from "../../layouts";
-import TotalPatientsTransition from "./components/total-patients-transition";
-import PatientsBarTransition from "./components/patient-bar-transition";
 import PatientsByPrefView from "./components/patient-by-pref";
 import PatientsByDateView from "./components/patient-by-date";
+import PatientsMap from "./components/patient-map";
 
 
 interface Props {
@@ -26,9 +21,9 @@ const DashboardView: React.FC<Props> = props => {
                     <PatientsByPrefView />
                 </Grid>
                 {/*<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
-                    <PatientsTransition />
-                </Grid>
-                <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
+                    <PatientsMap />
+    </Grid>*/}
+                {/*<Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
                     <TotalPatientsTransition />
                 </Grid>
                 <Grid item xl={6} lg={6} md={6} sm={6} xs={12}>
