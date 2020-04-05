@@ -22,7 +22,7 @@ const createDepotsDataList = (statsData: StatData[], prefsData: PrefData[]): Dep
     statsData.forEach((statData) => {
         let prefData: PrefData = { Longitude: 0, Latitude: 0, NameEn: "", NameJa: "", Id: 0, Regions: "" }
         prefsData.forEach((pref) => {
-            if (pref.NameJa === statData.Prefecture) {
+            if (statData.Prefecture.indexOf(pref.NameJa) !== -1) {
                 prefData = pref
             }
         })
