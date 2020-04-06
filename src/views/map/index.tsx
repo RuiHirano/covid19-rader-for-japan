@@ -4,6 +4,7 @@ import { HarmoVisLayers, Container, BasedProps, BasedState, connectToHarmowareVi
 import { useSelector, connect } from 'react-redux';
 import { ReduxState } from '../../redux/module';
 import { PrefData, Data, StatData } from '../../types';
+import MainLayout from '../../layouts';
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN ? process.env.REACT_APP_MAPBOX_TOKEN : "";
 
@@ -110,7 +111,7 @@ class Map extends Container<BasedProps & BasedState & Props> {
             return <div />
         }
         return (
-            <div>
+            <MainLayout title={"新型コロナウィルス最新速報"}>
 
                 <div className="harmovis_area">
                     <HarmoVisLayers
@@ -125,7 +126,7 @@ class Map extends Container<BasedProps & BasedState & Props> {
                         ]}
                     />
                 </div>
-            </div>
+            </MainLayout>
         );
     }
 }

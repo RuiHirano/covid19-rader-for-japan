@@ -2,7 +2,7 @@ import React, { forwardRef } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
 
 import { makeStyles, Theme } from "@material-ui/core/styles";
-import { List, ListItem, Button, colors } from "@material-ui/core";
+import { List, ListItem, Button, colors, Typography } from "@material-ui/core";
 import { styled } from "@material-ui/core/styles";
 
 import { withRouter, match } from "react-router";
@@ -56,7 +56,7 @@ interface Props {
     history: H.History;
     location: H.Location;
     match: match;
-    pages: { title: string; href: string; icon: any }[];
+    pages: { title: string; text: string; href: string; icon: any }[];
     onClose: () => void;
 }
 
@@ -88,7 +88,16 @@ const SidebarNav: React.FC<Props> = props => {
                             to={page.href}
                         >
                             <div className={classes.icon}> {page.icon} </div>
-                            {page.title}
+                            <div style={{
+                                width: "100%"
+                            }}>
+                                {page.title}
+                            </div>
+                            <div style={{
+                                width: "100%", textAlign: "end"
+                            }}>
+                                <Typography style={{ fontSize: 13 }}>{page.text}</Typography>
+                            </div>
                         </Button>
                     </ListItem>
                 ))}
@@ -96,7 +105,7 @@ const SidebarNav: React.FC<Props> = props => {
             </List>
             <DialogComponent controller={dialogController} />
             <AlertComponent controller={alertController} />
-        </SidebarContainer>
+        </SidebarContainer >
     );
 };
 
