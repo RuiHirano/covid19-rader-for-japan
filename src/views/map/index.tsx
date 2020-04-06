@@ -20,14 +20,14 @@ const createDepotsDataList = (statsData: StatData[], prefsData: PrefData[]): Dep
     const lastDate = statsData[statsData.length - 1].Date
 
     statsData.forEach((statData) => {
-        let prefData: PrefData = { Longitude: 0, Latitude: 0, NameEn: "", NameJa: "", Id: 0, Regions: "" }
+        let prefData: PrefData = { Longitude: "0", Latitude: "0", NameEn: "", NameJa: "", Id: 0, Regions: "" }
         prefsData.forEach((pref) => {
             if (statData.Prefecture.indexOf(pref.NameJa) !== -1) {
                 prefData = pref
             }
         })
         if (statData.Date === lastDate) {
-            dataList = dataList.concat(Array.from({ length: statData.TotalCases }, (): DepotsData => createDepotsData(prefData.Longitude, prefData.Latitude)))
+            dataList = dataList.concat(Array.from({ length: statData.TotalCases }, (): DepotsData => createDepotsData(parseFloat(prefData.Longitude), parseFloat(prefData.Latitude))))
         }
     })
 
