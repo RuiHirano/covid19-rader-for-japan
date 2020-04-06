@@ -7,6 +7,9 @@ import MapChart from '../../../components/map'
 //import mapData from '../../data/mapData'
 import mapData from '../../../data/japan-map'
 import { CardContent, Divider, CardHeader, Card } from '@material-ui/core';
+import { useSelector } from 'react-redux';
+import { ReduxState } from '../../../redux/module';
+import { StatData } from '../../../types';
 
 require('highcharts/indicators/pivot-points')(Highcharts)
 require('highcharts/indicators/macd')(Highcharts)
@@ -15,52 +18,49 @@ require('highcharts/modules/map')(Highcharts)
 interface Props {
 }
 
-const mapOptions = {
-    title: {
-        text: ''
-    },
-    colorAxis: {
-        min: 0,
-        stops: [
-            [0, '#EFEFFF'],
-            [0.67, '#4444FF'],
-            [1, '#000022']
-        ]
-    },
-    tooltip: {
+const createData = (statsData: StatData[]) => {
+    let result: any[] = []
+    if (statsData.length > 0) {
+        const lastDate = statsData[statsData.length - 1].Date
 
-    },
-    series: [{
-        mapData: mapData,
-        dataLabels: {
-
-        },
-        name: 'Japan',
-        data: [
-            ['jp-hs', 20],
-            ['jp-yc', 50],
-            ['no-ho', 2],
-            ['no-sf', 42],
-            ['no-va', 4],
-            ['no-of', 5],
-            ['no-nt', 6],
-            ['no-ro', 7],
-            ['no-bu', 8],
-            ['no-vf', 9],
-            ['no-fi', 10],
-            ['no-no', 11],
-            ['no-tr', 12],
-            ['no-ak', 13],
-            ['no-op', 14],
-            ['no-he', 15],
-            ['no-os', 16],
-            ['no-te', 17],
-            ['no-aa', 18]
-        ]
-    }]
+        statsData.forEach((stat) => {
+            if (stat.Date === lastDate) {
+                result.push([stat.Prefecture, stat.TotalCases])
+            }
+        })
+    }
+    return result
 }
 
+
+
 const PatientsMap: React.FC<Props> = props => {
+    const statsData = useSelector((state: ReduxState) => state.Data.StatsData)
+
+    const mapOptions = {
+        title: {
+            text: ''
+        },
+        colorAxis: {
+            min: 0,
+            stops: [
+                [0, '#EFEFFF'],
+                [0.67, '#4444FF'],
+                [1, '#000022']
+            ]
+        },
+        tooltip: {
+
+        },
+        series: [{
+            mapData: mapData,
+            dataLabels: {
+
+            },
+            name: 'Japan',
+            data: createData(statsData)
+        }]
+    }
 
     return (
         <div style={{ width: "100%", height: "100%" }}>

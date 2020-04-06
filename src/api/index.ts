@@ -30,7 +30,6 @@ export class API {
 		url = "",
 		params = {},
 	}) {
-		console.log("request to ", this.baseURL)
 		return axios(
 			{
 				url: url,

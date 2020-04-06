@@ -25,7 +25,7 @@ const mapData = {
         "id": "JP.HS",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.60, "hc-middle-y": 0.44, "hc-key": "jp-hs",
+            "hc-middle-x": 0.60, "hc-middle-y": 0.44, "hc-key": "広島県",
             "hc-a2": "HS",
             "labelrank": "7",
             "hasc": "JP.HS",
@@ -51,7 +51,7 @@ const mapData = {
         "id": "JP.SM",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.70, "hc-middle-y": 0.54, "hc-key": "jp-sm",
+            "hc-middle-x": 0.70, "hc-middle-y": 0.54, "hc-key": "島根県",
             "hc-a2": "SM",
             "labelrank": "6",
             "hasc": "JP.SM",
@@ -77,7 +77,7 @@ const mapData = {
         "id": "JP.YC",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.32, "hc-middle-y": 0.55, "hc-key": "jp-yc",
+            "hc-middle-x": 0.32, "hc-middle-y": 0.55, "hc-key": "山口県",
             "hc-a2": "YC",
             "labelrank": "6",
             "hasc": "JP.YC",
@@ -103,7 +103,7 @@ const mapData = {
         "id": "JP.KM",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.68, "hc-middle-y": 0.36, "hc-key": "jp-km",
+            "hc-middle-x": 0.68, "hc-middle-y": 0.36, "hc-key": "熊本県",
             "hc-a2": "KM",
             "labelrank": "6",
             "hasc": "JP.KM",
@@ -128,7 +128,7 @@ const mapData = {
         "id": "JP.EH",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.40, "hc-middle-y": 0.50, "hc-key": "jp-eh",
+            "hc-middle-x": 0.40, "hc-middle-y": 0.50, "hc-key": "愛媛県",
             "hc-a2": "EH",
             "labelrank": "6",
             "hasc": "JP.EH",
@@ -153,7 +153,7 @@ const mapData = {
         "id": "JP.KG",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.48, "hc-middle-y": 0.60, "hc-key": "jp-kg",
+            "hc-middle-x": 0.48, "hc-middle-y": 0.60, "hc-key": "香川県",
             "hc-a2": "KG",
             "labelrank": "6",
             "hasc": "JP.KG",
@@ -178,7 +178,7 @@ const mapData = {
         "id": "JP.IS",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.71, "hc-middle-y": 0.14, "hc-key": "jp-is",
+            "hc-middle-x": 0.71, "hc-middle-y": 0.14, "hc-key": "石川県",
             "hc-a2": "IS",
             "labelrank": "6",
             "hasc": "JP.IS",
@@ -204,7 +204,7 @@ const mapData = {
         "id": "JP.HK",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.52, "hc-middle-y": 0.49, "hc-key": "jp-hk",
+            "hc-middle-x": 0.52, "hc-middle-y": 0.49, "hc-key": "北海道",
             "hc-a2": "HK",
             "labelrank": "6",
             "hasc": "JP.HK",
@@ -230,7 +230,7 @@ const mapData = {
         "id": "JP.TK",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.84, "hc-middle-y": 0.09, "hc-key": "jp-tk",
+            "hc-middle-x": 0.84, "hc-middle-y": 0.09, "hc-key": "東京都",
             "hc-a2": "TK",
             "labelrank": "7",
             "hasc": "JP.TK",
@@ -256,7 +256,7 @@ const mapData = {
         "id": "JP.3461",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.72, "hc-middle-y": 0.94, "hc-key": "jp-3461",
+            "hc-middle-x": 0.72, "hc-middle-y": 0.94, "hc-key": "長崎県",
             "hc-a2": "NA",
             "labelrank": "2",
             "hasc": "JP.NS",
@@ -279,7 +279,7 @@ const mapData = {
         "id": "JP.3457",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.59, "hc-middle-y": 0.16, "hc-key": "jp-3457",
+            "hc-middle-x": 0.59, "hc-middle-y": 0.16, "hc-key": "鹿児島県",
             "hc-a2": "KA",
             "labelrank": "2",
             "hasc": "JP.KS",
@@ -303,7 +303,7 @@ const mapData = {
         "id": "JP.IB",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.52, "hc-middle-y": 0.59, "hc-key": "jp-ib",
+            "hc-middle-x": 0.52, "hc-middle-y": 0.59, "hc-key": "茨城県",
             "hc-a2": "IB",
             "labelrank": "6",
             "hasc": "JP.IB",
@@ -328,7 +328,7 @@ const mapData = {
         "id": "JP.ST",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.53, "hc-middle-y": 0.52, "hc-key": "jp-st",
+            "hc-middle-x": 0.53, "hc-middle-y": 0.52, "hc-key": "埼玉県",
             "hc-a2": "ST",
             "labelrank": "6",
             "hasc": "JP.ST",
@@ -353,7 +353,7 @@ const mapData = {
         "id": "JP.SG",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.44, "hc-middle-y": 0.54, "hc-key": "jp-sg",
+            "hc-middle-x": 0.44, "hc-middle-y": 0.54, "hc-key": "佐賀県",
             "hc-a2": "SG",
             "labelrank": "6",
             "hasc": "JP.SG",
@@ -377,7 +377,7 @@ const mapData = {
         "id": "JP.YN",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.39, "hc-middle-y": 0.45, "hc-key": "jp-yn",
+            "hc-middle-x": 0.39, "hc-middle-y": 0.45, "hc-key": "山梨県",
             "hc-a2": "YN",
             "labelrank": "6",
             "hasc": "JP.YN",
@@ -403,7 +403,7 @@ const mapData = {
         "id": "JP.KN",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.48, "hc-middle-y": 0.55, "hc-key": "jp-kn",
+            "hc-middle-x": 0.48, "hc-middle-y": 0.55, "hc-key": "神奈川県",
             "hc-a2": "KN",
             "labelrank": "6",
             "hasc": "JP.KN",
@@ -428,7 +428,7 @@ const mapData = {
         "id": "JP.FO",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.62, "hc-middle-y": 0.27, "hc-key": "jp-fo",
+            "hc-middle-x": 0.62, "hc-middle-y": 0.27, "hc-key": "福岡県",
             "hc-a2": "FO",
             "labelrank": "7",
             "hasc": "JP.FO",
@@ -454,7 +454,7 @@ const mapData = {
         "id": "JP.FS",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.61, "hc-middle-y": 0.50, "hc-key": "jp-fs",
+            "hc-middle-x": 0.61, "hc-middle-y": 0.50, "hc-key": "福島県",
             "hc-a2": "FS",
             "labelrank": "6",
             "hasc": "JP.FS",
@@ -480,7 +480,7 @@ const mapData = {
         "id": "JP.3480",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.45, "hc-middle-y": 0.53, "hc-key": "jp-3480",
+            "hc-middle-x": 0.45, "hc-middle-y": 0.53, "hc-key": "群馬県",
             "hc-a2": "GU",
             "labelrank": "2",
             "hasc": "JP.GM",
@@ -504,7 +504,7 @@ const mapData = {
         "id": "JP.TS",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.66, "hc-middle-y": 0.51, "hc-key": "jp-ts",
+            "hc-middle-x": 0.66, "hc-middle-y": 0.51, "hc-key": "徳島県",
             "hc-a2": "TS",
             "labelrank": "6",
             "hasc": "JP.TS",
@@ -530,7 +530,7 @@ const mapData = {
         "id": "JP.KY",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.23, "hc-middle-y": 0.05, "hc-key": "jp-ky",
+            "hc-middle-x": 0.23, "hc-middle-y": 0.05, "hc-key": "京都府",
             "hc-a2": "KY",
             "labelrank": "7",
             "hasc": "JP.KY",
@@ -556,7 +556,7 @@ const mapData = {
         "id": "JP.ME",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.57, "hc-middle-y": 0.52, "hc-key": "jp-me",
+            "hc-middle-x": 0.57, "hc-middle-y": 0.52, "hc-key": "三重県",
             "hc-a2": "ME",
             "labelrank": "6",
             "hasc": "JP.ME",
@@ -582,7 +582,7 @@ const mapData = {
         "id": "JP.AI",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.42, "hc-middle-y": 0.55, "hc-key": "jp-ai",
+            "hc-middle-x": 0.42, "hc-middle-y": 0.55, "hc-key": "愛知県",
             "hc-a2": "AI",
             "labelrank": "6",
             "hasc": "JP.AI",
@@ -608,7 +608,7 @@ const mapData = {
         "id": "JP.NR",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.44, "hc-middle-y": 0.67, "hc-key": "jp-nr",
+            "hc-middle-x": 0.44, "hc-middle-y": 0.67, "hc-key": "奈良県",
             "hc-a2": "NR",
             "labelrank": "6",
             "hasc": "JP.NR",
@@ -633,7 +633,7 @@ const mapData = {
         "id": "JP.OS",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.52, "hc-middle-y": 0.78, "hc-key": "jp-os",
+            "hc-middle-x": 0.52, "hc-middle-y": 0.78, "hc-key": "大阪府",
             "hc-a2": "OS",
             "labelrank": "7",
             "hasc": "JP.OS",
@@ -658,7 +658,7 @@ const mapData = {
         "id": "JP.WK",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.58, "hc-middle-y": 0.79, "hc-key": "jp-wk",
+            "hc-middle-x": 0.58, "hc-middle-y": 0.79, "hc-key": "和歌山県",
             "hc-a2": "WK",
             "labelrank": "6",
             "hasc": "JP.WK",
@@ -683,7 +683,7 @@ const mapData = {
         "id": "JP.CH",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.40, "hc-middle-y": 0.64, "hc-key": "jp-ch",
+            "hc-middle-x": 0.40, "hc-middle-y": 0.64, "hc-key": "千葉県",
             "hc-a2": "CH",
             "labelrank": "6",
             "hasc": "JP.CH",
@@ -709,7 +709,7 @@ const mapData = {
         "id": "JP.AK",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.60, "hc-middle-y": 0.49, "hc-key": "jp-ak",
+            "hc-middle-x": 0.60, "hc-middle-y": 0.49, "hc-key": "秋田県",
             "hc-a2": "AK",
             "labelrank": "6",
             "hasc": "JP.AK",
@@ -734,7 +734,7 @@ const mapData = {
         "id": "JP.MG",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.54, "hc-middle-y": 0.36, "hc-key": "jp-mg",
+            "hc-middle-x": 0.54, "hc-middle-y": 0.36, "hc-key": "宮城県",
             "hc-a2": "MG",
             "labelrank": "6",
             "hasc": "JP.MG",
@@ -759,7 +759,7 @@ const mapData = {
         "id": "JP.TT",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.62, "hc-middle-y": 0.21, "hc-key": "jp-tt",
+            "hc-middle-x": 0.62, "hc-middle-y": 0.21, "hc-key": "鳥取県",
             "hc-a2": "TT",
             "labelrank": "6",
             "hasc": "JP.TT",
@@ -784,7 +784,7 @@ const mapData = {
         "id": "JP.HG",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.53, "hc-middle-y": 0.46, "hc-key": "jp-hg",
+            "hc-middle-x": 0.53, "hc-middle-y": 0.46, "hc-key": "兵庫県",
             "hc-a2": "HG",
             "labelrank": "6",
             "hasc": "JP.HG",
@@ -810,7 +810,7 @@ const mapData = {
         "id": "JP.GF",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.63, "hc-middle-y": 0.28, "hc-key": "jp-gf",
+            "hc-middle-x": 0.63, "hc-middle-y": 0.28, "hc-key": "岐阜県",
             "hc-a2": "GF",
             "labelrank": "7",
             "hasc": "JP.GF",
@@ -836,7 +836,7 @@ const mapData = {
         "id": "JP.NN",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.50, "hc-middle-y": 0.42, "hc-key": "jp-nn",
+            "hc-middle-x": 0.50, "hc-middle-y": 0.42, "hc-key": "長野県",
             "hc-a2": "NN",
             "labelrank": "6",
             "hasc": "JP.NN",
@@ -861,7 +861,7 @@ const mapData = {
         "id": "JP.TY",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.50, "hc-middle-y": 0.50, "hc-key": "jp-ty",
+            "hc-middle-x": 0.50, "hc-middle-y": 0.50, "hc-key": "富山県",
             "hc-a2": "TY",
             "labelrank": "6",
             "hasc": "JP.TY",
@@ -886,7 +886,7 @@ const mapData = {
         "id": "JP.NI",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.55, "hc-middle-y": 0.61, "hc-key": "jp-ni",
+            "hc-middle-x": 0.55, "hc-middle-y": 0.61, "hc-key": "新潟県",
             "hc-a2": "NI",
             "labelrank": "6",
             "hasc": "JP.NI",
@@ -911,7 +911,7 @@ const mapData = {
         "id": "JP.OY",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.50, "hc-middle-y": 0.50, "hc-key": "jp-oy",
+            "hc-middle-x": 0.50, "hc-middle-y": 0.50, "hc-key": "岡山県",
             "hc-a2": "OY",
             "labelrank": "6",
             "hasc": "JP.OY",
@@ -936,7 +936,7 @@ const mapData = {
         "id": "JP.AO",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.44, "hc-middle-y": 0.66, "hc-key": "jp-ao",
+            "hc-middle-x": 0.44, "hc-middle-y": 0.66, "hc-key": "青森県",
             "hc-a2": "AO",
             "labelrank": "6",
             "hasc": "JP.AO",
@@ -961,7 +961,7 @@ const mapData = {
         "id": "JP.MZ",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.54, "hc-middle-y": 0.47, "hc-key": "jp-mz",
+            "hc-middle-x": 0.54, "hc-middle-y": 0.47, "hc-key": "宮崎県",
             "hc-a2": "MZ",
             "labelrank": "6",
             "hasc": "JP.MZ",
@@ -986,7 +986,7 @@ const mapData = {
         "id": "JP.IW",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.50, "hc-middle-y": 0.59, "hc-key": "jp-iw",
+            "hc-middle-x": 0.50, "hc-middle-y": 0.59, "hc-key": "岩手県",
             "hc-a2": "IW",
             "labelrank": "6",
             "hasc": "JP.IW",
@@ -1011,7 +1011,7 @@ const mapData = {
         "id": "JP.KC",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.50, "hc-middle-y": 0.23, "hc-key": "jp-kc",
+            "hc-middle-x": 0.50, "hc-middle-y": 0.23, "hc-key": "高知県",
             "hc-a2": "KC",
             "labelrank": "6",
             "hasc": "JP.KC",
@@ -1037,7 +1037,7 @@ const mapData = {
         "id": "JP.OT",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.67, "hc-middle-y": 0.65, "hc-key": "jp-ot",
+            "hc-middle-x": 0.67, "hc-middle-y": 0.65, "hc-key": "大分県",
             "hc-a2": "OT",
             "labelrank": "7",
             "hasc": "JP.OT",
@@ -1062,7 +1062,7 @@ const mapData = {
         "id": "JP.SZ",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.39, "hc-middle-y": 0.61, "hc-key": "jp-sz",
+            "hc-middle-x": 0.39, "hc-middle-y": 0.61, "hc-key": "静岡県",
             "hc-a2": "SZ",
             "labelrank": "6",
             "hasc": "JP.SZ",
@@ -1088,7 +1088,7 @@ const mapData = {
         "id": "JP.FI",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.56, "hc-middle-y": 0.36, "hc-key": "jp-fi",
+            "hc-middle-x": 0.56, "hc-middle-y": 0.36, "hc-key": "福井県",
             "hc-a2": "FI",
             "labelrank": "6",
             "hasc": "JP.FI",
@@ -1114,7 +1114,7 @@ const mapData = {
         "id": "JP.SH",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.52, "hc-middle-y": 0.50, "hc-key": "jp-sh",
+            "hc-middle-x": 0.52, "hc-middle-y": 0.50, "hc-key": "滋賀県",
             "hc-a2": "SH",
             "labelrank": "6",
             "hasc": "JP.SH",
@@ -1140,7 +1140,7 @@ const mapData = {
         "id": "JP.TC",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.50, "hc-middle-y": 0.50, "hc-key": "jp-tc",
+            "hc-middle-x": 0.50, "hc-middle-y": 0.50, "hc-key": "栃木県",
             "hc-a2": "TC",
             "labelrank": "6",
             "hasc": "JP.TC",
@@ -1166,7 +1166,7 @@ const mapData = {
         "id": "JP.YT",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.51, "hc-middle-y": 0.41, "hc-key": "jp-yt",
+            "hc-middle-x": 0.51, "hc-middle-y": 0.41, "hc-key": "山形県",
             "hc-a2": "YT",
             "labelrank": "6",
             "hasc": "JP.YT",
@@ -1191,7 +1191,7 @@ const mapData = {
         "id": "JP.3302",
         "properties": {
             "hc-group": "admin1",
-            "hc-middle-x": 0.63, "hc-middle-y": 0.42, "hc-key": "jp-3302",
+            "hc-middle-x": 0.63, "hc-middle-y": 0.42, "hc-key": "沖縄県",
             "hc-a2": "OK",
             "labelrank": "2",
             "hasc": "JP.ON",

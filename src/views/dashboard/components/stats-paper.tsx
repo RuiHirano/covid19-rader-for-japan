@@ -40,7 +40,7 @@ const StatsPaper: React.FC<Props> = props => {
                 <Typography style={{ fontSize: 20, color: "white", marginLeft: 10 }}>{title}</Typography>
                 <Typography style={{ fontSize: 20, color: "white", marginLeft: 10 }}>{dateValue}</Typography>
             </div>
-            <Typography style={{ fontSize: 60, color: "white", paddingLeft: 10 }}>{totalValue}</Typography>
+            <Typography style={{ fontSize: 55, color: "white", paddingLeft: 10 }}>{totalValue}</Typography>
         </Paper>
     );
 };
