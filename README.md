@@ -56,11 +56,7 @@ docker image build -t covid19-rader-for-japan/backend-calculator:latest .
 docker-compose up -d
 ```
 
-<<<<<<< HEAD
 4. visit http://localhost:3000
 
 
 ## Contributers
-=======
-5. visit http://localhost:3000
->>>>>>> cb39ea832127558d8f303978532fa03a6422cbd6
