@@ -2,7 +2,7 @@ FROM node:10
 WORKDIR /home/guest/covid19-rader-for-japan/frontend
 
 # install dependencies
-RUN package.json yarn.lock ./
+COPY package.json yarn.lock ./
 RUN yarn install
 
 COPY . .
