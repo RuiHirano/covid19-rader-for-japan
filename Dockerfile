@@ -1,12 +1,11 @@
 FROM node:10
-
-# install dependencies
-RUN mkdir -p /home/guest/covid19-rader-for-japan/frontend
 WORKDIR /home/guest/covid19-rader-for-japan/frontend
 
-COPY . .
+# install dependencies
+RUN package.json yarn.lock ./
 RUN yarn install
 
+COPY . .
 RUN yarn build
 RUN yarn add serve
 
