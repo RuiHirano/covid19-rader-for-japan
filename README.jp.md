@@ -56,8 +56,8 @@ go build main.go
 2. frontendを起動する
 ```
 cd frontend
-yarn install // or npm install
-yarn start  // or npm start
+yarn install
+yarn start
 ```
 
 ### Dockerで開発する場合
