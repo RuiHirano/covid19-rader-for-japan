@@ -21,14 +21,14 @@ const createDepotsDataList = (statsData: StatData[], prefsData: PrefData[]): Dep
     const lastDate = statsData[statsData.length - 1].Date
 
     statsData.forEach((statData) => {
-        let prefData: PrefData = { Longitude: 0, Latitude: 0, NameEn: "", NameJa: "", Id: 0, Regions: "" }
+        let prefData: PrefData = { Longitude: "0", Latitude: "0", NameEn: "", NameJa: "", Id: 0, Regions: "" }
         prefsData.forEach((pref) => {
             if (statData.Prefecture.indexOf(pref.NameJa) !== -1) {
                 prefData = pref
             }
         })
         if (statData.Date === lastDate) {
-            dataList = dataList.concat(Array.from({ length: statData.TotalCases }, (): DepotsData => createDepotsData(prefData.Longitude, prefData.Latitude)))
+            dataList = dataList.concat(Array.from({ length: statData.TotalCases }, (): DepotsData => createDepotsData(parseFloat(prefData.Longitude), parseFloat(prefData.Latitude))))
         }
     })
 
@@ -80,10 +80,9 @@ const createDepotsDataList = (statsData: StatData[], prefsData: PrefData[]): Dep
 interface Props {
     data: Data
 }
-class Map extends Container<BasedProps & BasedState & Props> {
-    constructor(props: BasedProps & BasedState & Props) {
+class Map extends Container<BasedProps & Props> {
+    constructor(props: BasedProps & Props) {
         super(props);
-        console.log("props ", props)
     }
 
     componentDidMount() {
@@ -106,10 +105,7 @@ class Map extends Container<BasedProps & BasedState & Props> {
 
     render() {
         const { actions, depotsData, viewport } = this.props;
-        if (actions === undefined || viewport === undefined
-            || depotsData === undefined) {
-            return <div />
-        }
+
         return (
             <MainLayout title={"新型コロナウィルス最新速報"}>
 

@@ -23,22 +23,25 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const calcTopPrefs = (statsData: StatData[], top: number) => {
+
     // topを求める
     let topPrefs: { [s: string]: number }[] = []
-    const lastDate = statsData[statsData.length - 1].Date
+    if (statsData.length > 0) {
+        const lastDate = statsData[statsData.length - 1].Date
 
-    statsData.forEach((stat) => {
-        if (stat.Date === lastDate) {
-            topPrefs.push({ [stat.Prefecture]: stat.TotalCases })
-        }
-    })
-    // 大きい順からtopまでを取得
-    topPrefs = topPrefs.sort(function (res1, res2) {
-        if (Object.values(res1)[0] < Object.values(res2)[0]) return 1;
-        if (Object.values(res1)[0] > Object.values(res2)[0]) return -1;
-        return 0;
-    }).slice(0, top);
-    console.log("topPrefs", topPrefs, Object.keys(topPrefs))
+        statsData.forEach((stat) => {
+            if (stat.Date === lastDate) {
+                topPrefs.push({ [stat.Prefecture]: stat.TotalCases })
+            }
+        })
+        // 大きい順からtopまでを取得
+        topPrefs = topPrefs.sort(function (res1, res2) {
+            if (Object.values(res1)[0] < Object.values(res2)[0]) return 1;
+            if (Object.values(res1)[0] > Object.values(res2)[0]) return -1;
+            return 0;
+        }).slice(0, top);
+        console.log("topPrefs", topPrefs, Object.keys(topPrefs))
+    }
     return topPrefs
 }
 

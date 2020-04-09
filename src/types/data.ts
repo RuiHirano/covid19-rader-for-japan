@@ -12,8 +12,8 @@ export interface PrefData {
     NameJa: string,
     NameEn: string,
     Regions: string,
-    Latitude: number,
-    Longitude: number,
+    Latitude: string,
+    Longitude: string,
 }
 
 export interface TotalData {
